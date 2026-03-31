@@ -1,6 +1,6 @@
 ﻿using Moq.AutoMock.Resolvers;
 
-namespace Xspec.Internal.TestData;
+namespace Xspec.Internal.TestData.Mocking;
 
 internal class EmptyArrayResolver : IMockResolver
 {

@@ -1,5 +1,7 @@
 ﻿using Moq;
 using Xspec.Internal.Specification;
+using Xspec.Internal.TestData.Generation;
+using Xspec.Internal.TestData.Mocking;
 
 namespace Xspec.Internal.TestData;
 
@@ -8,10 +10,15 @@ internal class DataProvider
     private readonly Dictionary<Type, object?> _defaultValues = [];
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
     private readonly Dictionary<Type, Dictionary<int, object?>> _numberedMentions = [];
-    private readonly TestDataGenerator _testDataGenerator;
+    private readonly AutoMockerWrapper _testDataGenerator;
     private readonly Dictionary<Type, Func<object, object>> _defaultSetups = [];
+    private readonly DataGenerator _generator;
 
-    public DataProvider() => _testDataGenerator = new(this.CreateDataGenerator(), this.CreateAutoMocker());
+    public DataProvider()
+    {
+        _testDataGenerator = new(this);
+        _generator = new(this);
+    }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
         => _numberedMentions.TryGetValue(type, out var map)
@@ -28,7 +35,7 @@ internal class DataProvider
         if (!_defaultSetups.ContainsKey(type))
             return false;
 
-        val = ApplyDefaultSetup(type, _testDataGenerator.CreateDefault(type));
+        val = ApplyDefaultSetup(type, _generator.CreateNew(type));
         return true;
     }
 
@@ -43,7 +50,7 @@ internal class DataProvider
         var type = typeof(TValue);
         var instance = TryGetDefault(typeof(TValue), out var val)
             ? val
-            : _testDataGenerator.Instantiate<TValue>();
+            : DoInstantiate<TValue>();
         return (TValue)(ApplyDefaultSetup(type, instance!) ?? default!);
     }
 
@@ -85,15 +92,30 @@ internal class DataProvider
         => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];
 
     internal TValue Create<TValue>()
-        => (TValue)ApplyDefaultSetup(typeof(TValue), _testDataGenerator.Create<TValue>()!);
+        => (TValue)ApplyDefaultSetup(typeof(TValue), MockOrCreate<TValue>()!);
 
     internal object Create(Type type)
-        => ApplyDefaultSetup(type, _testDataGenerator.Create(type));
+        => ApplyDefaultSetup(type, _generator.Create(type));
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _testDataGenerator.GetMock<TObject>();
 
     internal Mock GetMock(Type type) => _testDataGenerator.GetMock(type);
+
+    private TValue DoInstantiate<TValue>()
+    {
+        try
+        {
+            return _testDataGenerator.Instantiate<TValue>();
+        }
+        catch (ArgumentException ex) when (ex.Message.Contains("Did not find a best constructor for"))
+        {
+            return _generator.Create<TValue>();
+        }
+    }
+
+    private TValue MockOrCreate<TValue>()
+        => typeof(TValue).IsInterface ? _testDataGenerator.Get<TValue>() : _generator.Create<TValue>();
 
     private object ApplyDefaultSetup(Type type, object newValue)
         => _defaultSetups.TryGetValue(type, out var setup)

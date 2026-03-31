@@ -1,7 +1,7 @@
 ﻿using Moq;
 using System.Reflection;
 
-namespace Xspec.Internal.TestData;
+namespace Xspec.Internal.TestData.Mocking;
 
 internal class FluentDefaultProvider : DefaultValueProvider
 {

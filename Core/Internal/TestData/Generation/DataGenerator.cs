@@ -1,23 +1,23 @@
 ﻿using System.Reflection;
 
-namespace Xspec.Internal.TestData;
+namespace Xspec.Internal.TestData.Generation;
 
-internal class DataGenerator(IDefaultProvider? defaultProvider = null)
+internal class DataGenerator(DataProvider _context)
 {
     private int _counter = 0;
 
     internal TValue Create<TValue>() => (TValue)Create(typeof(TValue))!;
 
     internal object? Create(Type type, params Type[] stack)
-    {
-        if (defaultProvider?.TryGetDefault(type, out var defaultVal) == true)
-            return defaultVal!;
+        => TryGetDefault(type, out var defaultVal) ? defaultVal! : CreateNew(type, stack);
 
+    internal object? CreateNew(Type type, params Type[] stack)
+    {
         if (stack.Any(t => t == type))
             return null!;
 
         var underlyingType = Nullable.GetUnderlyingType(type);
-        if (underlyingType != null) 
+        if (underlyingType != null)
             return Create(underlyingType, stack);
 
         if (type.IsEnum) return GenerateEnumValue(type);
@@ -29,6 +29,25 @@ internal class DataGenerator(IDefaultProvider? defaultProvider = null)
         if (type.IsArray) return GenerateArray(type.GetElementType()!);
         if (IsGenericEnumerable(type)) return GenerateArray(type.GetGenericArguments()[0]);
         return InstantiateType(type, stack);
+    }
+
+    private bool TryGetDefault(Type type, out object? val)
+    {
+        if (_context.TryGetDefault(type, out val))
+            return true;
+
+        if (type.IsInterface)
+        {
+            var (instance, found) = _context.Use(type);
+            try
+            {
+                val = found ? instance! : _context.GetMock(type).Object;
+                return true;
+            }
+            catch { }
+        }
+        val = null;
+        return false;
     }
 
     private static object GenerateEnumValue(Type type)
@@ -90,7 +109,21 @@ internal class DataGenerator(IDefaultProvider? defaultProvider = null)
         var parameters = constructor.GetParameters()
             .Select(p => Create(p.ParameterType, [type, .. stack]))
             .ToArray();
-        return constructor.Invoke(parameters);
+        try
+        {
+            return constructor.Invoke(parameters);
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                return Activator.CreateInstance(type)!;
+            }
+            catch (ArgumentException)
+            {
+                throw new SetupFailed($"Failed to create value for type {type.Name}", ex);
+            }
+        }
     }
 
     private void PopulatePublicProperties(Type type, object instance, params Type[] stack)

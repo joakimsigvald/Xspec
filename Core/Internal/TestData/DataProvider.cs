@@ -94,8 +94,7 @@ internal class DataProvider
     internal TValue Create<TValue>()
         => (TValue)ApplyDefaultSetup(typeof(TValue), MockOrCreate<TValue>()!);
 
-    internal object Create(Type type)
-        => ApplyDefaultSetup(type, _generator.Create(type));
+    internal object Create(Type type) => ApplyDefaultSetup(type, _generator.Create(type));
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _testDataGenerator.GetMock<TObject>();

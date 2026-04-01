@@ -1,9 +1,9 @@
 ﻿namespace Xspec.Internal.TestData.Generation;
 
-internal class DataGenerator(DataProvider _context)
+internal class DataGenerator(DataProvider context)
 {
     private readonly IGenerationStrategy[] _strategies = [
-        new DefaultStrategy(_context),
+        new DefaultStrategy(context),
         new StackStrategy(),
         new NullableStrategy(),
         new PrimitiveStrategy(),

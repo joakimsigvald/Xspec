@@ -2,11 +2,12 @@
 
 namespace Xspec.Test.AutoFixture.Primitives;
 
-public abstract class WhenGeneratePrimitive<TPrimitive>(int maxDistinct) : Spec<TPrimitive> where TPrimitive : struct
+public abstract class WhenGeneratePrimitive<TPrimitive>(int maxDistinct) : Spec<TPrimitive>
 {
     [Fact] public void GivenSUT_ThenIsNotDefault() => When(_ => _).Then().Result.Is().Not(default(TPrimitive));
     [Fact] public void GivenSingle_ThenIsNotDefault() => A<TPrimitive>().Is().Not(default(TPrimitive));
-    [Fact] public void GivenMaxDistinctValues_ThenAreDifferent() 
+    [Fact]
+    public void GivenMaxDistinctValues_ThenAreDifferent()
         => Enumerable.Range(1, maxDistinct).Select(n => Any<TPrimitive>()).Is().Distinct();
 }
 
@@ -35,8 +36,31 @@ public class WhenGenerateDecimal() : WhenGeneratePrimitive<decimal>(100)
 }
 
 public class WhenGenerateBool() : WhenGeneratePrimitive<bool>(2);
+public class WhenGenerateChar() : WhenGeneratePrimitive<char>(94)
+{
+    [Fact]
+    public void GivenSingle_ThenIsPrintable()
+        => A<char>().Is().GreaterThan((char)32).and.LessThan((char)127);
+}
 
-public class WhenGenerateDateTime() : WhenGeneratePrimitive<DateTime>(100);
+public class WhenGenerateDateTime() : WhenGeneratePrimitive<DateTime>(100)
+{
+    [Fact]
+    public void GivenSingle_ThenIsContemporary()
+            => A<DateTime>().Is().After(new DateTime(1900, 1, 1));
+}
+
 public class WhenGenerateTimeSpan() : WhenGeneratePrimitive<TimeSpan>(100);
-public class WhenGenerateDateOnly() : WhenGeneratePrimitive<DateOnly>(100);
+public class WhenGenerateDateOnly() : WhenGeneratePrimitive<DateOnly>(100)
+{
+    [Fact]
+    public void GivenSingle_ThenIsContemporary()
+            => A<DateOnly>().Is().After(new DateOnly(1900, 1, 1));
+}
+
 public class WhenGenerateTimeOnly() : WhenGeneratePrimitive<TimeOnly>(100);
+public class WhenGenerateGuid() : WhenGeneratePrimitive<Guid>(100);
+public class WhenGenerateString() : WhenGeneratePrimitive<string>(100)
+{
+    [Fact] public void GivenSingle_ThenIsNotEmpty() => A<string>().Is().not.Empty();
+}

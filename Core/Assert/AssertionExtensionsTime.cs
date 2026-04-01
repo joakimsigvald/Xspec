@@ -91,6 +91,61 @@ public static class AssertionExtensionsTime
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         => IsNullableDateTime.Create(actual, actualExpr!);
 
+
+    /// <summary>
+    /// Verify that actual is expected DateOnly and return continuation for further assertions of the value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="expected"></param>
+    /// <param name="actualExpr"></param>
+    /// <param name="expectedExpr"></param>
+    /// <returns>Continuation for further assertions of the DateOnly?</returns>
+    public static ContinueWith<IsNullableDateOnly> Is(
+        this DateOnly? actual, DateOnly? expected,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
+        [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+
+    /// <summary>
+    /// Verify that actual is expected DateOnly and return continuation for further assertions of the value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="expected"></param>
+    /// <param name="actualExpr"></param>
+    /// <param name="expectedExpr"></param>
+    /// <returns>Continuation for further assertions of the DateOnly?</returns>
+    public static ContinueWith<IsDateOnly> Is(
+        this DateOnly? actual, DateOnly expected,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
+        [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+
+    /// <summary>
+    /// Get available assertions for the given value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="_"></param>
+    /// <param name="actualExpr"></param>
+    /// <returns></returns>
+    public static IsDateOnly Is(
+        this DateOnly actual,
+        Ignore _ = default,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
+        => IsDateOnly.Create(actual, actualExpr!);
+
+    /// <summary>
+    /// Get available assertions for the given value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="_"></param>
+    /// <param name="actualExpr"></param>
+    /// <returns></returns>
+    public static IsNullableDateOnly Is(
+        this DateOnly? actual,
+        Ignore _ = default,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
+        => IsNullableDateOnly.Create(actual, actualExpr!);
+
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>

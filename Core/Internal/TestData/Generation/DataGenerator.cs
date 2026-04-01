@@ -6,8 +6,8 @@ internal class DataGenerator(DataProvider context)
         new DefaultStrategy(context),
         new StackStrategy(),
         new NullableStrategy(),
-        new PrimitiveStrategy(),
         new EnumStrategy(),
+        new PrimitiveStrategy(),
         new CollectionStrategy(),
         new ObjectStrategy(),
         ];

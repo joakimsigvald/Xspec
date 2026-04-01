@@ -27,6 +27,7 @@ internal class PrimitiveStrategy : IGenerationStrategy
         {
             TypeCode.Boolean => ++_counter % 2 == 1,
             TypeCode.DateTime => GetDateTime(),
+            TypeCode.Char => (char)('!' + (++_counter % 94)),
             TypeCode.Int32 => ++_counter,
             TypeCode.UInt32 => (uint)++_counter,
             TypeCode.Byte => (byte)++_counter,
@@ -38,6 +39,7 @@ internal class PrimitiveStrategy : IGenerationStrategy
             TypeCode.Single => (float)GetFractional(),
             TypeCode.Double => (double)GetFractional(),
             TypeCode.Decimal => GetFractional(),
+            TypeCode.String => $"String{++_counter}",
             _ => null
         };
 

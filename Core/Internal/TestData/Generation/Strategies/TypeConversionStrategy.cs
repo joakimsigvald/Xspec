@@ -16,7 +16,8 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         result = GetCandidateValues(result)
             .Select(TryConstruct)
             .FirstOrDefault(v => v != null)
-            ?? throw new InvalidTypeConversionException(request.Type, sourceType);
+            ?? TryCast(result)
+            ?? throw new InvalidTypeConversion(request.Type, sourceType);
 
         return true;
 
@@ -30,8 +31,16 @@ internal class TypeConversionStrategy() : IGenerationStrategy
                 .Select(m => m.Invoke(null, [sourceVal]))
                 .Prepend(sourceVal);
 
+        object? TryConvert(object? argument) => TryConstruct(argument) ?? TryCast(argument);
+
         object? TryConstruct(object? argument)
             => request.Type.GetConstructor([argument?.GetType() ?? sourceType])?.Invoke([argument]);
+
+        object? TryCast(object? argument)
+        {
+            try { return Convert.ChangeType(argument, request.Type); }
+            catch { return null; }
+        }
     }
 
     internal void Register<TTarget, TSource>() => _typeRelays[typeof(TTarget)] = typeof(TSource);

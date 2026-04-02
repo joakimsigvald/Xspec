@@ -1,4 +1,4 @@
-﻿namespace Xspec.Internal.TestData.Generation;
+﻿namespace Xspec.Internal.TestData.Generation.Strategies;
 
 internal class DefaultStrategy(DataProvider context) : IGenerationStrategy
 {

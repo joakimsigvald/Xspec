@@ -17,7 +17,7 @@ internal class DataProvider
     public DataProvider()
     {
         _testDataGenerator = new(this);
-        _generator = new(this);
+        _generator = new(this, new(), new());
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
@@ -85,12 +85,6 @@ internal class DataProvider
         ? MergeDefaultSetups(previousSetup, setup)
         : setup;
 
-    private static Func<object, object> MergeDefaultSetups(Func<object, object> setup1, Func<object, object> setup2)
-        => obj => setup2(setup1(obj));
-
-    private Dictionary<int, object?> GetMentions(Type type)
-        => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];
-
     internal TValue Create<TValue>()
         => (TValue)ApplyDefaultSetup(typeof(TValue), MockOrCreate<TValue>()!);
 
@@ -100,6 +94,20 @@ internal class DataProvider
         => _testDataGenerator.GetMock<TObject>();
 
     internal Mock GetMock(Type type) => _testDataGenerator.GetMock(type);
+
+    internal Exception? GetDefaultException(Type type)
+        => _defaultExceptions.TryGetValue(type, out var ex) ? ex() : null;
+
+    internal void SetDefaultException(Type type, Func<Exception> ex)
+        => _defaultExceptions[type] = ex;
+
+    internal void Register<TTarget, TSource>() => _generator.Register<TTarget, TSource>();
+
+    private static Func<object, object> MergeDefaultSetups(Func<object, object> setup1, Func<object, object> setup2)
+        => obj => setup2(setup1(obj));
+
+    private Dictionary<int, object?> GetMentions(Type type)
+        => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];
 
     private TValue DoInstantiate<TValue>()
     {
@@ -120,10 +128,4 @@ internal class DataProvider
         => _defaultSetups.TryGetValue(type, out var setup)
             ? setup(newValue)
             : newValue;
-
-    internal Exception? GetDefaultException(Type type)
-        => _defaultExceptions.TryGetValue(type, out var ex) ? ex() : null;
-
-    internal void SetDefaultException(Type type, Func<Exception> ex)
-        => _defaultExceptions[type] = ex;
 }

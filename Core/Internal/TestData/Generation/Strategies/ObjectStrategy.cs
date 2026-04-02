@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Xspec.Internal.TestData.Generation;
+namespace Xspec.Internal.TestData.Generation.Strategies;
 
 internal class ObjectStrategy : IGenerationStrategy
 {

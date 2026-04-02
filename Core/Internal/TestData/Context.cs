@@ -139,6 +139,8 @@ internal class Context
             _generatedValues[typeof(TValue)] = [];
     }
 
+    internal void Register<TTarget, TSource>() => _dataProvider.Register<TTarget, TSource>();
+
     private TValue ApplyUniqueConstraint<TValue>(Func<TValue> generateValue)
     {
         var type = typeof(TValue);

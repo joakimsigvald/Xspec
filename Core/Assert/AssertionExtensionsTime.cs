@@ -91,7 +91,6 @@ public static class AssertionExtensionsTime
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         => IsNullableDateTime.Create(actual, actualExpr!);
 
-
     /// <summary>
     /// Verify that actual is expected DateOnly and return continuation for further assertions of the value
     /// </summary>
@@ -145,6 +144,60 @@ public static class AssertionExtensionsTime
         Ignore _ = default,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         => IsNullableDateOnly.Create(actual, actualExpr!);
+
+    /// <summary>
+    /// Verify that actual is expected DateTimeOffset and return continuation for further assertions of the value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="expected"></param>
+    /// <param name="actualExpr"></param>
+    /// <param name="expectedExpr"></param>
+    /// <returns>Continuation for further assertions of the DateTimeOffset?</returns>
+    public static ContinueWith<IsNullableDateTimeOffset> Is(
+        this DateTimeOffset? actual, DateTimeOffset? expected,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
+        [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+
+    /// <summary>
+    /// Verify that actual is expected DateTimeOffset and return continuation for further assertions of the value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="expected"></param>
+    /// <param name="actualExpr"></param>
+    /// <param name="expectedExpr"></param>
+    /// <returns>Continuation for further assertions of the DateTimeOffset?</returns>
+    public static ContinueWith<IsDateTimeOffset> Is(
+        this DateTimeOffset? actual, DateTimeOffset expected,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
+        [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+
+    /// <summary>
+    /// Get available assertions for the given value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="_"></param>
+    /// <param name="actualExpr"></param>
+    /// <returns></returns>
+    public static IsDateTimeOffset Is(
+        this DateTimeOffset actual,
+        Ignore _ = default,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
+        => IsDateTimeOffset.Create(actual, actualExpr!);
+
+    /// <summary>
+    /// Get available assertions for the given value
+    /// </summary>
+    /// <param name="actual"></param>
+    /// <param name="_"></param>
+    /// <param name="actualExpr"></param>
+    /// <returns></returns>
+    public static IsNullableDateTimeOffset Is(
+        this DateTimeOffset? actual,
+        Ignore _ = default,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
+        => IsNullableDateTimeOffset.Create(actual, actualExpr!);
 
     /// <summary>
     /// Get available assertions for the given value

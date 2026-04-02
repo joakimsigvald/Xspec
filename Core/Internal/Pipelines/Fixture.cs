@@ -11,6 +11,12 @@ internal abstract class Fixture<TSUT>(Fixture<TSUT>? classFixture = null)
     private protected readonly Arranger _arranger = classFixture?._arranger ?? new();
     private protected Command? _methodUnderTest = classFixture?._methodUnderTest;
 
+    public void TearDown()
+    {
+        if (classFixture is null && _fixture.IsSetUp)
+            _fixture.Dispose();
+    }
+
     internal void SetDefault<TModel>(
         Action<TModel> setup, string setupExpr) where TModel : class
     {
@@ -77,21 +83,17 @@ internal abstract class Fixture<TSUT>(Fixture<TSUT>? classFixture = null)
         _arranger.Add(arrangement);
     }
 
-    private void AssertIsNotSetUp()
-    {
-        if (_fixture.IsSetUp)
-            throw new SetupFailed("Cannot provide setup after pipeline is set up");
-    }
-
     internal void SetupThrows<TService>(Func<Exception> expected)
     {
         AssertIsNotSetUp();
         _context.SetupThrows<TService>(expected);
     }
 
-    public void TearDown()
+    internal void Register<TTarget, TSource>() => _context.Register<TTarget, TSource>();
+
+    private void AssertIsNotSetUp()
     {
-        if (classFixture is null && _fixture.IsSetUp)
-            _fixture.Dispose();
+        if (_fixture.IsSetUp)
+            throw new SetupFailed("Cannot provide setup after pipeline is set up");
     }
 }

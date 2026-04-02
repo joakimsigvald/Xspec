@@ -1,5 +1,6 @@
 ﻿using Xspec.Internal.Pipelines;
 using Xspec.Internal.Specification;
+using Xspec.Internal.TestData.Generation;
 
 namespace Xspec;
 
@@ -64,4 +65,12 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public void Dispose() => _pipeline.TearDown();
 
     Fixture<TSUT> IFixture<TSUT>.Fixture => _pipeline;
+
+    /// <summary>
+    /// Register a strategy for test data generation: When providing a value of type `TTarget`, the strategy specified on `IRegisterContinuation` will be used
+    /// </summary>
+    /// <typeparam name="TTarget"></typeparam>
+    /// <returns></returns>
+    public IRegisterContinuation<TSUT, TTarget> Register<TTarget>()
+        => new RegisterContinuation<TSUT, TTarget>(_pipeline);
 }

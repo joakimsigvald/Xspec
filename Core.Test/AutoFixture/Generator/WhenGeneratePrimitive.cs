@@ -1,6 +1,6 @@
 ﻿using Xspec.Assert;
 
-namespace Xspec.Test.AutoFixture.Primitives;
+namespace Xspec.Test.AutoFixture.Generator;
 
 public abstract class WhenGeneratePrimitive<TPrimitive>(int maxDistinct) : Spec<TPrimitive>
 {
@@ -48,6 +48,10 @@ public class WhenGenerateDateTime() : WhenGeneratePrimitive<DateTime>(100)
     [Fact]
     public void GivenSingle_ThenIsContemporary()
             => A<DateTime>().Is().After(new DateTime(1900, 1, 1));
+
+    [Fact]
+    public void GivenSingle_ThenIsUtc()
+            => A<DateTime>().Has(d => d.Kind == DateTimeKind.Utc);
 }
 
 public class WhenGenerateTimeSpan() : WhenGeneratePrimitive<TimeSpan>(100);
@@ -56,6 +60,12 @@ public class WhenGenerateDateOnly() : WhenGeneratePrimitive<DateOnly>(100)
     [Fact]
     public void GivenSingle_ThenIsContemporary()
             => A<DateOnly>().Is().After(new DateOnly(1900, 1, 1));
+}
+public class WhenGenerateDateTimeOffset() : WhenGeneratePrimitive<DateTimeOffset>(100)
+{
+    [Fact]
+    public void GivenSingle_ThenIsContemporary()
+            => A<DateTimeOffset>().Is().After(new DateTimeOffset(1900, 1, 1, 0, 0, 0, TimeSpan.Zero));
 }
 
 public class WhenGenerateTimeOnly() : WhenGeneratePrimitive<TimeOnly>(100);

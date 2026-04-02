@@ -4,16 +4,16 @@ using Xspec.Internal.TestData;
 
 namespace Xspec.Internal.Pipelines;
 
-internal abstract class Fixture<TSUT>(Fixture<TSUT>? classFixture = null)
+internal abstract class Fixture<TSUT>
 {
-    private protected readonly Context _context = classFixture?._context ?? new();
-    private protected readonly SpecFixture<TSUT> _fixture = classFixture?._fixture ?? new();
-    private protected readonly Arranger _arranger = classFixture?._arranger ?? new();
-    private protected Command? _methodUnderTest = classFixture?._methodUnderTest;
+    private protected readonly Context _context = new();
+    private protected readonly SpecFixture<TSUT> _fixture = new();
+    private protected readonly Arranger _arranger = new();
+    private protected Command? _methodUnderTest;
 
     public void TearDown()
     {
-        if (classFixture is null && _fixture.IsSetUp)
+        if (_fixture.IsSetUp)
             _fixture.Dispose();
     }
 

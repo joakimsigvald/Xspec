@@ -18,8 +18,6 @@ internal class SpecificationBuilder
 
     internal string Specification => _lazySpecification.Value;
 
-    internal void Init(string prologue) => _textBuilder.Init(prologue);
-
     internal void Add(Action apply)
     {
         if (_recordingSuppressionCount > 0)

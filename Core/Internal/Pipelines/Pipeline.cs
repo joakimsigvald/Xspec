@@ -7,7 +7,7 @@ using Xspec.Internal.Verification;
 
 namespace Xspec.Internal.Pipelines;
 
-internal class Pipeline<TSUT, TResult>(Fixture<TSUT>? classFixture) : Fixture<TSUT>(classFixture)
+internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
 {
     private TestResult<TSUT, TResult>? _result;
 

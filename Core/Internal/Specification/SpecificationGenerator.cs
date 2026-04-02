@@ -110,8 +110,6 @@ internal static class SpecificationGenerator
 
     internal static void AddThat() => Builder.Add(Builder.AddThat);
 
-    internal static void Init(string prologue) => Builder.Init(prologue);
-
     internal static void AddUnique<TValue>()
          => Builder.Add(() => Builder.AddUnique(typeof(TValue).Alias()));
 

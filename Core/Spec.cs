@@ -36,19 +36,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected Spec()
     {
         SpecificationGenerator.Clear();
-        _pipeline = new(null);
-    }
-
-    /// <summary>
-    /// Create a new specification with a class-fixture
-    /// </summary>
-    /// <param name="classFixture"></param>
-    protected Spec(IFixture<TSUT> classFixture)
-    {
-        var fixtureSpec = classFixture.Specification;
-        SpecificationGenerator.Clear();
-        SpecificationGenerator.Init(fixtureSpec);
-        _pipeline = new(classFixture.Fixture);
+        _pipeline = new();
     }
 
     /// <summary>

@@ -18,12 +18,12 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>0.2.0</PackageVersion>
+		<PackageVersion>0.3.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Completed test data generators for all primitive types and added extensible generators for semantic types - providing Email and PhoneNumber out of the box.
+			Upgraded to Xunit.v3 and removed special handling of Spec as class fixture.
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

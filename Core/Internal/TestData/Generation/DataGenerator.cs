@@ -2,10 +2,10 @@
 
 namespace Xspec.Internal.TestData.Generation;
 
-internal class DataGenerator(DataProvider context, Counter counter, TypeConversionStrategy typeRelayStrategy)
+internal class DataGenerator(DataProvider context, Counter counter, TypeConversionStrategy typeConversionStrategy)
 {
     private readonly IGenerationStrategy[] _strategies = [
-        typeRelayStrategy,
+        typeConversionStrategy,
         new DefaultStrategy(context),
         new StackStrategy(),
         new NullableStrategy(),
@@ -29,5 +29,5 @@ internal class DataGenerator(DataProvider context, Counter counter, TypeConversi
         return val;
     }
 
-    internal void Register<TTarget, TSource>() => typeRelayStrategy.Register<TTarget, TSource>();
+    internal void Register<TTarget, TSource>() => typeConversionStrategy.Register<TTarget, TSource>();
 }

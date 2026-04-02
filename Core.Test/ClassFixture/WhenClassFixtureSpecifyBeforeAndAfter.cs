@@ -26,7 +26,7 @@ public static class WhenClassFixtureSpecifyBeforeAndAfter
         [Fact] public void ThenReturnOneAndTwo() => Given().Using(1).and.Default(2).Then().Result.Is((1, 2));
     }
 
-    public class GivenThreeAndFour(WhenClassFixtureSpecifyBeforeAndAfter.WhenGetValues classFixture) 
+    public class GivenThreeAndFour(WhenGetValues classFixture) 
         : Spec<MyWrapper<int>, (int, int)>(classFixture), IClassFixture<WhenGetValues>
     {
         [Fact] public void ThenReturnThreeAndFour() => Given().Using(3).and.Default(4).Then().Result.Is((3, 4));

@@ -13,8 +13,6 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         if (request.Type.IsAssignableFrom(sourceType))
             return true;
 
-        object?[] candidates = [.. GetCandidateValues(result)];
-
         result = GetCandidateValues(result)
             .Select(TryConstruct)
             .FirstOrDefault(v => v != null)

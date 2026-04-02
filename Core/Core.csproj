@@ -18,20 +18,20 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>0.1.0</PackageVersion>
+		<PackageVersion>0.2.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Fully backward compatible from XspecT v19.1.4. Next generation of testing framework: All-in-one testable specification generator for agentic or manual TDD.
-			AutoFixture has been replaced with custom implementation.
+			Completed test data generators for all primitive types and added extensible generators for semantic types - providing Email and PhoneNumber out of the box.
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Moq" Version="4.20.72" />
 		<PackageReference Include="Moq.AutoMock" Version="4.0.1" />
-		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.v3.extensibility.core" Version="3.0.0" />
+		<PackageReference Include="xunit.v3.assert" Version="3.0.0" />
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 		<None Include="..\TODO.txt" Pack="true" PackagePath="\" />
 		<None Include="..\icon.png" Pack="true" PackagePath="\" />

@@ -14,9 +14,9 @@ internal class TypeConversionStrategy() : IGenerationStrategy
             return true;
 
         result = GetCandidateValues(result)
-            .Select(TryConstruct)
+            .Select(TryConvert)
             .FirstOrDefault(v => v != null)
-            ?? TryCast(result)
+            ?? TryChangeType(result)
             ?? throw new InvalidTypeConversion(request.Type, sourceType);
 
         return true;
@@ -24,19 +24,33 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         IEnumerable<object?> GetCandidateValues(object? sourceVal)
             => sourceType
                 .GetMethods(
-                System.Reflection.BindingFlags.Public | 
+                System.Reflection.BindingFlags.Public |
                 System.Reflection.BindingFlags.Static |
                 System.Reflection.BindingFlags.FlattenHierarchy)
                 .Where(m => m.Name == "op_Implicit" && m.GetParameters().Length == 1)
                 .Select(m => m.Invoke(null, [sourceVal]))
                 .Prepend(sourceVal);
 
-        object? TryConvert(object? argument) => TryConstruct(argument) ?? TryCast(argument);
+        object? TryConvert(object? argument)
+            => TryConstruct(argument)
+            ?? TryStatic(argument);
+
+        object? TryStatic(object? argument)
+        {
+            var argType = argument?.GetType() ?? sourceType;
+            var method = request.Type
+                .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                .FirstOrDefault(m => m.ReturnType == request.Type
+                && m.GetParameters() is [{ ParameterType: var pt }]
+                && pt.IsAssignableFrom(argType));
+            try { return method?.Invoke(null, [argument]); }
+            catch { return null; }
+        }
 
         object? TryConstruct(object? argument)
             => request.Type.GetConstructor([argument?.GetType() ?? sourceType])?.Invoke([argument]);
 
-        object? TryCast(object? argument)
+        object? TryChangeType(object? argument)
         {
             try { return Convert.ChangeType(argument, request.Type); }
             catch { return null; }

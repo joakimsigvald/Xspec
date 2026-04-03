@@ -36,6 +36,12 @@ public class WhenRelayIntToByte : Spec<int>
     [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([1, 2, 3]);
 }
 
+public class WhenRelayIntToByteWithConverter : Spec<int>
+{
+    public WhenRelayIntToByteWithConverter() => Register<int>().As<byte>(b => b + 1);
+    [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([2, 3, 4]);
+}
+
 public class WhenRelayByteToInt : Spec<byte>
 {
     public WhenRelayByteToInt() => Register<byte>().As<int>();
@@ -61,8 +67,7 @@ public record MyEmailConstr(string Value);
 public record MyEmailStatic
 {
     public string Value { get; private set; }
-    public static MyEmailStatic Make(string value)
-        => new() { Value = value };
+    public static MyEmailStatic Make(string value) => new() { Value = value };
 }
 
 public record MyEmailCast

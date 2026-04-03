@@ -2,27 +2,34 @@
 
 internal class TypeConversionStrategy() : IGenerationStrategy
 {
-    private readonly Dictionary<Type, Type> _typeRelays = [];
+    private readonly Dictionary<Type, TypeRelay> _typeRelays = [];
 
     public bool TryGenerate(GenerationRequest request, ref object? result)
     {
-        if (!_typeRelays.TryGetValue(request.Type, out var sourceType))
+        if (!_typeRelays.TryGetValue(request.Type, out var source))
             return false;
 
-        result = request.Create(sourceType);
-        if (request.Type.IsAssignableFrom(sourceType))
+        result = request.Create(source.Type);
+
+        if (source.Convert != null)
+        {
+            result = source.Convert(result);
+            return true;
+        }
+
+        if (request.Type.IsAssignableFrom(source.Type))
             return true;
 
         result = GetCandidateValues(result)
             .Select(TryConvert)
             .FirstOrDefault(v => v != null)
             ?? TryChangeType(result)
-            ?? throw new InvalidTypeConversion(request.Type, sourceType);
+            ?? throw new InvalidTypeConversion(request.Type, source.Type);
 
         return true;
 
         IEnumerable<object?> GetCandidateValues(object? sourceVal)
-            => sourceType
+            => source.Type
                 .GetMethods(
                 System.Reflection.BindingFlags.Public |
                 System.Reflection.BindingFlags.Static |
@@ -37,7 +44,7 @@ internal class TypeConversionStrategy() : IGenerationStrategy
 
         object? TryStatic(object? argument)
         {
-            var argType = argument?.GetType() ?? sourceType;
+            var argType = argument?.GetType() ?? source.Type;
             var method = request.Type
                 .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
                 .FirstOrDefault(m => m.ReturnType == request.Type
@@ -48,7 +55,7 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         }
 
         object? TryConstruct(object? argument)
-            => request.Type.GetConstructor([argument?.GetType() ?? sourceType])?.Invoke([argument]);
+            => request.Type.GetConstructor([argument?.GetType() ?? source.Type])?.Invoke([argument]);
 
         object? TryChangeType(object? argument)
         {
@@ -57,5 +64,8 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         }
     }
 
-    internal void Register<TTarget, TSource>() => _typeRelays[typeof(TTarget)] = typeof(TSource);
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
+        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s));
 }
+
+internal record TypeRelay(Type Type, Func<object?, object?>? Convert = null);

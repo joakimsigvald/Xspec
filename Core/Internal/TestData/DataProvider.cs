@@ -101,7 +101,8 @@ internal class DataProvider
     internal void SetDefaultException(Type type, Func<Exception> ex)
         => _defaultExceptions[type] = ex;
 
-    internal void Register<TTarget, TSource>() => _generator.Register<TTarget, TSource>();
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+        => _generator.Register(convert);
 
     private static Func<object, object> MergeDefaultSetups(Func<object, object> setup1, Func<object, object> setup2)
         => obj => setup2(setup1(obj));

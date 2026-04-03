@@ -139,7 +139,8 @@ internal class Context
             _generatedValues[typeof(TValue)] = [];
     }
 
-    internal void Register<TTarget, TSource>() => _dataProvider.Register<TTarget, TSource>();
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+        => _dataProvider.Register(convert);
 
     private TValue ApplyUniqueConstraint<TValue>(Func<TValue> generateValue)
     {

@@ -29,5 +29,6 @@ internal class DataGenerator(DataProvider context, Counter counter, TypeConversi
         return val;
     }
 
-    internal void Register<TTarget, TSource>() => typeConversionStrategy.Register<TTarget, TSource>();
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+        => typeConversionStrategy.Register(convert);
 }

@@ -89,7 +89,8 @@ internal abstract class Fixture<TSUT>
         _context.SetupThrows<TService>(expected);
     }
 
-    internal void Register<TTarget, TSource>() => _context.Register<TTarget, TSource>();
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+        => _context.Register(convert);
 
     private void AssertIsNotSetUp()
     {

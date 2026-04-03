@@ -18,6 +18,7 @@ internal class PrimitiveStrategy(Counter counter) : IGenerationStrategy
             if (request.Type == typeof(DateOnly)) { result = DateOnly.FromDateTime(GetDateTime()); return true; }
             if (request.Type == typeof(TimeOnly)) { result = TimeOnly.FromDateTime(GetDateTime()); return true; }
             if (request.Type == typeof(DateTimeOffset)) { result = (DateTimeOffset)GetDateTime(); return true; }
+            if (request.Type == typeof(Uri)) { result = new Uri($"https://xspec.dev/{counter.Next}"); return true; }
             return false;
         }
     }

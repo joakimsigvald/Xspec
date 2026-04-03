@@ -112,12 +112,17 @@ internal class DataProvider
 
     private TValue DoInstantiate<TValue>()
     {
+        var type = typeof(TValue);
+        if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
+            return _generator.Create<TValue>();
+
         try
         {
             return _testDataGenerator.Instantiate<TValue>();
         }
-        catch (ArgumentException ex) when (ex.Message.Contains("Did not find a best constructor for"))
+        catch (Exception ex)
         {
+            TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {type.Name}. Fallback to DataGenerator. Reason: {ex.Message}"); 
             return _generator.Create<TValue>();
         }
     }

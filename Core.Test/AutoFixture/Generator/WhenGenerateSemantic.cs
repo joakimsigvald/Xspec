@@ -4,7 +4,8 @@ using Xspec.Test.AutoFixture.Primitives;
 
 namespace Xspec.Test.AutoFixture.Generator;
 
-public abstract class WhenGenerateSemantic<TSemantic, TPrimitive>(int maxDistinct, Action<TSemantic> verify) : Spec<TSemantic>
+public abstract class WhenGenerateSemantic<TSemantic, TPrimitive>(
+    int maxDistinct, Action<TSemantic> verify) : Spec<TSemantic>
     where TSemantic : Semantic<TPrimitive>, ISemantic<TPrimitive>
 {
     [Fact]

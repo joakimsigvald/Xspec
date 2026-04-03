@@ -66,7 +66,7 @@ internal abstract class Fixture<TSUT>
         return new Lazy<TSUT>(Instantiate<TSUT>);
     }
 
-    internal TClass Instantiate<TClass>() =>_context.Instantiate<TClass>();
+    internal TClass Instantiate<TClass>() => _context.Instantiate<TClass>();
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _context.GetMock<TObject>();

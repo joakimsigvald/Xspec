@@ -1,9 +1,8 @@
 ﻿using Moq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Xspec.Continuations;
 
-namespace Xspec;
+namespace Xspec.Continuations;
 
 /// <summary>
 /// A continuation to further specify the test

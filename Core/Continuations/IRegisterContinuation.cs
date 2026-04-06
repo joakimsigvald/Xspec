@@ -5,6 +5,7 @@
 /// </summary>
 /// <typeparam name="TSUT"></typeparam>
 /// <typeparam name="TTarget"></typeparam>
+[Obsolete("Do not use")]
 public interface IRegisterContinuation<TSUT, TTarget>
 {
     /// <summary>

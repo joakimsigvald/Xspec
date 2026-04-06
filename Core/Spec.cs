@@ -60,6 +60,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TTarget"></typeparam>
     /// <returns></returns>
+    [Obsolete("Use `Using` instead")]
     public IRegisterContinuation<TSUT, TTarget> Register<TTarget>()
         => new RegisterContinuation<TSUT, TTarget>(_pipeline);
 }

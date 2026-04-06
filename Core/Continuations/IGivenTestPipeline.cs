@@ -70,6 +70,7 @@ public interface IGivenTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
     /// <param name="defaultValue"></param>
     /// <param name="defaultValueExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use `Using` instead")]
     IGivenTestPipeline<TSUT, TResult> And<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);

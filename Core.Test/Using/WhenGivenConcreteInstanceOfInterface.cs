@@ -10,32 +10,32 @@ public class WhenUsingConcreteInstanceOfInterface : Spec<MyService, int>
     [Fact]
     public void WithoutCast_ThenUseIt()
     {
-        Given().Using(new FakeRepository(An<int>()))
+        Using(new FakeRepository(An<int>()), Scope.Subject)
             .Then().Result.Is(The<int>());
     }
 
     [Fact]
     public void WithDifferentCast_ThenDoNotUseIt()
     {
-        Given().Using<object>(new FakeRepository(An<int>()))
+        Using<object>(new FakeRepository(An<int>()), Scope.Subject)
             .Then().Result.Is().Not(The<int>());
     }
 
     [Fact]
     public void WithCast_ThenUseIt()
     {
-        Given().Using<IMyRepository>(new FakeRepository(An<int>()))
+        Using<IMyRepository>(new FakeRepository(An<int>()), Scope.Subject)
             .Then().Result.Is(The<int>());
     }
 
     [Fact]
     public void GivenConcreteTypeArg_ThenUseIt()
     {
-        Given().Using<FakeRepository>().and.Using(123).Then().Result.Is(123);
+        Given().Using<FakeRepository>().Using(123, Scope.Subject).Then().Result.Is(123);
         Specification.Is(
             """
-            Given using 123
-              and using FakeRepository
+            Using 123 for Subject
+            Given using FakeRepository
             When _.GetNextId()
             Then Result is 123
             """

@@ -177,13 +177,13 @@ public class WhenMockReturnsFewerElementsThanPreviouslyMentioned : Spec<MyRetrie
     [Fact]
     public void ThenItIsDifferentFromFirst()
     {
-        Given(3)
-            .And<IMyRepository>().That(_ => _.Create(Three<MyModel>().Length))
+        Using(3)
+            .Given<IMyRepository>().That(_ => _.Create(Three<MyModel>().Length))
             .Returns(Two<MyModel>)
             .Then().Result.Has().Count(2);
         Specification.Is(
-@"Given 3
-  and IMyRepository.Create(three MyModel's Length) returns two MyModel
+@"Using 3
+Given IMyRepository.Create(three MyModel's Length) returns two MyModel
 When _.Create(an int)
 Then Result has count 2");
     }

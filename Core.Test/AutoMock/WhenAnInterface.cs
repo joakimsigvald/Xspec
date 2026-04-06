@@ -5,7 +5,7 @@ namespace Xspec.Test.AutoMock;
 public class WhenInjectingAnInterfaceWithUsing : Spec<InterfaceService, int>
 {
     public WhenInjectingAnInterfaceWithUsing()
-        => Given(new MyComponent(An<IMyLogger>(), An<int>())).When(_ => _.GetValue());
+        => Using(new MyComponent(An<IMyLogger>(), An<int>())).When(_ => _.GetValue());
 
     [Fact]
     public void ThenGetValue()
@@ -13,7 +13,7 @@ public class WhenInjectingAnInterfaceWithUsing : Spec<InterfaceService, int>
         Result.Is(The<int>());
         Specification.Is(
             """
-            Given new MyComponent(an IMyLogger, an int)
+            Using new MyComponent(an IMyLogger, an int)
             When _.GetValue()
             Then Result is the int
             """);
@@ -25,7 +25,7 @@ public class WhenInjectingAnInterfaceWithUsing : Spec<InterfaceService, int>
         Then<IMyLogger>(_ => _.LogValue(The<int>()));
         Specification.Is(
             """
-            Given new MyComponent(an IMyLogger, an int)
+            Using new MyComponent(an IMyLogger, an int)
             When _.GetValue()
             Then IMyLogger.LogValue(the int)
             """);
@@ -35,7 +35,7 @@ public class WhenInjectingAnInterfaceWithUsing : Spec<InterfaceService, int>
 public class WhenUseConcreteInstanceOfInterface : Spec<InterfaceService, int>
 {
     public WhenUseConcreteInstanceOfInterface()
-        => Given(CreateService()).And(An<int>).When(_ => _.GetServiceValue());
+        => Using(CreateService()).Given(An<int>).When(_ => _.GetServiceValue());
 
     [Fact]
     public void ThenUseIt()
@@ -43,8 +43,8 @@ public class WhenUseConcreteInstanceOfInterface : Spec<InterfaceService, int>
         Result.Is(TheSecond<int>());
         Specification.Is(
             """
-            Given CreateService()
-              and an int
+            Using CreateService()
+            Given an int
             When _.GetServiceValue()
             Then Result is the second int
             """);

@@ -28,11 +28,11 @@ public class WhenMockTuple : Spec<StaticTupleService, (int, string)>
         [InlineData(2, "hej")]
         public void Then_It_Has_ProvidedValue(int v1, string v2)
         {
-            Given((v1, v2)).Then().Result.Is((v1, v2));
+            Using((v1, v2)).Then().Result.Is((v1, v2));
             Specification.Is(
                 """
-                Given (v1, v2)
-                  and a (int, string)
+                Using (v1, v2)
+                Given a (int, string)
                 When _.GetValue()
                 Then Result is (v1, v2)
                 """);

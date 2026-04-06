@@ -26,10 +26,10 @@ public class WhenMockFuncOfDateTime : Spec<DateService, DateTime>
         [Fact]
         public void Then_It_Has_ProvidedValue()
         {
-            Given(A<DateTime>()).Then().Result.Is(The<DateTime>());
+            Using(A<DateTime>()).Then().Result.Is(The<DateTime>());
             Specification.Is(
                 """
-                Given a DateTime
+                Using a DateTime
                 When _.GetNow()
                 Then Result is the DateTime
                 """);

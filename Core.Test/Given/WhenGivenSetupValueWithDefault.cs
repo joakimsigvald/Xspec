@@ -10,14 +10,14 @@ public class WhenGivenSetupValueWithDefault : Spec<MyService, int>
     [Fact]
     public void GivenDefaultNotOverridden()
     {
-        Given(_defaultId)
-            .And<IMyRepository>().That(_ => _.GetNextId()).Returns(() => ASecond<int>())
+        Using(_defaultId)
+            .Given<IMyRepository>().That(_ => _.GetNextId()).Returns(() => ASecond<int>())
             .When(_ => _.GetNextId())
             .Then().Result.Is(_defaultId);
         Specification.Is(
             """
-            Given _defaultId
-              and IMyRepository.GetNextId() returns a second int
+            Using _defaultId
+            Given IMyRepository.GetNextId() returns a second int
             When _.GetNextId()
             Then Result is _defaultId
             """);
@@ -28,13 +28,13 @@ public class WhenGivenSetupValueWithDefault : Spec<MyService, int>
     {
         Given<IMyRepository>().That(_ => _.GetNextId()).Returns(() => ASecond<int>())
             .When(_ => _.GetNextId())
-            .Given(_defaultId)
-            .and.ASecond(2)
+            .Using(_defaultId)
+            .Given().ASecond(2)
             .Then().Result.Is(2);
         Specification.Is(
             """
-            Given _defaultId
-              and a second int is 2
+            Using _defaultId
+            Given a second int is 2
               and IMyRepository.GetNextId() returns a second int
             When _.GetNextId()
             Then Result is 2

@@ -44,13 +44,13 @@ public class WhenNullableDateTime : Spec<DateTime?>
     [Fact]
     public void IsBeforeEtc()
     {
-        Given((DateTime?)DateTime.Now).When(_ => A(_));
+        Using((DateTime?)DateTime.Now).When(_ => A(_));
         Result.Is().Before(The<DateTime?>().Value.AddDays(1)).and.After(The<DateTime?>().Value.AddDays(-1));
         Result.Is().not.Before(The<DateTime?>().Value);
         Result.Is().not.After(The<DateTime?>().Value);
         Specification.Is(
             """
-            Given (DateTime?)DateTime.Now
+            Using (DateTime?)DateTime.Now
             When a _
             Then Result is before the DateTime?'s Value.AddDays(1)
                 and after the DateTime?'s Value.AddDays(-1)

@@ -1,4 +1,5 @@
-﻿using Xspec.Continuations;
+﻿using System.Runtime.CompilerServices;
+using Xspec.Continuations;
 using Xspec.Internal.Pipelines;
 
 namespace Xspec;
@@ -27,6 +28,23 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public IUsingTestPipeline<TSUT, TResult> Using<TTarget, TSource>(Func<TSource, TTarget> convert)
     {
         _pipeline.Register(convert);
+        return new UsingTestPipeline<TSUT, TResult>(this);
+    }
+
+    /// <summary>
+    /// Instructs the test pipeline to use the specified instance when resolving dependencies or generating test data.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value being provided.</typeparam>
+    /// <param name="value">The specific instance to use.</param>
+    /// <param name="scope">Determines whether the value is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
+    /// <param name="valueExpr">Automatically populated by the compiler to capture the argument expression.</param>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+        TValue value,
+        Scope scope = Scope.All,
+        [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
+    {
+        _pipeline.Using(value, scope, valueExpr!);
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 }

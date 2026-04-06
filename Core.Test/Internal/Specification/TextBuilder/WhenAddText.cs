@@ -5,7 +5,7 @@ namespace Xspec.Test.Internal.Specification.TextBuilder;
 public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string>
 {
     public WhenAddText()
-    => Given(new Xspec.Internal.Specification.TextBuilder(10, 1))
+    => Using(new Xspec.Internal.Specification.TextBuilder(10, 1))
     .When(_ => _.AddText(A<string>()).ToString());
 
     [Theory]
@@ -70,7 +70,7 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
            1>
         """)]
     public void ThenReturnDescription(string text, string expected)
-        => Given(text).Then().Result.Is(expected);
+        => Using(text).Then().Result.Is(expected);
 
     [Theory]
     [InlineData(null, null, "")]
@@ -81,5 +81,5 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
         """)]
     public void GivenHasTextAndNextWordDoesNotFit_ThenBreakBeforeWord(
         string existingText, string newText, string expected)
-        => After(_ => _.AddText(existingText)).Given(newText).Then().Result.Is(expected);
+        => After(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected);
 }

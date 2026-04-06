@@ -38,10 +38,10 @@ public class WhenGivenStaticModel : Spec<MyModel>
     [Fact]
     public void WhenNoSubjectReturnsValue()
     {
-        Given(0).When(() => A<MyModel>()).Then().Result.Is(The<MyModel>());
+        Using(0).When(() => A<MyModel>()).Then().Result.Is(The<MyModel>());
         Specification.Is(
             """
-            Given 0
+            Using 0
             When () => A<MyModel>()
             Then Result is the MyModel
             """);
@@ -50,10 +50,10 @@ public class WhenGivenStaticModel : Spec<MyModel>
     [Fact]
     public void WhenNoSubjectReturnsValueAsync()
     {
-        Given(0).When(() => Task.FromResult(A<MyModel>())).Then().Result.Is(The<MyModel>());
+        Using(0).When(() => Task.FromResult(A<MyModel>())).Then().Result.Is(The<MyModel>());
         Specification.Is(
             """
-            Given 0
+            Using 0
             When () => Task.FromResult(A<MyModel>())
             Then Result is the MyModel
             """);
@@ -63,12 +63,12 @@ public class WhenGivenStaticModel : Spec<MyModel>
     public void WhenNoSubjectAction()
     {
         MyModel model = null;
-        Given(0).When(() => { model = A<MyModel>(); });
+        Using(0).When(() => { model = A<MyModel>(); });
         Then();
         model.Is(The<MyModel>());
         Specification.Is(
             """
-            Given 0
+            Using 0
             When () => { model = A<MyModel>(); }
             Then model is the MyModel
             """);
@@ -78,12 +78,12 @@ public class WhenGivenStaticModel : Spec<MyModel>
     public void WhenNoSubjectActionAsync()
     {
         MyModel model = null;
-        Given(0).When(() => { model = A<MyModel>(); return Task.CompletedTask; });
+        Using(0).When(() => { model = A<MyModel>(); return Task.CompletedTask; });
         Then();
         model.Is(The<MyModel>());
         Specification.Is(
             """
-            Given 0
+            Using 0
             When () => { model = A<MyModel>(); return Task.CompletedTask; }
             Then model is the MyModel
             """);
@@ -93,13 +93,13 @@ public class WhenGivenStaticModel : Spec<MyModel>
     [InlineData("abc", 123)]
     public void GivenDefaultSetupAndModel_ThenUseDefaultSetupOnModel(string name, int id)
     {
-        Given().Default<MyModel>(_ => _.Name = name).And(new MyModel { Id = id })
+        Given().Default<MyModel>(_ => _.Name = name).Using(new MyModel { Id = id })
             .When(_ => _)
             .Then().Result.Name.Is(name).And(Result).Id.Is(id);
         Specification.Is(
             """
             Given MyModel has Name = name
-              and new MyModel { Id = id }
+            Using new MyModel { Id = id }
             When _
             Then Result.Name is name
               and Result.Id is id

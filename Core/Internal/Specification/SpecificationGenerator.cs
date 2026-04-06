@@ -82,6 +82,9 @@ internal static class SpecificationGenerator
     internal static void AddGiven(string valueExpr, Scope scope)
         => Builder.Add(() => Builder.AddGiven(valueExpr, scope));
 
+    internal static void AddUsing(string valueExpr, Scope scope)
+        => Builder.Add(() => Builder.AddUsing(valueExpr, scope));
+
     internal static void AddGiven<TValue>(string setupExpr, bool isCustomExpression, string? article = null)
         => Builder.Add(() => Builder.AddGiven<TValue>(setupExpr, isCustomExpression, article));
 

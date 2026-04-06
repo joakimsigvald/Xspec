@@ -11,10 +11,10 @@ public class WhenMockObjectWithSpecifiedPropertyValue : Spec<StaticObjectService
         [Fact]
         public void Then_It_Has_ProvidedValue()
         {
-            Given(AFirst<MyObject>(_ => _.Age = 3)).Then().Result.Age.Is(3);
+            Using(AFirst<MyObject>(_ => _.Age = 3)).Then().Result.Age.Is(3);
             Specification.Is(
                 """
-                Given a first MyObject { Age = 3 }
+                Using a first MyObject { Age = 3 }
                 When _.GetValue()
                 Then Result.Age is 3
                 """);
@@ -23,10 +23,10 @@ public class WhenMockObjectWithSpecifiedPropertyValue : Spec<StaticObjectService
         [Fact]
         public void Then_Can_Retrieve_The_Object()
         {
-            Given(A<MyObject>(_ => _.Age = 3)).Then(The<MyObject>()).Age.Is(3);
+            Using(A<MyObject>(_ => _.Age = 3)).Then(The<MyObject>()).Age.Is(3);
             Specification.Is(
                 """
-                Given a MyObject { Age = 3 }
+                Using a MyObject { Age = 3 }
                 When _.GetValue()
                 Then the MyObject's Age is 3
                 """);

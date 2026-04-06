@@ -8,7 +8,7 @@ public class WhenIsInt : Spec<int>
 
     [Fact] public void GivenFail_ThenGetException() 
     {
-        var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => Given(1).When(_ => _).Then().Result.Is(2));
+        var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => Using(1).When(_ => _).Then().Result.Is(2));
         ex.HasMessage("Expected Result to be 2 but found 1");
     }
 }

@@ -75,10 +75,10 @@ public class AfterWhenBefore : Spec<MyStateService, int>
     [Fact]
     public void WhenBeforeGivenAfter()
     {
-        When(_ => ++_.Counter).Before(_ => ++_.Counter).Given(1).After(_ => _.Counter++).Then().Result.Is(2);
+        When(_ => ++_.Counter).Before(_ => ++_.Counter).Using(1).After(_ => _.Counter++).Then().Result.Is(2);
         Specification.Is(
             """
-            Given 1
+            Using 1
             When ++_.Counter
             After _.Counter++
             Before ++_.Counter

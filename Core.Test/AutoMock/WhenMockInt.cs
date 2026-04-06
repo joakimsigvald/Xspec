@@ -28,11 +28,11 @@ public class WhenMockInt : Spec<StaticIntService, int>
         [InlineData(int.MaxValue)]
         public void Then_It_Has_ProvidedValue(int value)
         {
-            Given(value).Then().Result.Is(value);
+            Using(value).Then().Result.Is(value);
             Specification.Is(
                 """
-                Given value
-                  and an int
+                Using value
+                Given an int
                 When _.GetValue()
                 Then Result is value
                 """);

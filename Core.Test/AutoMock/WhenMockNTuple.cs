@@ -28,11 +28,11 @@ public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float
         [InlineData(2, "hej", 3, 4)]
         public void Then_It_Has_ProvidedValue(int v1, string v2, int v3, float v4)
         {
-            Given((v1, v2, v3, v4)).Then().Result.Is((v1, v2, v3, v4));
+            Using((v1, v2, v3, v4)).Then().Result.Is((v1, v2, v3, v4));
             Specification.Is(
                 """
-                Given (v1, v2, v3, v4)
-                  and a (int, string, int, float)
+                Using (v1, v2, v3, v4)
+                Given a (int, string, int, float)
                 When _.GetValue()
                 Then Result is (v1, v2, v3, v4)
                 """);

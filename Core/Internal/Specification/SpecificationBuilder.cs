@@ -1,11 +1,10 @@
-﻿using Xspec.Internal.TestData;
-
-namespace Xspec.Internal.Specification;
+﻿namespace Xspec.Internal.Specification;
 
 internal class SpecificationBuilder
 {
     private readonly List<Action> _applications = [];
     private int _givenCount;
+    private int _usingCount;
     private int _recordingSuppressionCount;
     private int _thenCount;
     private string? _currentMockSetup;
@@ -95,11 +94,25 @@ internal class SpecificationBuilder
         IEnumerable<string> GetWords()
         {
             yield return Given;
-            if (scope == Scope.Construction)
+            if (scope == Scope.Subject)
                 yield return "using";
             yield return valueExpr.ParseValue();
-            if (scope == Scope.Default)
+            if (scope == Scope.Input)
                 yield return "is default";
+        }
+    }
+
+    internal void AddUsing(string valueExpr, Scope scope)
+    {
+        _currentMockSetup = null;
+        _textBuilder.AddPhraseOrSentence(string.Join(' ', GetWords()));
+
+        IEnumerable<string> GetWords()
+        {
+            yield return Using;
+            yield return valueExpr.ParseValue();
+            if (scope != Scope.All)
+                yield return $"for {scope}";
         }
     }
 
@@ -171,6 +184,8 @@ internal class SpecificationBuilder
     internal void InciteRecording() => _recordingSuppressionCount--;
 
     private string Given => 0 == _givenCount++ ? "Given" : "and";
+
+    private string Using => 0 == _usingCount++ ? "Using" : "and";
 
     private string Then => 0 == _thenCount++ ? "Then" : "and";
 

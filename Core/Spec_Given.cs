@@ -59,6 +59,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="defaultValue"></param>
     /// <param name="defaultValueExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use `Using` instead")]
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
@@ -112,7 +113,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         => GivenDefault(defaultValue, Scope.All, defaultValueExpr!);
 
     internal IGivenTestPipeline<TSUT, TResult> Using<TConcrete>()
-      => GivenDefault(_pipeline.Instantiate<TConcrete>, Scope.Construction, typeof(TConcrete).Name);
+      => GivenDefault(_pipeline.Instantiate<TConcrete>, Scope.Subject, typeof(TConcrete).Name);
 
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         TValue defaultValue, Scope scope, string defaultValueExpr)

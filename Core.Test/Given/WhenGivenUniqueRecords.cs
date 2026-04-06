@@ -9,14 +9,14 @@ public class WhenGivenUniqueRecords : Spec<MyRecord[]>
     public void WithEnoughValueSpace_ThenGenerateUniqueModelArray()
     {
         int range = 10;
-        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).and.Default("Abc")
-            .and.Unique<MyRecord>()
+        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).Using("Abc", Scope.Input)
+            .Given().Unique<MyRecord>()
             .Then().Result.Is().Distinct()
             .and.Has().All(m => m.Id >= 0 && m.Id < range);
         Specification.Is(
             """
             Given int is i % range
-              and "Abc" is default
+            Using "Abc" for Input
               and all MyRecord are unique
             When five MyRecord
             Then Result is distinct
@@ -29,8 +29,8 @@ public class WhenGivenUniqueRecords : Spec<MyRecord[]>
     {
         int range = 4;
         Xunit.Assert.Throws<SetupFailed>(() => 
-        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).and.Default("Abc")
-            .and.Unique<MyRecord>()
+        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).Using("Abc", Scope.Input)
+            .Given().Unique<MyRecord>()
             .Then().Result.Is().Distinct()
             .and.Has().All(m => m.Id >= 0 && m.Id < range));
     }

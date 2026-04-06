@@ -77,15 +77,15 @@ public class WhenGivenSetupModelWithDefault : Spec<MyService, MyModel>
     [Fact]
     public void GivenDefaultValueAndDefaultSetup()
     {
-        Given(_defaultName)
+        Using(_defaultName)
             .Given<MyModel>(_ => _.Name = A<string>())
             .And<IMyRepository>().That(_ => _.GetModel()).Returns(() => ASecond<MyModel>())
             .When(_ => _.GetModel())
             .Then().Result.Name.Is(_defaultName);
         Specification.Is(
             """
-            Given _defaultName
-              and MyModel has Name = a string
+            Using _defaultName
+            Given MyModel has Name = a string
               and IMyRepository.GetModel() returns a second MyModel
             When _.GetModel()
             Then Result.Name is _defaultName
@@ -147,14 +147,14 @@ public class WhenGivenSetupModelWithDefault : Spec<MyService, MyModel>
     [Fact]
     public void GivenProvideDefaultSetupAfterModelIsUsedInWhen_ThenUseSetup()
     {
-        Given(_defaultName)
-            .And<IMyRepository>().That(_ => _.GetModel()).Returns(ASecond<MyModel>)
+        Using(_defaultName)
+            .Given<IMyRepository>().That(_ => _.GetModel()).Returns(ASecond<MyModel>)
             .When(_ => _.GetModel())
             .Then().Result.Name.Is(_defaultName);
         Specification.Is(
             """
-            Given _defaultName
-              and IMyRepository.GetModel() returns a second MyModel
+            Using _defaultName
+            Given IMyRepository.GetModel() returns a second MyModel
             When _.GetModel()
             Then Result.Name is _defaultName
             """);
@@ -204,7 +204,7 @@ public class OverrideDefaultValueAfterWhenReturn : Spec<MyService, MyModel>
     private const string _theName = "TheName";
 
     public OverrideDefaultValueAfterWhenReturn()
-        => Given("Something").When(_ => _.GetModel());
+        => Using("Something").When(_ => _.GetModel());
 
     [Fact]
     public void GivenDefaultValue_ThenUseDefaultValue()
@@ -212,8 +212,8 @@ public class OverrideDefaultValueAfterWhenReturn : Spec<MyService, MyModel>
         Given<MyModel>(_ => _.Name = _theName).Then().Result.Name.Is(_theName);
         Specification.Is(
             """
-            Given "Something"
-              and MyModel has Name = _theName
+            Using "Something"
+            Given MyModel has Name = _theName
             When _.GetModel()
             Then Result.Name is _theName
             """);
@@ -248,7 +248,7 @@ public class OverrideDefaultValueAfterWhenArgument : Spec<MyService, MyModel>
     private const string _theName = "TheName";
 
     public OverrideDefaultValueAfterWhenArgument()
-        => Given("Something").When(_ => MyService.Echo(A<MyModel>()));
+        => Using("Something").When(_ => MyService.Echo(A<MyModel>()));
 
     [Fact]
     public void GivenDefaultValue_ThenUseDefaultValue()
@@ -256,8 +256,8 @@ public class OverrideDefaultValueAfterWhenArgument : Spec<MyService, MyModel>
         Given<MyModel>(_ => _.Name = _theName).Then().Result.Name.Is(_theName);
         Specification.Is(
             """
-            Given "Something"
-              and MyModel has Name = _theName
+            Using "Something"
+            Given MyModel has Name = _theName
             When MyService.Echo(a MyModel)
             Then Result.Name is _theName
             """);
@@ -266,10 +266,10 @@ public class OverrideDefaultValueAfterWhenArgument : Spec<MyService, MyModel>
     [Fact]
     public void GivenDefaultSetup_ThenUseDefaultValue()
     {
-        Given(_theName).Then().Result.Name.Is(_theName);
+        Using(_theName).Then().Result.Name.Is(_theName);
         Specification.Is(
             """
-            Given "Something"
+            Using "Something"
               and _theName
             When MyService.Echo(a MyModel)
             Then Result.Name is _theName

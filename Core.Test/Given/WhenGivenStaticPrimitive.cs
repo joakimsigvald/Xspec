@@ -34,13 +34,13 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAValue_ThenUseAValue(string defaultValue, string aValue)
     {
-        Given().Default(defaultValue).and.A(aValue)
+        Using(defaultValue, Scope.Input).Given().A(aValue)
             .When(_ => The<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
             """
-            Given defaultValue is default
-              and a string is aValue
+            Using defaultValue for Input
+            Given a string is aValue
             When the string
             Then Result is aValue
             """);
@@ -50,13 +50,13 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndASecondValue_ThenUseTheSecondValue(string defaultValue, string aValue)
     {
-        Given().Default(defaultValue).and.ASecond(aValue)
+        Using(defaultValue, Scope.Input).Given().ASecond(aValue)
             .When(_ => TheSecond<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
             """
-            Given defaultValue is default
-              and a second string is aValue
+            Using defaultValue for Input
+            Given a second string is aValue
             When the second string
             Then Result is aValue
             """);
@@ -66,13 +66,13 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAThirdValue_ThenUseTheThirdValue(string defaultValue, string aValue)
     {
-        Given().Default(defaultValue).and.AThird(aValue)
+        Using(defaultValue, Scope.Input).Given().AThird(aValue)
             .When(_ => TheThird<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
             """
-            Given defaultValue is default
-              and a third string is aValue
+            Using defaultValue for Input
+            Given a third string is aValue
             When the third string
             Then Result is aValue
             """);
@@ -82,13 +82,13 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAFourthValue_ThenUseTheFourthValue(string defaultValue, string aValue)
     {
-        Given().Default(defaultValue).and.AFourth(aValue)
+        Using(defaultValue, Scope.Input).Given().AFourth(aValue)
             .When(_ => TheFourth<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
             """
-            Given defaultValue is default
-              and a fourth string is aValue
+            Using defaultValue for Input
+            Given a fourth string is aValue
             When the fourth string
             Then Result is aValue
             """);
@@ -98,13 +98,13 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAFifthValue_ThenUseTheFifthValue(string defaultValue, string aValue)
     {
-        Given().Default(defaultValue).and.AFifth(aValue)
+        Using(defaultValue, Scope.Input).Given().AFifth(aValue)
             .When(_ => TheFifth<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
             """
-            Given defaultValue is default
-              and a fifth string is aValue
+            Using defaultValue for Input
+            Given a fifth string is aValue
             When the fifth string
             Then Result is aValue
             """);

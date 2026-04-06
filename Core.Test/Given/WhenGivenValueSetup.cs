@@ -52,14 +52,14 @@ public class WhenGivenValueSetup : Spec<MyService, MyModel>
     [Fact]
     public void WithLineBreaks_ThenMergeToOneLine()
     {
-        Given("abc"
+        Using("abc"
             .ToUpper()
             .ToLower())
             .When(_ => _.GetModel())
             .Then().Result.Name.Has(_ => char.IsLower(_[0]));
         Specification.Is(
             """
-            Given "abc".ToUpper().ToLower()
+            Using "abc".ToUpper().ToLower()
             When _.GetModel()
             Then Result.Name has char.IsLower(_[0])
             """);
@@ -68,14 +68,14 @@ public class WhenGivenValueSetup : Spec<MyService, MyModel>
     [Fact]
     public void WithLongLine_ThenInsertLineBreaks()
     {
-        Given("abc".ToUpper().ToLower().ToUpper().ToLower()
+        Using("abc".ToUpper().ToLower().ToUpper().ToLower()
             .ToUpper().ToLower().ToUpper().ToLower().ToUpper()
             .ToLower().ToUpper().ToLower().ToUpper().ToLower())
             .When(_ => _.GetModel())
             .Then().Result.Name.Has(_ => char.IsLower(_[0]));
         Specification.Is(
             """
-            Given "abc".ToUpper().ToLower().ToUpper().ToLower().ToUpper().ToLower().ToUpper(
+            Using "abc".ToUpper().ToLower().ToUpper().ToLower().ToUpper().ToLower().ToUpper(
                   ).ToLower().ToUpper().ToLower().ToUpper().ToLower().ToUpper().ToLower()
             When _.GetModel()
             Then Result.Name has char.IsLower(_[0])

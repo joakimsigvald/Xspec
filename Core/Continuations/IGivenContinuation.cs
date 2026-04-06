@@ -25,6 +25,7 @@ public interface IGivenContinuation<TSUT, TResult>
     /// <param name="defaultValue"></param>
     /// <param name="defaultValueExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use `Using` instead")]
     IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
@@ -36,6 +37,7 @@ public interface IGivenContinuation<TSUT, TResult>
     /// <param name="defaultValue"></param>
     /// <param name="defaultValueExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use `Using(, Scope)` instead")]
     IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);

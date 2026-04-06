@@ -9,7 +9,7 @@ public class WhenGivenContainingRecord : Spec<MyService, ContainingRecord>
     [Fact]
     public void GivenDefaultRecordSetupContainedInAnotherRecord_ThenUseDefault()
     {
-        Given(new MyRecord(1, A<string>()))
+        Using(new MyRecord(1, A<string>()))
             .When(_ => MyService.Echo(A<ContainingRecord>()))
             .Then().Result.MyRecord.Name.Is(The<string>());
     }

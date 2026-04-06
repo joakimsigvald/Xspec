@@ -1,4 +1,5 @@
-﻿using Xspec.Continuations;
+﻿using System.Runtime.CompilerServices;
+using Xspec.Continuations;
 
 namespace Xspec.Internal.Pipelines;
 
@@ -21,4 +22,11 @@ internal class UsingTestPipeline<TSUT, TResult> :
     /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>(Func<TSource, TTarget> convert)
         => Parent.Using(convert);
+
+    /// <inheritdoc />
+    public IUsingTestPipeline<TSUT, TResult> And<TValue>(
+        TValue value,
+        Scope scope = Scope.All,
+        [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
+        => Parent.Using(value, scope, valueExpr!);
 }

@@ -56,17 +56,17 @@ internal class DataProvider
 
     internal void Use<TValue>(TValue value, Scope scope)
     {
-        if (scope.HasFlag(Scope.Default))
+        if (scope.HasFlag(Scope.Input))
             _defaultValues[typeof(TValue)] = value;
 
         if (value is Moq.Internals.InterfaceProxy)
             return;
 
-        if (scope.HasFlag(Scope.Construction))
+        if (scope.HasFlag(Scope.Subject))
         {
             if (value is not null)
                 _testDataGenerator.Use(value);
-            else if (scope == Scope.Construction)
+            else if (scope == Scope.Subject)
                 throw new SetupFailed("Cannot use null");
         }
 

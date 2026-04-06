@@ -53,12 +53,12 @@ public class WhenGivenValue : Spec<MyService, MyModel>
     public void GivenNull_ThenUseNullInPipeline()
     {
         Given<IMyRepository>().That(_ => _.GetModel()).Returns(() => A<MyModel>())
-            .And((MyModel)null)
+            .Using((MyModel)null)
             .When(_ => _.GetModel()).Then().Result.Is().Null();
         Specification.Is(
             """
-            Given (MyModel)null
-              and IMyRepository.GetModel() returns a MyModel
+            Using (MyModel)null
+            Given IMyRepository.GetModel() returns a MyModel
             When _.GetModel()
             Then Result is null
             """);

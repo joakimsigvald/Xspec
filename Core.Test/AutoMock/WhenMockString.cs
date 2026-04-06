@@ -28,11 +28,11 @@ public class WhenMockString : Spec<StaticStringService, string>
         [InlineData("hej")]
         public void Then_It_Has_ProvidedValue(string value)
         {
-            Given(value).Then().Result.Is(value);
+            Using(value).Then().Result.Is(value);
             Specification.Is(
                 """
-                Given value
-                  and a string
+                Using value
+                Given a string
                 When _.GetValue()
                 Then Result is value
                 """);

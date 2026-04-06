@@ -81,6 +81,7 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null)
         => Parent.Given(transform, transformExpr!);
 
+    [Obsolete("Use `Using` instead")]
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
@@ -100,6 +101,12 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
         => Parent.Given(tag, tagExpr!);
+
+    public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+        TValue defaultValue,
+        Scope scope = Scope.All,
+        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
+        => Parent.Using(defaultValue, scope, defaultValueExpr!);
 
     public ITestResultWithSUT<TSUT, TResult> Then() => Parent.Then();
     public TSubject Then<TSubject>(TSubject subject) => Parent.Then(subject);

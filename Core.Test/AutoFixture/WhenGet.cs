@@ -53,9 +53,9 @@ Then Result is not the second MyModel");
     [Fact]
     public void A_Value_Is_Same_As_Any_Using_Value()
     {
-        Given(new MyModel()).Then().Result.Is(The<MyModel>());
+        Using(new MyModel()).Then().Result.Is(The<MyModel>());
         Specification.Is(
-@"Given new MyModel()
+@"Using new MyModel()
 When _.Get(an int)
 Then Result is the MyModel");
     }
@@ -63,9 +63,9 @@ Then Result is the MyModel");
     [Fact]
     public void A_Value_Is_Same_As_Another_Value_If_Using()
     {
-        Given(Another<MyModel>()).Then().Result.Is(The<MyModel>());
+        Using(Another<MyModel>()).Then().Result.Is(The<MyModel>());
         Specification.Is(
-@"Given another MyModel
+@"Using another MyModel
 When _.Get(an int)
 Then Result is the MyModel");
     }

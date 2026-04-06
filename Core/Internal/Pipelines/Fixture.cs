@@ -41,6 +41,14 @@ internal abstract class Fixture<TSUT>
         _context.Use(defaultValue, scope);
     }
 
+    internal void Using<TValue>(TValue defaultValue, Scope scope, string defaultValuesExpr)
+    {
+        if (!string.IsNullOrEmpty(defaultValuesExpr))
+            SpecificationGenerator.AddUsing(defaultValuesExpr, scope);
+        AssertIsNotSetUp();
+        _context.Use(defaultValue, scope);
+    }
+
     internal void SetUnique<TValue>()
     {
         SpecificationGenerator.AddUnique<TValue>();

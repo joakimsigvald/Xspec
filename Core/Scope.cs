@@ -13,15 +13,16 @@ public enum Scope
     /// Default scope neither applies to Default nor Construction.
     /// </summary>
     None,
+
     /// <summary>
     /// Used as fallback test data when generating arbitrary values.
     /// </summary>
-    Default,
+    Input,
 
     /// <summary>
     /// Injected directly into the constructor of the Subject Under Test.
     /// </summary>
-    Construction,
+    Subject,
 
     /// <summary>
     /// Used both for SUT construction and as default test data.

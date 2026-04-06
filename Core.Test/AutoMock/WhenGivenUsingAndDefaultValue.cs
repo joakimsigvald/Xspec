@@ -8,13 +8,13 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
     [Fact]
     public void ThenApplyBothAsValues()
     {
-        Given().Default("ABC").and.Using("DEF")
+        Using("ABC", Scope.Input).And("DEF", Scope.Subject)
             .When(_ => _.GetValues(A<string>()))
             .Then().Result.Is(("DEF", "ABC"));
         Specification.Is(
             """
-            Given "ABC" is default
-              and using "DEF"
+            Using "ABC" for Input
+              and "DEF" for Subject
             When _.GetValues(a string)
             Then Result is ("DEF", "ABC")
             """);
@@ -62,13 +62,13 @@ public class WhenGivenUsingAndDefaultModel : Spec<MyWrapper<MyModel>, (MyModel, 
     [Fact]
     public void ThenApplyBothAsValues()
     {
-        Given().Default(_first).and.Using(_second)
+        Using(_first, Scope.Input).And(_second, Scope.Subject)
             .When(_ => _.GetValues(A<MyModel>()))
             .Then().Result.Is((_second, _first));
         Specification.Is(
             """
-            Given _first is default
-              and using _second
+            Using _first for Input
+              and _second for Subject
             When _.GetValues(a MyModel)
             Then Result is (_second, _first)
             """);

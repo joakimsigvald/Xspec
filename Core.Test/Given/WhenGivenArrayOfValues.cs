@@ -8,10 +8,10 @@ public class WhenGivenArrayOfValues : Spec<MyService, IEnumerable<int>>
     [Fact]
     public void ThenCanUseTwoValuesGivenSeparatelyFromMock()
     {
-        When(_ => _.GetIds()).Given(Two<int>()).Then().Result.Is(Two<int>());
+        When(_ => _.GetIds()).Using(Two<int>()).Then().Result.Is(Two<int>());
         Specification.Is(
             """
-            Given two int
+            Using two int
             When _.GetIds()
             Then Result is two int
             """);
@@ -48,12 +48,12 @@ public class WhenGivenArrayOfValues : Spec<MyService, IEnumerable<int>>
     {
         When(_ => _.GetModel().Values)
             .Given<MyModel>(_ => _.Values = Some<int>())
-            .And(One<int>())
+            .Using(One<int>())
             .Then().Result.Is(One<int>());
         Specification.Is(
             """
             Given MyModel has Values = some int
-              and one int
+            Using one int
             When _.GetModel().Values
             Then Result is one int
             """);
@@ -64,12 +64,12 @@ public class WhenGivenArrayOfValues : Spec<MyService, IEnumerable<int>>
     {
         When(_ => _.GetModel().Values)
             .Given<MyModel>(_ => _.Values = AnyNumberOf<int>())
-            .And(Two<int>())
+            .Using(Two<int>())
             .Then().Result.Is(Two<int>());
         Specification.Is(
             """
             Given MyModel has Values = any number of int
-              and two int
+            Using two int
             When _.GetModel().Values
             Then Result is two int
             """);
@@ -80,12 +80,12 @@ public class WhenGivenArrayOfValues : Spec<MyService, IEnumerable<int>>
     {
         When(_ => _.GetModel().Values)
             .Given<MyModel>(_ => _.Values = Some<int>())
-            .And(Zero<int>())
+            .Using(Zero<int>())
             .Then().Result.Has().Count(2);
         Specification.Is(
             """
             Given MyModel has Values = some int
-              and zero int
+            Using zero int
             When _.GetModel().Values
             Then Result has count 2
             """);
@@ -96,12 +96,12 @@ public class WhenGivenArrayOfValues : Spec<MyService, IEnumerable<int>>
     {
         When(_ => _.GetModel().Values)
             .Given<MyModel>(_ => _.Values = Many<int>())
-            .And(Zero<int>())
+            .Using(Zero<int>())
             .Then().Result.Has().Count(3);
         Specification.Is(
             """
             Given MyModel has Values = many int
-              and zero int
+            Using zero int
             When _.GetModel().Values
             Then Result has count 3
             """);

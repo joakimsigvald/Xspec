@@ -13,12 +13,12 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Default, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, Scope.Input, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Default, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, Scope.Input, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Unique<TValue>()
         => _spec.GivenUnique<TValue>();
@@ -29,12 +29,12 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
     public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Construction, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, Scope.Subject, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Construction, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, Scope.Subject, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Tag<TValue> tag,

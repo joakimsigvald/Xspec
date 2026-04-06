@@ -7,10 +7,10 @@ public class WhenSubjectIsString : Spec<string>
     [Fact]
     public void ThenUseDefaultString()
     {
-        Given("abc").When(_ => _).Then().Result.Is("abc");
+        Using("abc").When(_ => _).Then().Result.Is("abc");
         Specification.Is(
             """
-            Given "abc"
+            Using "abc"
             When _
             Then Result is "abc"
             """);

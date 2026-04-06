@@ -257,6 +257,7 @@ public interface ITestPipeline<TSUT, TResult>
     /// <param name="defaultValue"></param>
     /// <param name="defaultValueExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use `Using` instead")]
     IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
@@ -296,4 +297,17 @@ public interface ITestPipeline<TSUT, TResult>
     IGivenTag<TSUT, TResult, TValue> Given<TValue>(
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
+
+    /// <summary>
+    /// Provide a default value, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="defaultValue"></param>
+    /// <param name="scope"></param>
+    /// <param name="defaultValueExpr"></param>
+    /// <returns></returns>
+    IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+        TValue defaultValue,
+        Scope scope = Scope.All,
+        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
 }

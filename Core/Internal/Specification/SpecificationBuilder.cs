@@ -87,7 +87,7 @@ internal class SpecificationBuilder
         _textBuilder.AddWord(_that);
     }
 
-    internal void AddGiven(string valueExpr, ApplyTo applyTo)
+    internal void AddGiven(string valueExpr, Scope scope)
     {
         _currentMockSetup = null;
         _textBuilder.AddPhraseOrSentence(string.Join(' ', GetWords()));
@@ -95,10 +95,10 @@ internal class SpecificationBuilder
         IEnumerable<string> GetWords()
         {
             yield return Given;
-            if (applyTo == ApplyTo.Using)
+            if (scope == Scope.Construction)
                 yield return "using";
             yield return valueExpr.ParseValue();
-            if (applyTo == ApplyTo.Default)
+            if (scope == Scope.Default)
                 yield return "is default";
         }
     }

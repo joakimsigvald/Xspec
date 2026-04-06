@@ -54,26 +54,26 @@ internal class DataProvider
         return (TValue)(ApplyDefaultSetup(type, instance!) ?? default!);
     }
 
-    internal void Use<TValue>(TValue value, ApplyTo applyTo)
+    internal void Use<TValue>(TValue value, Scope scope)
     {
-        if (applyTo.HasFlag(ApplyTo.Default))
+        if (scope.HasFlag(Scope.Default))
             _defaultValues[typeof(TValue)] = value;
 
         if (value is Moq.Internals.InterfaceProxy)
             return;
 
-        if (applyTo.HasFlag(ApplyTo.Using))
+        if (scope.HasFlag(Scope.Construction))
         {
             if (value is not null)
                 _testDataGenerator.Use(value);
-            else if (applyTo == ApplyTo.Using)
+            else if (scope == Scope.Construction)
                 throw new SetupFailed("Cannot use null");
         }
 
         if (typeof(Task).IsAssignableFrom(typeof(TValue)))
             return;
 
-        Use(Task.FromResult(value), applyTo);
+        Use(Task.FromResult(value), scope);
     }
 
     internal (object? val, bool found) Use(Type type)

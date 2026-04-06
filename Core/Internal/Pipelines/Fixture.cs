@@ -33,12 +33,12 @@ internal abstract class Fixture<TSUT>
         _context.SetDefault(transform);
     }
 
-    internal void SetDefault<TValue>(TValue defaultValue, ApplyTo applyTo, string defaultValuesExpr)
+    internal void SetDefault<TValue>(TValue defaultValue, Scope scope, string defaultValuesExpr)
     {
         if (!string.IsNullOrEmpty(defaultValuesExpr))
-            SpecificationGenerator.AddGiven(defaultValuesExpr, applyTo);
+            SpecificationGenerator.AddGiven(defaultValuesExpr, scope);
         AssertIsNotSetUp();
-        _context.Use(defaultValue, applyTo);
+        _context.Use(defaultValue, scope);
     }
 
     internal void SetUnique<TValue>()

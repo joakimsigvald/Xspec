@@ -1,4 +1,4 @@
-﻿namespace Xspec;
+﻿namespace Xspec.Continuations;
 
 /// <summary>
 /// Continuation for providing a data-generaton strategy for the given type

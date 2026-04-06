@@ -128,7 +128,7 @@ internal class Context
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _dataProvider.GetMock<TObject>();
 
-    internal void Use<TService>(TService service, ApplyTo applyTo) => _dataProvider.Use(service, applyTo);
+    internal void Use<TService>(TService service, Scope scope) => _dataProvider.Use(service, scope);
 
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _dataProvider.SetDefaultException(typeof(TService), ex);

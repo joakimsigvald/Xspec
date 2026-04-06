@@ -1,4 +1,6 @@
-﻿namespace Xspec;
+﻿using Xspec.Continuations;
+
+namespace Xspec;
 
 public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {

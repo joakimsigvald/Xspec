@@ -7,7 +7,7 @@ Tests run on the standard xUnit runner and can live side by side with existing x
 Whether you are new to unit testing or an experienced practitioner, Xspec helps you express test intent clearly by removing boilerplate, enforcing structure, and generating readable failure descriptions.
 
 Example: testing the `PlaceOrder` method on `ShoppingService`:
-```
+```csharp
 public class WhenPlaceOrder : Spec<ShoppingService>
 {
     static Tag<Guid> cartId = new(); // reference an auto-generated Guid
@@ -43,7 +43,7 @@ Each test is expressed as a specification and executed as a pipeline consisting 
 
 The following is a complete Xspec test class (a *specification*) containing a single test method (a *requirement*):
 
-```
+```csharp
 using Xspec;
 using Xspec.Assert;
 using static App.Calculator;
@@ -100,7 +100,7 @@ generated description of the specification, making it easier to understand the i
 Example:
 
 **Specification:**
-```
+```csharp
 => When(_ => _.List())
    .Given<IMyRepository>()
    .That(_ => _.List()).Returns(A<MyModel[]>)
@@ -110,7 +110,7 @@ Example:
 ```
 
 **Output:**
-```
+```csharp
 Expected Result to have count 4 but found 3...
 ---- 
 Given three MyModel
@@ -250,7 +250,7 @@ The parameterless constructor `new()` may also be used.
 Tags can be used to set or reference values during pipeline configuration and execution.
 
 Example:
-```
+```csharp
 protected static Tag<string> surname = new(), lastname = new();
 ...
 => Given(surname).Is("Ada").And(lastname).Is("Lovelace")
@@ -265,8 +265,42 @@ Tagged values may also be used as:
 - input when auto-generating the subject under test
 
 Example:
-```
+```csharp
 Given().Default(name).and.Using(age);
+```
+
+### 3.3 Data Generation and Pipeline
+
+Xspec utilizes an internal `DataGenerator` orchestrator to supply arbitrary data cleanly. Values are generated utilizing a fallback strategy chain, which evaluates types using conversion relays, primitives, semantics, collections, or generic objects.
+
+* **Internal Resolution:** You can directly trigger generation via the internal generator's `Create<TValue>()` method.
+* **Primitives:** Out-of-the-box generation natively supports standard primitives like `int`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
+* **Semantic Types:** Objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are securely auto-generated using their base values.
+* **Abstracts & Interfaces:** Pure interfaces and abstract classes can be successfully requested and mocked instantly without boilerplate.
+
+### 3.4 Type Registration and Conversion
+
+If a specific custom mapping is required during data creation, you can override default generation by using the fluent type conversion pipeline.
+
+* **Fluent Registration:** Configure the generator pipeline via `Register<TTarget>().As<TSource>()`.
+* **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It securely attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
+* **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Register<int>().As<byte>(b => b + 1)`.
+* **Safe Failures:** If incompatible types are relayed and no logical conversion path exists, generation strictly throws an `InvalidTypeConversion`.
+
+```csharp
+// Generates an Email instance automatically by creating a primitive source and looking for constructors or static factories
+public class WhenConvertByConstructor : Spec<MyEmailConstr>
+{
+    public WhenConvertByConstructor() => Register<MyEmailConstr>().As<Email>();
+}
+
+// Employs a specific conversion lambda to translate generated data
+public class WhenRelayIntToByteWithConverter : Spec<int>
+{
+    public WhenRelayIntToByteWithConverter() => Register<int>().As<byte>(b => b + 1);
+    
+    [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([2, 3, 4]);
+}
 ```
 
 ## 4. Mocking & Auto-Mocking
@@ -297,7 +331,7 @@ If you want to vary mocked behavior based on arguments, supply a lambda with arg
 Up to five arguments are possible to mock in this way.
 
 Example with two arguments:
-```
+```csharp
 => Given<IMyCalculator>()
    .That(_ => _.Add(TheFirst<int>(), TheSecond<int>()))
    .Returns((a, b) => a + b) //The mock adds the two arguments passed to the function and returns the sum
@@ -309,7 +343,7 @@ Sometimes you want to mock a scenario where more than one call is made to a mock
 You can describe this scenario using the methods `First` and `AndNext`.
 
 Example mocking three successive calls:
-```
+```csharp
 => Given<IMyService>().That(_ => _.GetValueAsync())
     .First().Returns(() => 1) // returns 1 on first call
     .AndNext().Throws(An<ArgumentException>) //throw exception on second call
@@ -322,7 +356,7 @@ Tap allows observing arguments passed to a mocked call without affecting its beh
 A method with up to five arguments is possible to tap.
 
 Example:
-```
+```csharp
 int _tappedValue = -1;
 
 => Given<IMyInterface>()
@@ -338,7 +372,7 @@ To verify a call to a mocked dependency, call `Then<[TheService]>([SomeLambdaExp
 Both mocking and verification of behavior are based on `Moq` framework.
  
 Example:
-```
+```csharp
 namespace MyProject.Spec.ShoppingService;
 
 public class WhenPlaceOrder : Spec<MyProject.ShoppingService>
@@ -375,19 +409,19 @@ The continuation is context-aware and allows different assertions depending on w
 
 #### 5.1.1 And
 When you want to combine more than one assertion, all of which must pass
-```
+```csharp
 3.Is().GreaterThan(2).and.LessThan(4);
 ```
 
 #### 5.1.2 Either - Or
 When you want to combine two assertions, one of which must pass
-```
+```csharp
 3.Is().either.GreaterThan(4).or.LessThan(4);
 ```
 
 #### 5.1.3 Not
 Any assertion can be negated by placing not before (note lowercase not)
-```
+```csharp
 3.Is().not.GreaterThan(4);
 ```
 
@@ -539,30 +573,30 @@ The goal of these conventions is to keep specifications readable, navigable, and
 1. Use only the built-in assertion framework from Xspec (it will give you cleaner specifications with clearer test-output)
 
 Example:
-```
-public abstract WhenPlaceOrder : Spec<ShoppingService> 
+```csharp
+public abstract class WhenPlaceOrder : Spec<ShoppingService> 
 {
     static Tag<Guid> cartId = new();
   
     protected WhenPlaceOrder() => When(_ => _.PlaceOrder(The(cartId)));
 
-    public abstract GivenCartExists : WhenPlaceOrder 
+    public abstract class GivenCartExists : WhenPlaceOrder 
     { 
         protected GivenCartExists
         => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(A<Cart>());
 
-        public WithItems : GivenCartExists 
+        public class WithItems : GivenCartExists 
         {
         ...
         }
 
-        public WithoutItems : GivenCartExists 
+        public class WithoutItems : GivenCartExists 
         {
         ...
         }
     }
 
-    public GivenCartNotExists : WhenPlaceOrder 
+    public class GivenCartNotExists : WhenPlaceOrder 
     {
         public GivenCartNotExists
         => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(() => Cart.NoCart);

@@ -1,4 +1,5 @@
-﻿using Xspec.Internal.Pipelines;
+﻿using Xspec.Continuations;
+using Xspec.Internal.Pipelines;
 
 namespace Xspec.Internal.TestData.Generation;
 

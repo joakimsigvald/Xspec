@@ -10,7 +10,7 @@ internal class DefaultStrategy(DataProvider context) : IGenerationStrategy
         if (context.TryGetDefault(type, out val))
             return true;
 
-        if (type.IsInterface)
+        if (type.IsInterface || type.IsAbstract)
         {
             var (instance, found) = context.Use(type);
             try

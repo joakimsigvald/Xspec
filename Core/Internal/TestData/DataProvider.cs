@@ -45,13 +45,24 @@ internal class DataProvider
         GetMentions(type)[index] = value;
     }
 
-    internal TValue Instantiate<TValue>()
+    internal object? Instantiate<TValue>()
     {
         var type = typeof(TValue);
-        var instance = TryGetDefault(typeof(TValue), out var val)
-            ? val
-            : DoInstantiate<TValue>();
-        return (TValue)(ApplyDefaultSetup(type, instance!) ?? default!);
+        var instance = DoInstantiate<TValue>();
+        return ApplyDefaultSetup(type, instance);
+    }
+
+    private object? DoInstantiate<TValue>()
+    {
+        try
+        {
+            return _testDataGenerator.Instantiate<TValue>();
+        }
+        catch (Exception ex)
+        {
+            TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {typeof(TValue).Name}. Fallback to DataGenerator. Reason: {ex.Message}");
+            return null;
+        }
     }
 
     internal void Use<TValue>(TValue value, For scope)
@@ -70,11 +81,29 @@ internal class DataProvider
                 throw new SetupFailed("Cannot use null");
         }
 
-        if (typeof(Task).IsAssignableFrom(typeof(TValue)))
-            return;
-
-        Use(Task.FromResult(value), scope);
+        if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
+            Use(Task.FromResult(value), scope);
     }
+
+    //internal void Use<TValue>(Func<TValue> factory, For scope)
+    //{
+    //    if (scope.HasFlag(For.Input))
+    //        _defaultValues[typeof(TValue)] = factory();
+
+    //    if (factory is Moq.Internals.InterfaceProxy)
+    //        return;
+
+    //    if (scope.HasFlag(For.Subject))
+    //    {
+    //        if (factory is not null)
+    //            _testDataGenerator.Use(factory);
+    //        else if (scope == For.Subject)
+    //            throw new SetupFailed("Cannot use null");
+    //    }
+
+    //    if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
+    //        Use(Task.FromResult(factory), scope);
+    //}
 
     internal (object? val, bool found) Use(Type type)
         => TryGetDefault(type, out var value) ? (value, true) : (null, false);
@@ -86,9 +115,9 @@ internal class DataProvider
         : setup;
 
     internal TValue Create<TValue>()
-        => (TValue)ApplyDefaultSetup(typeof(TValue), MockOrCreate<TValue>()!);
+        => (TValue)ApplyDefaultSetup(typeof(TValue), MockOrCreate<TValue>())!;
 
-    internal object Create(Type type) => ApplyDefaultSetup(type, _generator.Create(type));
+    internal object Create(Type type) => ApplyDefaultSetup(type, _generator.Create(type))!;
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _testDataGenerator.GetMock<TObject>();
@@ -101,7 +130,7 @@ internal class DataProvider
     internal void SetDefaultException(Type type, Func<Exception> ex)
         => _defaultExceptions[type] = ex;
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _generator.Register(convert);
 
     private static Func<object, object> MergeDefaultSetups(Func<object, object> setup1, Func<object, object> setup2)
@@ -110,28 +139,11 @@ internal class DataProvider
     private Dictionary<int, object?> GetMentions(Type type)
         => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];
 
-    private TValue DoInstantiate<TValue>()
-    {
-        var type = typeof(TValue);
-        if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
-            return _generator.Create<TValue>();
-
-        try
-        {
-            return _testDataGenerator.Instantiate<TValue>();
-        }
-        catch (Exception ex)
-        {
-            TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {type.Name}. Fallback to DataGenerator. Reason: {ex.Message}"); 
-            return _generator.Create<TValue>();
-        }
-    }
-
     private TValue MockOrCreate<TValue>()
         => typeof(TValue).IsInterface ? _testDataGenerator.Get<TValue>() : _generator.Create<TValue>();
 
-    private object ApplyDefaultSetup(Type type, object newValue)
-        => _defaultSetups.TryGetValue(type, out var setup)
+    private object? ApplyDefaultSetup(Type type, object? newValue)
+        => newValue is not null && _defaultSetups.TryGetValue(type, out var setup)
             ? setup(newValue)
             : newValue;
 }

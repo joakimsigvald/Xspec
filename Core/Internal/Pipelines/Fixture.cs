@@ -49,6 +49,14 @@ internal abstract class Fixture<TSUT>
         _context.Use(defaultValue, scope);
     }
 
+    //internal void Using<TValue>(Func<TValue> defaultFactory, For scope, string defaultFactoryExpr)
+    //{
+    //    if (!string.IsNullOrEmpty(defaultFactoryExpr))
+    //        SpecificationGenerator.AddUsing(defaultFactoryExpr, scope);
+    //    AssertIsNotSetUp();
+    //    _context.Use(defaultFactory, scope);
+    //}
+
     internal void SetUnique<TValue>()
     {
         SpecificationGenerator.AddUnique<TValue>();
@@ -79,16 +87,28 @@ internal abstract class Fixture<TSUT>
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _context.GetMock<TObject>();
 
-    internal void ArrangeFirst(Action arrangement)
+    internal void PrependUsing(Action given)
     {
         AssertIsNotSetUp();
-        _arranger.Push(arrangement);
+        _arranger.PrependUsing(given);
     }
 
-    internal void ArrangeLast(Action arrangement)
+    internal void AppendUsing(Action given)
     {
         AssertIsNotSetUp();
-        _arranger.Add(arrangement);
+        _arranger.AppendUsing(given);
+    }
+
+    internal void PrependGiven(Action given)
+    {
+        AssertIsNotSetUp();
+        _arranger.PrependGiven(given);
+    }
+
+    internal void AppendGiven(Action given)
+    {
+        AssertIsNotSetUp();
+        _arranger.AppendGiven(given);
     }
 
     internal void SetupThrows<TService>(Func<Exception> expected)

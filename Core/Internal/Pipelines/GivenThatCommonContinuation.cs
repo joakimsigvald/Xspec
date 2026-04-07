@@ -42,14 +42,14 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
 
     public IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Returns()
     {
-        _spec.ArrangeLast(SetupReturns);
+        _spec.AppendGiven(SetupReturns);
         return new GivenThatReturnsContinuation<TSUT, TResult, TService, TReturns>(_spec, this);
     }
 
     public IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Returns(
         Func<TReturns?> returns, [CallerArgumentExpression(nameof(returns))] string? returnsExpr = null)
     {
-        _spec.ArrangeLast(() => SetupReturns(returns!, returnsExpr!));
+        _spec.AppendGiven(() => SetupReturns(returns!, returnsExpr!));
         return new GivenThatReturnsContinuation<TSUT, TResult, TService, TReturns>(_spec, this);
     }
 
@@ -63,14 +63,14 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
     public IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Throws<TException>()
         where TException : Exception, new()
     {
-        _spec.ArrangeLast(SetupThrows<TException>);
+        _spec.AppendGiven(SetupThrows<TException>);
         return new GivenThatReturnsContinuation<TSUT, TResult, TService, TReturns>(_spec, this);
     }
 
     public IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Throws(
         Func<Exception> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
     {
-        _spec.ArrangeLast(() => SetupThrows(expected, expectedExpr!));
+        _spec.AppendGiven(() => SetupThrows(expected, expectedExpr!));
         return new GivenThatReturnsContinuation<TSUT, TResult, TService, TReturns>(_spec, this);
     }
 

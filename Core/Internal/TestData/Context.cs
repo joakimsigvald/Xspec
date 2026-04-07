@@ -10,12 +10,15 @@ internal class Context
     private readonly Dictionary<Type, HashSet<object?>> _generatedValues = [];
 
     internal TClass Instantiate<TClass>()
-    {
-        var sutType = typeof(TClass);
-        return sutType.IsClass && sutType != typeof(string)
-            ? _dataProvider.Instantiate<TClass>()
-            : Create<TClass>();
-    }
+        => (TClass)(_dataProvider.Instantiate<TClass>() ?? Create<TClass>())!;
+
+    //internal TClass Instantiate<TClass>()
+    //{
+    //    var sutType = typeof(TClass);
+    //    return sutType.IsClass && sutType != typeof(string)
+    //        ? _dataProvider.Instantiate<TClass>()
+    //        : Create<TClass>();
+    //}
 
     internal TValue Apply<TValue>(Action<TValue> setup, int index)
         => Produce<TValue>(index, (v, i) =>
@@ -129,6 +132,7 @@ internal class Context
         => _dataProvider.GetMock<TObject>();
 
     internal void Use<TService>(TService service, For scope) => _dataProvider.Use(service, scope);
+    //internal void Use<TService>(Func<TService> factory, For scope) => _dataProvider.Use(factory, scope);
 
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _dataProvider.SetDefaultException(typeof(TService), ex);

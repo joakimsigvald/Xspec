@@ -9,19 +9,19 @@ namespace Xspec.Internal.TestData.Mocking;
 internal class AutoMockerWrapper
 {
     private readonly AutoMocker _mocker;
-    private readonly ConcurrentBag<Type> _usages = [];
+    private readonly ConcurrentDictionary<Type, object> _usages = [];
 
     internal AutoMockerWrapper(DataProvider context) => _mocker = CreateAutoMocker(context);
 
     internal void Use<TService>([DisallowNull] TService service)
     {
         var type = typeof(TService);
-        if (_usages.Contains(type))
+        if (_usages.ContainsKey(type))
             return;
 
-        _usages.Add(type);
+        _usages[type] = service!;
         _mocker.Use(service);
-        if (type != service.GetType()) //Explicit cast was provided, so don't use implicit cast to all interfaces
+        if (type != service?.GetType()) //Explicit cast was provided, so don't use implicit cast to all interfaces
             return;
 
         var allInterfaces = type.GetInterfaces();
@@ -29,7 +29,34 @@ internal class AutoMockerWrapper
             _mocker.Use(anInterface, service);
     }
 
-    internal TValue Instantiate<TValue>() => (TValue)_mocker.CreateInstance(typeof(TValue));
+    internal void Use<TService>(Func<TService> factory)
+    {
+        var type = typeof(TService);
+        if (_usages.ContainsKey(type))
+            return;
+
+        _usages[type] = factory()!;
+        _mocker.Use(factory);
+        _mocker.Use(factory());
+        if (type != factory.Method.ReturnType) //Explicit cast was provided, so don't use implicit cast to all interfaces
+            return;
+
+        var allInterfaces = type.GetInterfaces();
+        foreach (var anInterface in allInterfaces)
+            _mocker.Use(anInterface, factory());
+    }
+
+    internal object? Instantiate<TValue>()
+    {
+        if (_usages.TryGetValue(typeof(TValue), out var val))
+            return val;
+
+        var type = typeof(TValue);
+        if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
+            return null;
+
+        return _mocker.CreateInstance(typeof(TValue));
+    }
 
     internal TValue Get<TValue>() => _mocker.Get<TValue>();
     internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.GetMock<TObject>();

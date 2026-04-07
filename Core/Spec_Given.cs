@@ -126,17 +126,17 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         Func<TValue> value, For scope, string defaultValueExpr)
-        => ArrangeFirst(() => _pipeline.SetDefault(value(), scope, defaultValueExpr));
+        => PrependGiven(() => _pipeline.SetDefault(value(), scope, defaultValueExpr));
 
     internal IGivenTestPipeline<TSUT, TResult> GivenUnique<TValue>()
-        => ArrangeFirst(_pipeline.SetUnique<TValue>);
+        => PrependGiven(_pipeline.SetUnique<TValue>);
 
     internal IGivenTestPipeline<TSUT, TResult> Apply<TValue>(
         Action setup,
         string setupExpr,
         bool isCustomExpression = false,
         [CallerMemberName] string? article = null)
-        => ArrangeFirst(() =>
+        => PrependGiven(() =>
         {
             SpecificationGenerator.AddGiven<TValue>(setupExpr, isCustomExpression, article);
             setup();
@@ -144,7 +144,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 
     internal IGivenTestPipeline<TSUT, TResult> ApplyMany<TValue>(
         Action setup, [CallerMemberName] string? count = null)
-        => ArrangeFirst(() =>
+        => PrependGiven(() =>
         {
             SpecificationGenerator.AddGivenCount<TValue>(count!);
             setup();
@@ -153,18 +153,18 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     internal Mock<TService> GetMock<TService>() where TService : class
         => _pipeline.GetMock<TService>();
 
-    internal IGivenTestPipeline<TSUT, TResult> ArrangeLast(Action setup)
-    {
-        _pipeline.ArrangeLast(setup);
-        return new GivenTestPipeline<TSUT, TResult>(this);
-    }
-
     internal void SetupThrows<TService>(Func<Exception> expected)
         => _pipeline.SetupThrows<TService>(expected);
 
-    private GivenTestPipeline<TSUT, TResult> ArrangeFirst(Action arrangement)
+    internal IGivenTestPipeline<TSUT, TResult> AppendGiven(Action given)
     {
-        _pipeline.ArrangeFirst(arrangement);
+        _pipeline.AppendGiven(given);
+        return new GivenTestPipeline<TSUT, TResult>(this);
+    }
+
+    private GivenTestPipeline<TSUT, TResult> PrependGiven(Action given)
+    {
+        _pipeline.PrependGiven(given);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 }

@@ -4,7 +4,7 @@ namespace Xspec.Test.Assert.AssertionExtensions;
 
 public class WhenIsArray : Spec<int[]>
 {
-    public WhenIsArray() => Using(() => new int[] { 1, 2, 3 }, For.Input);
+    public WhenIsArray() => Using(() => new int[] { 1, 2, 3 }, For.Subject);
 
     [Fact] public void GivenSame_ThenDoesNotThrow() => When(_ => _.Is(_)).Then();
 
@@ -16,7 +16,7 @@ public class WhenIsArray : Spec<int[]>
         ex.HasMessage(
             "Expected Result to be [1, 2, 3] but found [1, 2, 3]",
             """
-            Using new int[] { 1, 2, 3 } for Input
+            Using new int[] { 1, 2, 3 } for Subject
             When _
             Then Result is [1, 2, 3]
             """);

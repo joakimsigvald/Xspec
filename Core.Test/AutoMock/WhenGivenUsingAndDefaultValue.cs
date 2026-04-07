@@ -46,9 +46,9 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
             .Then().Result.Is(("DEF", "ABC"));
         Specification.Is(
             """
+            Using "ABC" for Input
             Given def is "DEF"
               and using def
-            Using "ABC" for Input
             When _.GetValues(a string)
             Then Result is ("DEF", "ABC")
             """);

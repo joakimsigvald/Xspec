@@ -23,6 +23,7 @@ internal class GivenTestPipeline<TSUT, TResult>
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
         => Given(setup, setupExpr);
 
+    [Obsolete("Use `Using` instead")]
     public IGivenTestPipeline<TSUT, TResult> And<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)

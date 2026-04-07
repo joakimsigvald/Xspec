@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Xspec.Continuations;
-using Xspec.Internal.TestData;
 
 namespace Xspec.Internal.Pipelines;
 
@@ -10,15 +9,16 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
 
     internal GivenContinuation(Spec<TSUT, TResult> spec) => _spec = spec;
 
+    [Obsolete("Use `Using` instead")]
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Input, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, For.Input, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Input, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, For.Input, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Unique<TValue>()
         => _spec.GivenUnique<TValue>();
@@ -29,12 +29,12 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
     public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         TValue defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Subject, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, For.Subject, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, Scope.Subject, defaultValueExpr!);
+        => _spec.GivenDefault(defaultValue, For.Subject, defaultValueExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Tag<TValue> tag,

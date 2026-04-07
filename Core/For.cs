@@ -1,13 +1,13 @@
 ﻿namespace Xspec;
 
 /// <summary>
-/// Scope defines which part of the test pipeline provided values and setups are aplied to.
+/// For defines which part of the test pipeline provided values and setups are aplied to.
 /// They can either be used when constructing the subject under test, or mocks (`Construction`), 
 /// or they can be applied as defaults (`Default`) for test-data generation (input),
 /// or neither (`None`) or both (`All`)
 /// </summary>
 [Flags]
-public enum Scope
+public enum For
 {
     /// <summary>
     /// Default scope neither applies to Default nor Construction.

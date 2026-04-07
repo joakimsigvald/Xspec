@@ -26,7 +26,14 @@ internal class UsingTestPipeline<TSUT, TResult> :
     /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TValue>(
         TValue value,
-        Scope scope = Scope.All,
+        For scope = For.All,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
         => Parent.Using(value, scope, valueExpr!);
+
+    /// <inheritdoc />
+    public IUsingTestPipeline<TSUT, TResult> And<TValue>(
+        Func<TValue> factory,
+        For scope = For.All,
+        [CallerArgumentExpression(nameof(factory))] string? factoryExpr = null)
+        => Parent.Using(factory, scope, factoryExpr!);
 }

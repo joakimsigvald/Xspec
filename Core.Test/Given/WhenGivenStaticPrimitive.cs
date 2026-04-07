@@ -8,10 +8,10 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc")]
     public void GivenDefaultValue_ThenUseDefault(string value)
     {
-        Given().Default(value).When(_ => _).Then().Result.Is(value);
+        Using(value, For.Input).When(_ => _).Then().Result.Is(value);
         Specification.Is(
             """
-            Given value is default
+            Using value for Input
             When _
             Then Result is value
             """);
@@ -34,7 +34,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAValue_ThenUseAValue(string defaultValue, string aValue)
     {
-        Using(defaultValue, Scope.Input).Given().A(aValue)
+        Using(defaultValue, For.Input).Given().A(aValue)
             .When(_ => The<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
@@ -50,7 +50,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndASecondValue_ThenUseTheSecondValue(string defaultValue, string aValue)
     {
-        Using(defaultValue, Scope.Input).Given().ASecond(aValue)
+        Using(defaultValue, For.Input).Given().ASecond(aValue)
             .When(_ => TheSecond<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
@@ -66,7 +66,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAThirdValue_ThenUseTheThirdValue(string defaultValue, string aValue)
     {
-        Using(defaultValue, Scope.Input).Given().AThird(aValue)
+        Using(defaultValue, For.Input).Given().AThird(aValue)
             .When(_ => TheThird<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
@@ -82,7 +82,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAFourthValue_ThenUseTheFourthValue(string defaultValue, string aValue)
     {
-        Using(defaultValue, Scope.Input).Given().AFourth(aValue)
+        Using(defaultValue, For.Input).Given().AFourth(aValue)
             .When(_ => TheFourth<string>())
             .Then().Result.Is(aValue);
         Specification.Is(
@@ -98,7 +98,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc", "def")]
     public void GivenDefaultAndAFifthValue_ThenUseTheFifthValue(string defaultValue, string aValue)
     {
-        Using(defaultValue, Scope.Input).Given().AFifth(aValue)
+        Using(defaultValue, For.Input).Given().AFifth(aValue)
             .When(_ => TheFifth<string>())
             .Then().Result.Is(aValue);
         Specification.Is(

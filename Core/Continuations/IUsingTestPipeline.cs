@@ -34,6 +34,19 @@ public interface IUsingTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     IUsingTestPipeline<TSUT, TResult> And<TValue>(
         TValue value,
-        Scope scope = Scope.All,
+        For scope = For.All,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null);
+
+    /// <summary>
+    /// Instructs the test pipeline to use a factory method to resolve the value when generating test data or resolving dependencies.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value being provided.</typeparam>
+    /// <param name="factory">A function that creates the value.</param>
+    /// <param name="scope">Determines whether the factory is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
+    /// <param name="factoryExpr">Automatically populated by the compiler.</param>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    IUsingTestPipeline<TSUT, TResult> And<TValue>(
+        Func<TValue> factory,
+        For scope = For.All,
+        [CallerArgumentExpression(nameof(factory))] string? factoryExpr = null);
 }

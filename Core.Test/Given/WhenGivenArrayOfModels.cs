@@ -10,7 +10,7 @@ public abstract class WhenGetArrayOfModels : Spec<MyService, MyModel[]>
     public class GivenMentionOfAnyArray_FollowedBy_MentionOfArrayOfSpecificLength : WhenGetArrayOfModels
     {
         public GivenMentionOfAnyArray_FollowedBy_MentionOfArrayOfSpecificLength()
-            => Given(Two<MyModel>).And<MyModel>(_ => _.Name = A<string>());
+            => Using(Two<MyModel>).Given<MyModel>(_ => _.Name = A<string>());
 
         [Fact]
         public void ThenGetArrayOfSpecificLength()
@@ -19,7 +19,7 @@ public abstract class WhenGetArrayOfModels : Spec<MyService, MyModel[]>
             Specification.Is(
                 """
             Given MyModel has Name = a string
-              and two MyModel
+            Using two MyModel
               and IMyRepository.GetModels() returns a MyModel[]
             When _.GetModels()
             Then Result is two MyModel

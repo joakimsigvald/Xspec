@@ -10,28 +10,28 @@ public class WhenUsingConcreteInstanceOfInterface : Spec<MyService, int>
     [Fact]
     public void WithoutCast_ThenUseIt()
     {
-        Using(new FakeRepository(An<int>()), Scope.Subject)
+        Using(new FakeRepository(An<int>()), For.Subject)
             .Then().Result.Is(The<int>());
     }
 
     [Fact]
     public void WithDifferentCast_ThenDoNotUseIt()
     {
-        Using<object>(new FakeRepository(An<int>()), Scope.Subject)
+        Using<object>(new FakeRepository(An<int>()), For.Subject)
             .Then().Result.Is().Not(The<int>());
     }
 
     [Fact]
     public void WithCast_ThenUseIt()
     {
-        Using<IMyRepository>(new FakeRepository(An<int>()), Scope.Subject)
+        Using<IMyRepository>(new FakeRepository(An<int>()), For.Subject)
             .Then().Result.Is(The<int>());
     }
 
     [Fact]
     public void GivenConcreteTypeArg_ThenUseIt()
     {
-        Given().Using<FakeRepository>().Using(123, Scope.Subject).Then().Result.Is(123);
+        Given().Using<FakeRepository>().Using(123, For.Subject).Then().Result.Is(123);
         Specification.Is(
             """
             Using 123 for Subject

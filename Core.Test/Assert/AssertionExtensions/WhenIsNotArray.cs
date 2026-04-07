@@ -4,7 +4,7 @@ namespace Xspec.Test.Assert.AssertionExtensions;
 
 public class WhenIsNotArray : Spec<int[]>
 {
-    public WhenIsNotArray() => Given().Default(() => new int[] { 1, 2, 3 });
+    public WhenIsNotArray() => Using(() => new int[] { 1, 2, 3 }, For.Input);
 
     [Fact] public void GivenNotSame_ThenDoesNotThrow() => When(_ => _.Is().Not(null)).Then();
 
@@ -17,7 +17,7 @@ public class WhenIsNotArray : Spec<int[]>
         ex.HasMessage(
             "Expected Result to not be [1, 2] but found [1, 2]",
             """
-            Given new int[] { 1, 2, 3 } is default
+            Using new int[] { 1, 2, 3 } for Input
             When arr
             Then Result is not arr
             """);

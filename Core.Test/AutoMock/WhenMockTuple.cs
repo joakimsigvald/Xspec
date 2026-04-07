@@ -4,7 +4,7 @@ namespace Xspec.Test.AutoMock;
 
 public class WhenMockTuple : Spec<StaticTupleService, (int, string)>
 {
-    public WhenMockTuple() => Given(A<(int, string)>).When(_ => _.GetValue());
+    public WhenMockTuple() => Using(A<(int, string)>).When(_ => _.GetValue());
     public class UsingAValue : WhenMockTuple
     {
         [Fact]
@@ -13,7 +13,7 @@ public class WhenMockTuple : Spec<StaticTupleService, (int, string)>
             Then().Result.Is(The<(int, string)>());
             Specification.Is(
                 """
-                Given a (int, string)
+                Using a (int, string)
                 When _.GetValue()
                 Then Result is the (int, string)
                 """);
@@ -32,7 +32,7 @@ public class WhenMockTuple : Spec<StaticTupleService, (int, string)>
             Specification.Is(
                 """
                 Using (v1, v2)
-                Given a (int, string)
+                  and a (int, string)
                 When _.GetValue()
                 Then Result is (v1, v2)
                 """);

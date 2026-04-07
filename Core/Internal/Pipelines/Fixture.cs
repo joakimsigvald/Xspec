@@ -33,7 +33,7 @@ internal abstract class Fixture<TSUT>
         _context.SetDefault(transform);
     }
 
-    internal void SetDefault<TValue>(TValue defaultValue, Scope scope, string defaultValuesExpr)
+    internal void SetDefault<TValue>(TValue defaultValue, For scope, string defaultValuesExpr)
     {
         if (!string.IsNullOrEmpty(defaultValuesExpr))
             SpecificationGenerator.AddGiven(defaultValuesExpr, scope);
@@ -41,7 +41,7 @@ internal abstract class Fixture<TSUT>
         _context.Use(defaultValue, scope);
     }
 
-    internal void Using<TValue>(TValue defaultValue, Scope scope, string defaultValuesExpr)
+    internal void Using<TValue>(TValue defaultValue, For scope, string defaultValuesExpr)
     {
         if (!string.IsNullOrEmpty(defaultValuesExpr))
             SpecificationGenerator.AddUsing(defaultValuesExpr, scope);

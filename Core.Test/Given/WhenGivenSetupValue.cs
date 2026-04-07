@@ -11,14 +11,14 @@ public class WhenGivenSetupValue : Spec<MyService, DateTime>
     [Fact]
     public void ThenCanApplySpecificValueForPreviouslyMentionedType()
     {
-        Given(A<DateTime>)
+        Using(A<DateTime>)
             .When(_ => _.GetTime())
             .Given().A(_now)
             .Then().Result.Is(_now);
         Specification.Is(
             """
             Given a DateTime is _now
-              and a DateTime
+            Using a DateTime
             When _.GetTime()
             Then Result is _now
             """);
@@ -27,7 +27,7 @@ public class WhenGivenSetupValue : Spec<MyService, DateTime>
     [Fact]
     public void ThenApplyFirstSpecifiedValueForPreviouslyMentionedType()
     {
-        Given(A<DateTime>)
+        Using(A<DateTime>)
             .When(_ => _.GetTime())
             .Given().A(_now)
             .and.A(_anotherTime) //Ignore this since a specific value has already been provided
@@ -36,7 +36,7 @@ public class WhenGivenSetupValue : Spec<MyService, DateTime>
             """
             Given a DateTime is _anotherTime
               and a DateTime is _now
-              and a DateTime
+            Using a DateTime
             When _.GetTime()
             Then Result is _now
             """);

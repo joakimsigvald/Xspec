@@ -8,7 +8,7 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
     [Fact]
     public void ThenApplyBothAsValues()
     {
-        Using("ABC", Scope.Input).And("DEF", Scope.Subject)
+        Using("ABC", For.Input).And("DEF", For.Subject)
             .When(_ => _.GetValues(A<string>()))
             .Then().Result.Is(("DEF", "ABC"));
         Specification.Is(
@@ -23,13 +23,13 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
     [Fact]
     public void ThenApplyBothAsLambdas()
     {
-        Given().Default(() => "ABC").and.Using(() => "DEF")
+        Using(() => "ABC", For.Input).And(() => "DEF")
             .When(_ => _.GetValues(A<string>()))
             .Then().Result.Is(("DEF", "ABC"));
         Specification.Is(
             """
-            Given using "DEF"
-              and "ABC" is default
+            Using "DEF"
+              and "ABC" for Input
             When _.GetValues(a string)
             Then Result is ("DEF", "ABC")
             """);
@@ -39,7 +39,8 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
     public void UsingTag_ThenApplyBothAsLambdas()
     {
         Tag<string> def = new();
-        Given().Default(() => "ABC").and.Using(def)
+            Using(() => "ABC", For.Input)
+            .Given().Using(def)
             .Given(def).Is("DEF")
             .When(_ => _.GetValues(A<string>()))
             .Then().Result.Is(("DEF", "ABC"));
@@ -47,7 +48,7 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
             """
             Given def is "DEF"
               and using def
-              and "ABC" is default
+            Using "ABC" for Input
             When _.GetValues(a string)
             Then Result is ("DEF", "ABC")
             """);
@@ -62,7 +63,7 @@ public class WhenGivenUsingAndDefaultModel : Spec<MyWrapper<MyModel>, (MyModel, 
     [Fact]
     public void ThenApplyBothAsValues()
     {
-        Using(_first, Scope.Input).And(_second, Scope.Subject)
+        Using(_first, For.Input).And(_second, For.Subject)
             .When(_ => _.GetValues(A<MyModel>()))
             .Then().Result.Is((_second, _first));
         Specification.Is(
@@ -96,13 +97,13 @@ public class WhenGivenUsingAndDefaultModel : Spec<MyWrapper<MyModel>, (MyModel, 
     [Fact]
     public void ThenApplyBothAsLambdas()
     {
-        Given().Default(() => _first).and.Using(() => _second)
+        Using(() => _first, For.Input).And(() => _second, For.Subject)
             .When(_ => _.GetValues(A<MyModel>()))
             .Then().Result.Is((_second, _first));
         Specification.Is(
             """
-            Given using _second
-              and _first is default
+            Using _second for Subject
+              and _first for Input
             When _.GetValues(a MyModel)
             Then Result is (_second, _first)
             """);

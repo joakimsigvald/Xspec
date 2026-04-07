@@ -86,7 +86,7 @@ internal class SpecificationBuilder
         _textBuilder.AddWord(_that);
     }
 
-    internal void AddGiven(string valueExpr, Scope scope)
+    internal void AddGiven(string valueExpr, For scope)
     {
         _currentMockSetup = null;
         _textBuilder.AddPhraseOrSentence(string.Join(' ', GetWords()));
@@ -94,15 +94,15 @@ internal class SpecificationBuilder
         IEnumerable<string> GetWords()
         {
             yield return Given;
-            if (scope == Scope.Subject)
+            if (scope == For.Subject)
                 yield return "using";
             yield return valueExpr.ParseValue();
-            if (scope == Scope.Input)
+            if (scope == For.Input)
                 yield return "is default";
         }
     }
 
-    internal void AddUsing(string valueExpr, Scope scope)
+    internal void AddUsing(string valueExpr, For scope)
     {
         _currentMockSetup = null;
         _textBuilder.AddPhraseOrSentence(string.Join(' ', GetWords()));
@@ -111,7 +111,7 @@ internal class SpecificationBuilder
         {
             yield return Using;
             yield return valueExpr.ParseValue();
-            if (scope != Scope.All)
+            if (scope != For.All)
                 yield return $"for {scope}";
         }
     }

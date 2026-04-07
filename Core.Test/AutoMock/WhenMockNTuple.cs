@@ -4,7 +4,7 @@ namespace Xspec.Test.AutoMock;
 
 public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float)>
 {
-    public WhenMockNTuple() => Given(A<(int, string, int, float)>).When(_ => _.GetValue());
+    public WhenMockNTuple() => Using(A<(int, string, int, float)>).When(_ => _.GetValue());
     public class UsingAValue : WhenMockNTuple
     {
         [Fact]
@@ -13,7 +13,7 @@ public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float
             Then().Result.Is(The<(int, string, int, float)>());
             Specification.Is(
                 """
-                Given a (int, string, int, float)
+                Using a (int, string, int, float)
                 When _.GetValue()
                 Then Result is the (int, string, int, float)
                 """);
@@ -32,7 +32,7 @@ public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float
             Specification.Is(
                 """
                 Using (v1, v2, v3, v4)
-                Given a (int, string, int, float)
+                  and a (int, string, int, float)
                 When _.GetValue()
                 Then Result is (v1, v2, v3, v4)
                 """);

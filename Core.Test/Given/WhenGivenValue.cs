@@ -8,12 +8,12 @@ public class WhenGivenValue : Spec<MyService, MyModel>
     [Fact]
     public void AsFirstSentence_ThenValueInPipeline()
     {
-        Given(() => new MyModel() { Name = A<string>() })
+        Using(() => new MyModel() { Name = A<string>() })
             .When(_ => MyService.Echo(The<MyModel>()))
             .Then().Result.Name.Is(The<string>());
         Specification.Is(
             """
-            Given new MyModel() { Name = A<string>() }
+            Using new MyModel() { Name = A<string>() }
             When MyService.Echo(the MyModel)
             Then Result.Name is the string
             """);

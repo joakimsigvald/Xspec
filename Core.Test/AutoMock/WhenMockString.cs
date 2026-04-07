@@ -4,7 +4,7 @@ namespace Xspec.Test.AutoMock;
 
 public class WhenMockString : Spec<StaticStringService, string>
 {
-    public WhenMockString() => Given(A<string>).When(_ => _.GetValue());
+    public WhenMockString() => Using(A<string>).When(_ => _.GetValue());
     public class UsingAString : WhenMockString
     {
         [Fact]
@@ -13,7 +13,7 @@ public class WhenMockString : Spec<StaticStringService, string>
             Then().Result.Is(The<string>());
             Specification.Is(
                 """
-                Given a string
+                Using a string
                 When _.GetValue()
                 Then Result is the string
                 """);
@@ -32,7 +32,7 @@ public class WhenMockString : Spec<StaticStringService, string>
             Specification.Is(
                 """
                 Using value
-                Given a string
+                  and a string
                 When _.GetValue()
                 Then Result is value
                 """);

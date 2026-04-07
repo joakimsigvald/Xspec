@@ -4,7 +4,7 @@ namespace Xspec.Test.AutoMock;
 
 public class WhenMockInt : Spec<StaticIntService, int>
 {
-    public WhenMockInt() => Given(An<int>).When(_ => _.GetValue());
+    public WhenMockInt() => Using(An<int>).When(_ => _.GetValue());
     public class UsingAValue : WhenMockInt
     {
         [Fact]
@@ -13,7 +13,7 @@ public class WhenMockInt : Spec<StaticIntService, int>
             Then().Result.Is(The<int>());
             Specification.Is(
                 """
-                Given an int
+                Using an int
                 When _.GetValue()
                 Then Result is the int
                 """);
@@ -32,7 +32,7 @@ public class WhenMockInt : Spec<StaticIntService, int>
             Specification.Is(
                 """
                 Using value
-                Given an int
+                  and an int
                 When _.GetValue()
                 Then Result is value
                 """);

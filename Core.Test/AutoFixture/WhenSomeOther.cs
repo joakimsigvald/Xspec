@@ -4,7 +4,7 @@ namespace Xspec.Test.AutoFixture;
 
 public abstract class WhenSomeOther : Spec<MyRetriever, MyModel[]>
 {
-    public WhenSomeOther() => Given(() => SomeOther<MyModel>()).When(_ => _.List());
+    public WhenSomeOther() => Using(() => SomeOther<MyModel>()).When(_ => _.List());
 
     public class GivenNoOtherReference : WhenSomeOther
     {
@@ -14,7 +14,7 @@ public abstract class WhenSomeOther : Spec<MyRetriever, MyModel[]>
             Result.Has().Count(2);
             Specification.Is(
                 """
-                Given some other MyModel
+                Using some other MyModel
                 When _.List()
                 Then Result has count 2
                 """);
@@ -23,14 +23,14 @@ public abstract class WhenSomeOther : Spec<MyRetriever, MyModel[]>
 
     public class GivenOneIsMentionedAfter : WhenSomeOther
     {
-        public GivenOneIsMentionedAfter() => Given(One<MyModel>);
+        public GivenOneIsMentionedAfter() => Using(One<MyModel>);
 
         [Fact]
         public void ThenCountIsTwo()
         {
             Result.Has().Count(2);
             Specification.Is(
-@"Given one MyModel
+@"Using one MyModel
   and some other MyModel
 When _.List()
 Then Result has count 2");
@@ -41,7 +41,7 @@ Then Result has count 2");
         {
             Result.First().Is().Not(TheFirst<MyModel>());
             Specification.Is(
-@"Given one MyModel
+@"Using one MyModel
   and some other MyModel
 When _.List()
 Then Result.First() is not the first MyModel");
@@ -50,14 +50,14 @@ Then Result.First() is not the first MyModel");
 
     public class GivenThreeIsMentionedAfter : WhenSomeOther
     {
-        public GivenThreeIsMentionedAfter() => Given(Three<MyModel>);
+        public GivenThreeIsMentionedAfter() => Using(Three<MyModel>);
 
         [Fact]
         public void ThenCountIsTwo()
         {
             Result.Has().Count(2);
             Specification.Is(
-@"Given three MyModel
+@"Using three MyModel
   and some other MyModel
 When _.List()
 Then Result has count 2");
@@ -66,14 +66,14 @@ Then Result has count 2");
 
     public class GivenOneIsMentionedBefore : WhenSomeOther
     {
-        public GivenOneIsMentionedBefore() => Given(One<MyModel>).And(Some<MyModel>);
+        public GivenOneIsMentionedBefore() => Using(One<MyModel>).And(Some<MyModel>);
 
         [Fact]
         public void ThenCountIsTwo()
         {
             Result.Has().Count(2);
             Specification.Is(
-@"Given some MyModel
+@"Using some MyModel
   and one MyModel
   and some other MyModel
 When _.List()
@@ -83,14 +83,14 @@ Then Result has count 2");
 
     public class GivenTwoIsMentionedBefore : WhenSomeOther
     {
-        public GivenTwoIsMentionedBefore() => Given(Two<MyModel>).And(Some<MyModel>);
+        public GivenTwoIsMentionedBefore() => Using(Two<MyModel>).And(Some<MyModel>);
 
         [Fact]
         public void ThenTwoModelsAreNotThoseTwoModels()
         {
             Result.Is().not.Like(Two<MyModel>());
             Specification.Is(
-@"Given some MyModel
+@"Using some MyModel
   and two MyModel
   and some other MyModel
 When _.List()

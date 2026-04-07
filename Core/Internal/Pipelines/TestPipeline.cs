@@ -92,6 +92,7 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
 
     public IGivenContinuation<TSUT, TResult> Given() => Parent.Given();
 
+    [Obsolete("Use `Using` instead")]
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         Func<TValue> defaultValue,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
@@ -104,7 +105,7 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
 
     public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
         TValue defaultValue,
-        Scope scope = Scope.All,
+        For scope = For.All,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
         => Parent.Using(defaultValue, scope, defaultValueExpr!);
 

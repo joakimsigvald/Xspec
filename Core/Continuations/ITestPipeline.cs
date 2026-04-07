@@ -308,6 +308,6 @@ public interface ITestPipeline<TSUT, TResult>
     /// <returns></returns>
     IUsingTestPipeline<TSUT, TResult> Using<TValue>(
         TValue defaultValue,
-        Scope scope = Scope.All,
+        For scope = For.All,
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
 }

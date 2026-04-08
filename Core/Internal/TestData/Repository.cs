@@ -84,25 +84,11 @@ internal class Repository
             Use(Task.FromResult(value), scope);
     }
 
-    //internal void Use<TValue>(Func<TValue> factory, For scope)
-    //{
-    //    if (scope.HasFlag(For.Input))
-    //        _defaultValues[typeof(TValue)] = factory();
-
-    //    if (factory is Moq.Internals.InterfaceProxy)
-    //        return;
-
-    //    if (scope.HasFlag(For.Subject))
-    //    {
-    //        if (factory is not null)
-    //            _testDataGenerator.Use(factory);
-    //        else if (scope == For.Subject)
-    //            throw new SetupFailed("Cannot use null");
-    //    }
-
-    //    if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
-    //        Use(Task.FromResult(factory), scope);
-    //}
+    internal void Use<TValue>(Func<TValue> factory, For scope)
+    {
+        Use<Func<TValue>>(factory, scope); //register factory as value
+        Use(factory(), scope); //register factory-output as value
+    }
 
     internal (object? val, bool found) Use(Type type)
         => TryGetDefault(type, out var value) ? (value, true) : (null, false);

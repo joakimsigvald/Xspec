@@ -49,13 +49,13 @@ internal abstract class Fixture<TSUT>
         _context.Use(defaultValue, scope);
     }
 
-    //internal void Using<TValue>(Func<TValue> defaultFactory, For scope, string defaultFactoryExpr)
-    //{
-    //    if (!string.IsNullOrEmpty(defaultFactoryExpr))
-    //        SpecificationGenerator.AddUsing(defaultFactoryExpr, scope);
-    //    AssertIsNotSetUp();
-    //    _context.Use(defaultFactory, scope);
-    //}
+    internal void Using<TValue>(Func<TValue> defaultFactory, For scope, string defaultFactoryExpr)
+    {
+        if (!string.IsNullOrEmpty(defaultFactoryExpr))
+            SpecificationGenerator.AddUsing(defaultFactoryExpr, scope);
+        AssertIsNotSetUp();
+        _context.Use(defaultFactory, scope);
+    }
 
     internal void PrependSetUp(Delegate setUp, string setUpExpr)
     {

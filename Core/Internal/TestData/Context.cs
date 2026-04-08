@@ -123,7 +123,7 @@ internal class Context
         => _repository.GetMock<TObject>();
 
     internal void Use<TService>(TService service, For scope) => _repository.Use(service, scope);
-    //internal void Use<TService>(Func<TService> factory, For scope) => _dataProvider.Use(factory, scope);
+    internal void Use<TService>(Func<TService> factory, For scope) => _repository.Use(factory, scope);
 
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _repository.SetDefaultException(typeof(TService), ex);

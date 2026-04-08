@@ -8,15 +8,14 @@ namespace Xspec.Internal.TestData;
 internal class Repository
 {
     private readonly Dictionary<Type, object?> _defaultValues = [];
-    private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
     private readonly Dictionary<Type, Dictionary<int, object?>> _numberedMentions = [];
-    private readonly AutoMockerWrapper _testDataGenerator;
+    private readonly AutoMockerWrapper _mocker;
     private readonly Dictionary<Type, Func<object, object>> _defaultSetups = [];
     private readonly DataGenerator _generator;
 
     public Repository()
     {
-        _testDataGenerator = new(this);
+        _mocker = new(this);
         _generator = new(this, new(), new());
     }
 
@@ -56,7 +55,7 @@ internal class Repository
     {
         try
         {
-            return _testDataGenerator.Instantiate<TValue>();
+            return _mocker.Instantiate<TValue>();
         }
         catch (Exception ex)
         {
@@ -76,7 +75,7 @@ internal class Repository
         if (scope.HasFlag(For.Subject))
         {
             if (value is not null)
-                _testDataGenerator.Use(value);
+                _mocker.Use(value);
             else if (scope == For.Subject)
                 throw new SetupFailed("Cannot use null");
         }
@@ -120,15 +119,12 @@ internal class Repository
     internal object Create(Type type) => ApplyDefaultSetup(type, _generator.Create(type))!;
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
-        => _testDataGenerator.GetMock<TObject>();
+        => _mocker.GetMock<TObject>();
 
-    internal Mock GetMock(Type type) => _testDataGenerator.GetMock(type);
-
-    internal Exception? GetDefaultException(Type type)
-        => _defaultExceptions.TryGetValue(type, out var ex) ? ex() : null;
+    internal Mock GetMock(Type type) => _mocker.GetMock(type);
 
     internal void SetDefaultException(Type type, Func<Exception> ex)
-        => _defaultExceptions[type] = ex;
+        => _mocker.SetDefaultException(type, ex);
 
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _generator.Register(convert);
@@ -140,7 +136,7 @@ internal class Repository
         => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];
 
     private TValue MockOrCreate<TValue>()
-        => typeof(TValue).IsInterface ? _testDataGenerator.Get<TValue>() : _generator.Create<TValue>();
+        => typeof(TValue).IsInterface ? _mocker.Get<TValue>() : _generator.Create<TValue>();
 
     private object? ApplyDefaultSetup(Type type, object? newValue)
         => newValue is not null && _defaultSetups.TryGetValue(type, out var setup)

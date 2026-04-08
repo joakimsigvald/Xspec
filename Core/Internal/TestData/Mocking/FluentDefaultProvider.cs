@@ -3,23 +3,27 @@ using System.Reflection;
 
 namespace Xspec.Internal.TestData.Mocking;
 
-internal class FluentDefaultProvider : DefaultValueProvider
+internal class FluentDefaultProvider(Repository dataProvider) : DefaultValueProvider
 {
-    private readonly Repository _dataProvider;
-
-    internal FluentDefaultProvider(Repository dataProvider) => _dataProvider = dataProvider;
+    private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
 
     protected override object GetDefaultValue(Type type, Mock mock)
     {
-        var ex = _dataProvider.GetDefaultException(GetMockedType(mock));
+        var ex = GetDefaultException(GetMockedType(mock));
         if (ex is not null)
             throw ex;
-        var (val, found) = _dataProvider.Use(type);
+        var (val, found) = dataProvider.Use(type);
         return found ? val!
             : IsReturningSelf(type, mock) ? mock.Object
             : IsTask(type) ? GetTask(type, mock)
-            : _dataProvider.Create(type);
+            : dataProvider.Create(type);
     }
+
+    private Exception? GetDefaultException(Type type)
+        => _defaultExceptions.TryGetValue(type, out var ex) ? ex() : null;
+
+    internal void SetDefaultException(Type type, Func<Exception> ex)
+        => _defaultExceptions[type] = ex;
 
     private static bool IsReturningSelf(Type type, Mock mock)
         => !type.IsAssignableFrom(typeof(object)) && type.IsAssignableFrom(mock.Object.GetType());

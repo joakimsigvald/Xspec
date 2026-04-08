@@ -8,10 +8,15 @@ namespace Xspec.Internal.TestData.Mocking;
 
 internal class AutoMockerWrapper
 {
+    private readonly FluentDefaultProvider _fluentDefaultProvider;
     private readonly AutoMocker _mocker;
     private readonly ConcurrentDictionary<Type, object> _usages = [];
 
-    internal AutoMockerWrapper(Repository context) => _mocker = CreateAutoMocker(context);
+    public AutoMockerWrapper(Repository context)
+    {
+        _fluentDefaultProvider = new(context);
+        _mocker = CreateAutoMocker(context);
+    }
 
     internal void Use<TService>([DisallowNull] TService service)
     {
@@ -62,12 +67,15 @@ internal class AutoMockerWrapper
     internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.GetMock<TObject>();
     internal Mock GetMock(Type type) => _mocker.GetMock(type);
 
-    private static AutoMocker CreateAutoMocker(Repository context)
+    internal void SetDefaultException(Type type, Func<Exception> ex)
+        => _fluentDefaultProvider.SetDefaultException(type, ex);
+
+    private AutoMocker CreateAutoMocker(Repository context)
     {
         var autoMocker = new AutoMocker(
             MockBehavior.Loose,
             DefaultValue.Custom,
-            new FluentDefaultProvider(context),
+            _fluentDefaultProvider,
             false);
         CustomizeResolvers(autoMocker, context);
         return autoMocker;

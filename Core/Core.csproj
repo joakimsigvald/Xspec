@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>Base classes and extension classes for building Unit tests based on XUnit and Given-When-Then pattern</Description>
+		<Description>A fluent Given-When-Then specification framework for xUnit. Write behavior definitions as unit tests with built-in auto-mocking and data generation</Description>
 		<VersionPrefix></VersionPrefix>
 		<Authors>Joakim Sigvald</Authors>
 		<TargetFramework>net10.0</TargetFramework>
@@ -18,12 +18,14 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>0.3.0</PackageVersion>
+		<PackageVersion>0.4.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Upgraded to Xunit.v3 and removed special handling of Spec as class fixture.
+			Removed obsolete unique constraint. 
+			Added scope to clearly separate between data for Subject and data for Input.
+			Implemented Using as a arrangement pass before Given
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

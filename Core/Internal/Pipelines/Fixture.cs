@@ -57,13 +57,6 @@ internal abstract class Fixture<TSUT>
     //    _context.Use(defaultFactory, scope);
     //}
 
-    internal void SetUnique<TValue>()
-    {
-        SpecificationGenerator.AddUnique<TValue>();
-        AssertIsNotSetUp();
-        _context.SetUnique<TValue>();
-    }
-
     internal void PrependSetUp(Delegate setUp, string setUpExpr)
     {
         AssertIsNotSetUp();

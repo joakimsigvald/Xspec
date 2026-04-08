@@ -4,9 +4,9 @@ namespace Xspec.Internal.TestData.Mocking;
 
 internal class ValueResolver : IMockResolver
 {
-    private readonly DataProvider _context;
+    private readonly Repository _context;
 
-    internal ValueResolver(DataProvider context) => _context = context;
+    internal ValueResolver(Repository context) => _context = context;
 
     public void Resolve(MockResolutionContext context)
     {

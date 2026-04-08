@@ -11,7 +11,7 @@ internal class AutoMockerWrapper
     private readonly AutoMocker _mocker;
     private readonly ConcurrentDictionary<Type, object> _usages = [];
 
-    internal AutoMockerWrapper(DataProvider context) => _mocker = CreateAutoMocker(context);
+    internal AutoMockerWrapper(Repository context) => _mocker = CreateAutoMocker(context);
 
     internal void Use<TService>([DisallowNull] TService service)
     {
@@ -62,7 +62,7 @@ internal class AutoMockerWrapper
     internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.GetMock<TObject>();
     internal Mock GetMock(Type type) => _mocker.GetMock(type);
 
-    private static AutoMocker CreateAutoMocker(DataProvider context)
+    private static AutoMocker CreateAutoMocker(Repository context)
     {
         var autoMocker = new AutoMocker(
             MockBehavior.Loose,
@@ -73,7 +73,7 @@ internal class AutoMockerWrapper
         return autoMocker;
     }
 
-    private static void CustomizeResolvers(AutoMocker autoMocker, DataProvider context)
+    private static void CustomizeResolvers(AutoMocker autoMocker, Repository context)
     {
         var resolverList = (List<IMockResolver>)autoMocker.Resolvers;
         AddValueResolver();

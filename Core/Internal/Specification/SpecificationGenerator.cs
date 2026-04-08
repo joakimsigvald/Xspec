@@ -113,9 +113,6 @@ internal static class SpecificationGenerator
 
     internal static void AddThat() => Builder.Add(Builder.AddThat);
 
-    internal static void AddUnique<TValue>()
-         => Builder.Add(() => Builder.AddUnique(typeof(TValue).Alias()));
-
     internal static void Assign(Type type, int index, object? value) => Assignments.Assign(type, index, value);
 
     internal static void TagIndex(Type type, int index, string tagName)

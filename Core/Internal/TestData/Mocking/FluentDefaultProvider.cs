@@ -5,9 +5,9 @@ namespace Xspec.Internal.TestData.Mocking;
 
 internal class FluentDefaultProvider : DefaultValueProvider
 {
-    private readonly DataProvider _dataProvider;
+    private readonly Repository _dataProvider;
 
-    internal FluentDefaultProvider(DataProvider dataProvider) => _dataProvider = dataProvider;
+    internal FluentDefaultProvider(Repository dataProvider) => _dataProvider = dataProvider;
 
     protected override object GetDefaultValue(Type type, Mock mock)
     {

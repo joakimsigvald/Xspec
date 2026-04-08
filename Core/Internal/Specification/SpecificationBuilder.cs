@@ -158,9 +158,6 @@ internal class SpecificationBuilder
 
     internal void AddAssert(string assertName) => _textBuilder.AddWord(assertName.AsWords());
 
-    internal void AddUnique(string type)
-        => _textBuilder.AddPhraseOrSentence($"{Given} all {type} are unique");
-
     internal void AddAssertConjunction(string conjunction)
     {
         _isChainOfAssertions = true;

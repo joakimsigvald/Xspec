@@ -128,8 +128,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Func<TValue> value, For scope, string defaultValueExpr)
         => PrependGiven(() => _pipeline.SetDefault(value(), scope, defaultValueExpr));
 
+    //TODO: Remove
     internal IGivenTestPipeline<TSUT, TResult> GivenUnique<TValue>()
-        => PrependGiven(_pipeline.SetUnique<TValue>);
+        => Continue();
 
     internal IGivenTestPipeline<TSUT, TResult> Apply<TValue>(
         Action setup,
@@ -159,12 +160,14 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     internal IGivenTestPipeline<TSUT, TResult> AppendGiven(Action given)
     {
         _pipeline.AppendGiven(given);
-        return new GivenTestPipeline<TSUT, TResult>(this);
+        return Continue();
     }
 
     private GivenTestPipeline<TSUT, TResult> PrependGiven(Action given)
     {
         _pipeline.PrependGiven(given);
-        return new GivenTestPipeline<TSUT, TResult>(this);
+        return Continue();
     }
+
+    private GivenTestPipeline<TSUT, TResult> Continue() => new(this);
 }

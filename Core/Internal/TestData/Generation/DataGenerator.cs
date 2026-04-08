@@ -2,7 +2,7 @@
 
 namespace Xspec.Internal.TestData.Generation;
 
-internal class DataGenerator(DataProvider context, Counter counter, TypeConversionStrategy typeConversionStrategy)
+internal class DataGenerator(Repository context, Counter counter, TypeConversionStrategy typeConversionStrategy)
 {
     private readonly IGenerationStrategy[] _strategies = [
         typeConversionStrategy,

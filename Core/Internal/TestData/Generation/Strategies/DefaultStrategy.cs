@@ -1,6 +1,6 @@
 ﻿namespace Xspec.Internal.TestData.Generation.Strategies;
 
-internal class DefaultStrategy(DataProvider context) : IGenerationStrategy
+internal class DefaultStrategy(Repository context) : IGenerationStrategy
 {
     public bool TryGenerate(GenerationRequest request, ref object? result)
         => request.WithDefaultFallback && TryGetDefault(request.Type, out result);

@@ -5,7 +5,7 @@ using Xspec.Internal.TestData.Mocking;
 
 namespace Xspec.Internal.TestData;
 
-internal class DataProvider
+internal class Repository
 {
     private readonly Dictionary<Type, object?> _defaultValues = [];
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
@@ -14,7 +14,7 @@ internal class DataProvider
     private readonly Dictionary<Type, Func<object, object>> _defaultSetups = [];
     private readonly DataGenerator _generator;
 
-    public DataProvider()
+    public Repository()
     {
         _testDataGenerator = new(this);
         _generator = new(this, new(), new());

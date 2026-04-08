@@ -5,20 +5,11 @@ namespace Xspec.Internal.TestData;
 
 internal class Context
 {
-    private readonly DataProvider _dataProvider = new();
+    private readonly Repository _repository = new();
     private readonly Dictionary<Type, Dictionary<object, int>> _tagIndices = [];
-    private readonly Dictionary<Type, HashSet<object?>> _generatedValues = [];
 
     internal TClass Instantiate<TClass>()
-        => (TClass)(_dataProvider.Instantiate<TClass>() ?? Create<TClass>())!;
-
-    //internal TClass Instantiate<TClass>()
-    //{
-    //    var sutType = typeof(TClass);
-    //    return sutType.IsClass && sutType != typeof(string)
-    //        ? _dataProvider.Instantiate<TClass>()
-    //        : Create<TClass>();
-    //}
+        => (TClass)(_repository.Instantiate<TClass>() ?? Create<TClass>())!;
 
     internal TValue Apply<TValue>(Action<TValue> setup, int index)
         => Produce<TValue>(index, (v, i) =>
@@ -36,18 +27,18 @@ internal class Context
     internal TValue Produce<TValue>(int? index, Func<TValue, int, TValue>? transform = null)
     {
         if (index is null)
-            return ApplyUniqueConstraint(Create<TValue>);
+            return Create<TValue>();
 
-        var (val, found) = _dataProvider.Retrieve(typeof(TValue), index.Value);
+        var (val, found) = _repository.Retrieve(typeof(TValue), index.Value);
         return found && transform is null
             ? (TValue)val!
-            : Assign(ApplyUniqueConstraint(Get), index.Value);
+            : Assign(Get(), index.Value);
 
         TValue Get()
         {
             var newValue = found
                 ? (TValue)val!
-                : _dataProvider.TryGetDefault(typeof(TValue), out var defaultValue)
+                : _repository.TryGetDefault(typeof(TValue), out var defaultValue)
                 ? (TValue)defaultValue!
                 : Create<TValue>();
             if (transform is null)
@@ -85,7 +76,7 @@ internal class Context
     }
 
     internal void SetDefault<TModel>(Action<TModel> setup) where TModel : class
-        => _dataProvider.AddDefaultSetup(
+        => _repository.AddDefaultSetup(
             typeof(TModel),
             obj =>
             {
@@ -95,20 +86,20 @@ internal class Context
             });
 
     internal void SetDefault<TValue>(Func<TValue, TValue> setup)
-        => _dataProvider.AddDefaultSetup(typeof(TValue), _ => setup((TValue)_)!);
+        => _repository.AddDefaultSetup(typeof(TValue), _ => setup((TValue)_)!);
 
     internal TValue[] AssignMany<TValue>(TValue[] values)
         => Assign(values);
 
     internal TValue Assign<TValue>(TValue value, int index = 0)
     {
-        _dataProvider.Assign(typeof(TValue), value, index);
+        _repository.Assign(typeof(TValue), value, index);
         return value;
     }
 
     internal TValue[] MentionMany<TValue>(int count, int? minCount)
     {
-        var (val, found) = _dataProvider.Retrieve(typeof(TValue[]));
+        var (val, found) = _repository.Retrieve(typeof(TValue[]));
         return found && val is TValue[] arr
             ? Assign(Reuse(arr, count, minCount))
             : MentionMany<TValue>(count);
@@ -126,41 +117,19 @@ internal class Context
     internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
         => Assign(Enumerable.Range(0, count).Select(i => Apply(i, transform)).ToArray());
 
-    internal TValue Create<TValue>() => _dataProvider.Create<TValue>();
+    internal TValue Create<TValue>() => _repository.Create<TValue>();
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
-        => _dataProvider.GetMock<TObject>();
+        => _repository.GetMock<TObject>();
 
-    internal void Use<TService>(TService service, For scope) => _dataProvider.Use(service, scope);
+    internal void Use<TService>(TService service, For scope) => _repository.Use(service, scope);
     //internal void Use<TService>(Func<TService> factory, For scope) => _dataProvider.Use(factory, scope);
 
     internal void SetupThrows<TService>(Func<Exception> ex)
-        => _dataProvider.SetDefaultException(typeof(TService), ex);
-
-    internal void SetUnique<TValue>()
-    {
-        if (!_generatedValues.ContainsKey(typeof(TValue)))
-            _generatedValues[typeof(TValue)] = [];
-    }
+        => _repository.SetDefaultException(typeof(TService), ex);
 
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
-        => _dataProvider.Register(convert);
-
-    private TValue ApplyUniqueConstraint<TValue>(Func<TValue> generateValue)
-    {
-        var type = typeof(TValue);
-        if (!_generatedValues.TryGetValue(type, out var generated))
-            return generateValue();
-
-        const int attempts = 10;
-        for (var i = 0; i < attempts; i++)
-        {
-            var value = generateValue();
-            if (generated.Add(value))
-                return value;
-        }
-        throw new SetupFailed($"Failed to find a unique value of {type.Alias()} after {attempts} attempts");
-    }
+        => _repository.Register(convert);
 
     private int GetTagIndex<TValue>(Tag<TValue> tag, string tagName)
     {

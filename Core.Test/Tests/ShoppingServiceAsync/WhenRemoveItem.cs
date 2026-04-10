@@ -18,7 +18,7 @@ public abstract class WhenRemoveItem : ShoppingServiceAsyncSpec<ShoppingCart>
 
     public class GivenCartWithOneItem : WhenRemoveItem
     {
-        public GivenCartWithOneItem() => Given(() => CartItems = [new ShoppingCartItem("X")]);
+        public GivenCartWithOneItem() => Using(() => CartItems = [new ShoppingCartItem("X")]);
 
         [Fact]
         public void ThenCartIsEmpty()
@@ -26,8 +26,8 @@ public abstract class WhenRemoveItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Is().Empty();
             Specification.Is(
                 """
-                Given CartItems = [new ShoppingCartItem("X")]
-                  and IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
+                Using CartItems = [new ShoppingCartItem("X")]
+                Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
                       CartId, Items = CartItems }
                 When _.RemoveFromCart(CartId, Cart.Items[0])
                 Then Result.Items is empty

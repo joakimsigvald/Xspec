@@ -11,7 +11,7 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
 
     public class GivenOpenCart : WhenPlaceOrder
     {
-        public GivenOpenCart() => Given(() => Cart = new() { IsOpen = true });
+        public GivenOpenCart() => Using(() => Cart = new() { IsOpen = true });
 
         [Fact]
         public void ThenOrderIsCreated()
@@ -19,7 +19,7 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
             Then<IOrderService>(_ => _.CreateOrder(Cart));
             Specification.Is(
                 """
-                Given Cart = new() { IsOpen = true }
+                Using Cart = new() { IsOpen = true }
                 When _.PlaceOrder(Cart)
                 Then IOrderService.CreateOrder(Cart)
                 """);
@@ -28,7 +28,7 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
 
     public class GivenClosedCart : WhenPlaceOrder
     {
-        public GivenClosedCart() => Given(() => Cart = new() { IsOpen = false });
+        public GivenClosedCart() => Using(() => Cart = new() { IsOpen = false });
 
         [Fact]
         public void ThenThrowsNotPurchasable()
@@ -36,7 +36,7 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
             Then().Throws<NotPurchasable>();
             Specification.Is(
                 """
-                Given Cart = new() { IsOpen = false }
+                Using Cart = new() { IsOpen = false }
                 When _.PlaceOrder(Cart)
                 Then throws NotPurchasable
                 """);

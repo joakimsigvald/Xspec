@@ -19,13 +19,6 @@ public interface IGivenTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
     /// A continuation to provide further arrangement to the test
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Use and instead")]
-    IGivenContinuation<TSUT, TResult> And();
-
-    /// <summary>
-    /// A continuation to provide further arrangement to the test
-    /// </summary>
-    /// <returns></returns>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
     IGivenContinuation<TSUT, TResult> and { get; }
 
@@ -50,30 +43,6 @@ public interface IGivenTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
     IGivenTestPipeline<TSUT, TResult> And<TValue>(
         Action<TValue> setup,
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null) where TValue : class;
-
-    /// <summary>
-    /// Provide a default value as a lambda, to be evaluated during test execution AFTER any subsequently added arrangement.
-    /// Providing a default value as a lambda, to defer execution, is useful when the default value is created based on test data that is specified later in the test-pipeline.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    IGivenTestPipeline<TSUT, TResult> And<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
-    /// Provide a default value as a lambda, to be evaluated during test execution AFTER any subsequently added arrangement.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    IGivenTestPipeline<TSUT, TResult> And<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
 
     /// <summary>
     /// Provide a tag to setup some expectation, such as associating it with a value.

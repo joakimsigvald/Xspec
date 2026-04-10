@@ -251,18 +251,6 @@ public interface ITestPipeline<TSUT, TResult>
         where TValue : class;
 
     /// <summary>
-    /// Provide a default value, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
     /// A continuation to provide further arrangement
     /// </summary>
     /// <returns></returns>
@@ -276,18 +264,6 @@ public interface ITestPipeline<TSUT, TResult>
     IGivenServiceContinuation<TSUT, TResult, TService> Given<TService>() where TService : class;
 
     /// <summary>
-    /// Provide a default value as a lambda, to be evaluated during test execution AFTER any subsequently added arrangement.
-    /// Providing a default value as a lambda, to defer execution, is useful when the default value is created based on test data that is specified later in the test-pipeline.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
     /// Provide a tag to setup some expectation, such as associating it with a value.
     /// </summary>
     /// <typeparam name="TValue">The type of value the tag is associated with</typeparam>
@@ -297,6 +273,20 @@ public interface ITestPipeline<TSUT, TResult>
     IGivenTag<TSUT, TResult, TValue> Given<TValue>(
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
+
+    /// <summary>
+    /// Provide a default value as a lambda, to be evaluated during test execution AFTER any subsequently added arrangement.
+    /// Providing a default value as a lambda, to defer execution, is useful when the default value is created based on test data that is specified later in the test-pipeline.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="defaultValue"></param>
+    /// <param name="scope"></param>
+    /// <param name="defaultValueExpr"></param>
+    /// <returns></returns>
+    IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+        Func<TValue> defaultValue,
+        For scope = For.All,
+        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
 
     /// <summary>
     /// Provide a default value, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.

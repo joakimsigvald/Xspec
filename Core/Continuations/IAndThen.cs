@@ -11,13 +11,6 @@ public interface IAndThen<TResult>
     /// Provides the result of the test-run, to apply additional assertions
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Use 'and' instead")]
-    ITestResult<TResult> And();
-
-    /// <summary>
-    /// Provides the result of the test-run, to apply additional assertions
-    /// </summary>
-    /// <returns></returns>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
     ITestResult<TResult> and { get; }
 

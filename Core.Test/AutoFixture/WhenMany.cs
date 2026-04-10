@@ -127,11 +127,11 @@ Then three MyModel is equal to three MyModel");
         public void ThenReturnTwoAsMany()
         {
             Given<IMyRepository>().That(_ => _.List()).Returns(Many<MyModel>)
-                    .And(Two<MyModel>).Then().Result.Has().Count(2);
+                .Using(Two<MyModel>).Then().Result.Has().Count(2);
             Specification.Is(
                 """
-                Given two MyModel
-                  and IMyRepository.List() returns many MyModel
+                Using two MyModel
+                Given IMyRepository.List() returns many MyModel
                 When _.List()
                 Then Result has count 2
                 """);
@@ -144,10 +144,10 @@ Then three MyModel is equal to three MyModel");
         public void ThenReturnFourAsMany()
         {
             Given<IMyRepository>().That(_ => _.List()).Returns(() => Many<MyModel>())
-                    .And(Four<MyModel>).Then().Result.Has().Count(4);
+                .Using(Four<MyModel>).Then().Result.Has().Count(4);
             Specification.Is(
-@"Given four MyModel
-  and IMyRepository.List() returns many MyModel
+@"Using four MyModel
+Given IMyRepository.List() returns many MyModel
 When _.List()
 Then Result has count 4");
         }
@@ -159,10 +159,10 @@ Then Result has count 4");
         public void ThenReturnThreeAsMany()
         {
             Given<IMyRepository>().That(_ => _.List()).Returns(Many<MyModel>)
-                    .And(One<MyModel>).Then().Result.Has().Count(3);
+                .Using(One<MyModel>).Then().Result.Has().Count(3);
             Specification.Is(
-@"Given one MyModel
-  and IMyRepository.List() returns many MyModel
+@"Using one MyModel
+Given IMyRepository.List() returns many MyModel
 When _.List()
 Then Result has count 3");
         }

@@ -67,12 +67,12 @@ public class WhenGivenThatThrows : Spec<MyService, MyModel>
     {
         When(_ => _.GetModel())
             .Given<IMyRepository>().That(_ => _.GetModel()).Throws(An<Exception>)
-            .And(new Exception(A<string>()))
+            .Using(new Exception(A<string>()))
             .Then().Throws(The<Exception>).and.Throws<Exception>(_ => _.Message.Is(The<string>()));
         Specification.Is(
             """
-            Given new Exception(a string)
-              and IMyRepository.GetModel() throws an Exception
+            Using new Exception(a string)
+            Given IMyRepository.GetModel() throws an Exception
             When _.GetModel()
             Then throws the Exception
               and throws Exception where _.Message is the string

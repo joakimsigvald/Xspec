@@ -23,13 +23,13 @@ public class WhenGivenValue : Spec<MyService, MyModel>
     public void AsSecondSentence_ThenUseValueInPipeline()
     {
         Given<IMyRepository>().That(_ => _.GetModel()).Returns(A<MyModel>)
-            .And(() => new MyModel() { Name = A<string>() })
+            .Using(() => new MyModel() { Name = A<string>() })
             .When(_ => _.GetModel())
             .Then().Result.Name.Is(The<string>());
         Specification.Is(
             """
-            Given new MyModel() { Name = A<string>() }
-              and IMyRepository.GetModel() returns a MyModel
+            Using new MyModel() { Name = A<string>() }
+            Given IMyRepository.GetModel() returns a MyModel
             When _.GetModel()
             Then Result.Name is the string
             """);

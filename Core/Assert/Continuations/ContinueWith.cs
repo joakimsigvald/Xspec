@@ -16,18 +16,6 @@ public class ContinueWith<TContinuation> where TContinuation : Constraint
     /// <summary>
     /// Get a continuation to make the next assertion
     /// </summary>
-    [Obsolete("Use and instead")]
-    public TContinuation And => Continue("and");
-
-    /// <summary>
-    /// Get a continuation to make the next assertion
-    /// </summary>
-    [Obsolete("Use but instead")]
-    public TContinuation But => Continue("but");
-
-    /// <summary>
-    /// Get a continuation to make the next assertion
-    /// </summary>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
     public TContinuation and => Continue();
 

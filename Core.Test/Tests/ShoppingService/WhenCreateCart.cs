@@ -11,7 +11,7 @@ public abstract class WhenCreateCart : ShoppingServiceSpec<ShoppingCart>
 
     public class GivenIdIsOne : WhenCreateCart
     {
-        public GivenIdIsOne() => Given(() => Id = 1);
+        public GivenIdIsOne() => Using(() => Id = 1);
 
         [Fact]
         public void ThenCartIdIsOne()
@@ -19,7 +19,7 @@ public abstract class WhenCreateCart : ShoppingServiceSpec<ShoppingCart>
             Result.Id.Is(1);
             Specification.Is(
                 """
-                Given Id = 1
+                Using Id = 1
                 When _.CreateCart(Id)
                 Then Result.Id is 1
                 """);
@@ -31,7 +31,7 @@ public abstract class WhenCreateCart : ShoppingServiceSpec<ShoppingCart>
             Result.Id.Is().Not(2);
             Specification.Is(
                 """
-                Given Id = 1
+                Using Id = 1
                 When _.CreateCart(Id)
                 Then Result.Id is not 2
                 """);
@@ -40,7 +40,7 @@ public abstract class WhenCreateCart : ShoppingServiceSpec<ShoppingCart>
 
     public class GivenIdIsTwo : WhenCreateCart
     {
-        public GivenIdIsTwo() => Given(() => Id = 2);
+        public GivenIdIsTwo() => Using(() => Id = 2);
 
         [Fact]
         public void ThenCartIdIsTwo()
@@ -48,7 +48,7 @@ public abstract class WhenCreateCart : ShoppingServiceSpec<ShoppingCart>
             Result.Id.Is(2);
             Specification.Is(
                 """
-                Given Id = 2
+                Using Id = 2
                 When _.CreateCart(Id)
                 Then Result.Id is 2
                 """);

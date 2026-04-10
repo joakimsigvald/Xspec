@@ -12,17 +12,6 @@ internal class AndThen<TSUT, TResult> : IAndThen<TResult>
     /// Continuation to make additional assertions on the result
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Use 'and' instead")]
-    public ITestResult<TResult> And()
-    {
-        SpecificationGenerator.AddThen();
-        return Parent;
-    }
-
-    /// <summary>
-    /// Continuation to make additional assertions on the result
-    /// </summary>
-    /// <returns></returns>
     public ITestResult<TResult> and
     {
         get

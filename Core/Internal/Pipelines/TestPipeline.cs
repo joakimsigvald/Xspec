@@ -81,22 +81,10 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null)
         => Parent.Given(transform, transformExpr!);
 
-    [Obsolete("Use `Using` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => Parent.Given(defaultValue, defaultValueExpr!);
-
     public IGivenServiceContinuation<TSUT, TResult, TService> Given<TService>() where TService : class
         => Parent.Given<TService>();
 
     public IGivenContinuation<TSUT, TResult> Given() => Parent.Given();
-
-    [Obsolete("Use `Using` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => Parent.Given(defaultValue, defaultValueExpr!);
 
     public IGivenTag<TSUT, TResult, TValue> Given<TValue>(
         Tag<TValue> tag,
@@ -109,12 +97,18 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
         => Parent.Using(defaultValue, scope, defaultValueExpr!);
 
+    public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+        Func<TValue> defaultValue,
+        For scope = For.All,
+        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
+        => Parent.Using(defaultValue, scope, defaultValueExpr!);
+
     public ITestResultWithSUT<TSUT, TResult> Then() => Parent.Then();
     public TSubject Then<TSubject>(TSubject subject) => Parent.Then(subject);
 
     public IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression,
-        [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) 
+        [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)
         where TService : class
         => Parent.Then(expression, expressionExpr!);
 
@@ -126,7 +120,7 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
 
     public IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression, Func<Times> times,
-        [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) 
+        [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)
         where TService : class
         => Parent.Then(expression, times, expressionExpr!);
 

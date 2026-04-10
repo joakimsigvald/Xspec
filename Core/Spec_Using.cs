@@ -7,6 +7,17 @@ namespace Xspec;
 public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {
     /// <summary>
+    /// Use a concrete class for auto-mocking of subject
+    /// </summary>
+    /// <typeparam name="TConcrete"></typeparam>
+    /// <returns></returns>
+    public IUsingTestPipeline<TSUT, TResult> Using<TConcrete>()
+    {
+        _pipeline.Using(_pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
+        return new UsingTestPipeline<TSUT, TResult>(this);
+    }
+
+    /// <summary>
     /// Registers a type conversion strategy. Whenever the target type is requested, the generator will first generate the source type and cast it.
     /// </summary>
     /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>

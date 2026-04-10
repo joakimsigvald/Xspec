@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Xspec.Internal.TestData.Mocking;
 
-internal class FluentDefaultProvider(Repository dataProvider) : DefaultValueProvider
+internal class FluentDefaultProvider(DataProvider dataProvider) : DefaultValueProvider
 {
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
 

@@ -53,19 +53,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         => new GivenTag<TSUT, TResult, TValue>(this, tag, tagExpr!);
 
     /// <summary>
-    /// Provide a default value, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => GivenDefault(defaultValue, For.All, defaultValueExpr!);
-
-    /// <summary>
     /// Provide an array of default values, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
     /// It is also mentioned by position so the values can be retrieved by A, ASecond, AThird etc.
     /// </summary>
@@ -99,24 +86,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public IGivenContinuation<TSUT, TResult> Given()
         => new GivenContinuation<TSUT, TResult>(this);
 
-    /// <summary>
-    /// Provide a default value as a lambda, to be evaluated during test execution AFTER any subsequently added arrangement.
-    /// Providing a default value as a lambda, to defer execution, is useful when the default value is created based on test data that is specified later in the test-pipeline.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => GivenDefault(defaultValue, For.All, defaultValueExpr!);
-
-    //TODO: Fix
-    internal IGivenTestPipeline<TSUT, TResult> Using<TConcrete>()
-      => GivenDefault(_pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
-
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         TValue defaultValue, For scope, string defaultValueExpr)
     {
@@ -127,10 +96,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         Func<TValue> value, For scope, string defaultValueExpr)
         => PrependGiven(() => _pipeline.SetDefault(value(), scope, defaultValueExpr));
-
-    //TODO: Remove
-    internal IGivenTestPipeline<TSUT, TResult> GivenUnique<TValue>()
-        => Continue();
 
     internal IGivenTestPipeline<TSUT, TResult> Apply<TValue>(
         Action setup,

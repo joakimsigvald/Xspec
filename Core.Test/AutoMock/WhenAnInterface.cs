@@ -35,7 +35,7 @@ public class WhenInjectingAnInterfaceWithUsing : Spec<InterfaceService, int>
 public class WhenUseConcreteInstanceOfInterface : Spec<InterfaceService, int>
 {
     public WhenUseConcreteInstanceOfInterface()
-        => Using(CreateService()).Given(An<int>).When(_ => _.GetServiceValue());
+        => Using(CreateService()).And(An<int>).When(_ => _.GetServiceValue());
 
     [Fact]
     public void ThenUseIt()
@@ -44,7 +44,7 @@ public class WhenUseConcreteInstanceOfInterface : Spec<InterfaceService, int>
         Specification.Is(
             """
             Using CreateService()
-            Given an int
+              and an int
             When _.GetServiceValue()
             Then Result is the second int
             """);
@@ -56,7 +56,7 @@ public class WhenUseConcreteInstanceOfInterface : Spec<InterfaceService, int>
 public class WhenUsingConcreteInstanceForInterface : Spec<InterfaceService, int>
 {
     public WhenUsingConcreteInstanceForInterface()
-        => When(_ => _.GetValue()).Given(() => new MyComponent(An<IMyLogger>(), An<int>()))
+        => When(_ => _.GetValue()).Using(() => new MyComponent(An<IMyLogger>(), An<int>()))
         .And<IMyLogger>(() => new MyInvalidLogger<ApplicationException>());
 
     [Fact]
@@ -65,7 +65,7 @@ public class WhenUsingConcreteInstanceForInterface : Spec<InterfaceService, int>
         Then().Throws<ApplicationException>();
         Specification.Is(
             """
-            Given new MyInvalidLogger<ApplicationException>()
+            Using new MyInvalidLogger<ApplicationException>()
               and new MyComponent(an IMyLogger, an int)
             When _.GetValue()
             Then throws ApplicationException
@@ -77,7 +77,7 @@ public class WhenIndirectlyUsingConcreteInstanceForInterface : Spec<InterfaceSer
 {
     public WhenIndirectlyUsingConcreteInstanceForInterface()
         => When(_ => _.GetValue())
-        .Given(A<MyComponent>)
+        .Using(A<MyComponent>)
         .And<IMyLogger>(() => new MyInvalidLogger<ApplicationException>());
 
     [Fact]
@@ -86,7 +86,7 @@ public class WhenIndirectlyUsingConcreteInstanceForInterface : Spec<InterfaceSer
         Then().Throws<ApplicationException>();
         Specification.Is(
             """
-            Given new MyInvalidLogger<ApplicationException>()
+            Using new MyInvalidLogger<ApplicationException>()
               and a MyComponent
             When _.GetValue()
             Then throws ApplicationException
@@ -97,7 +97,7 @@ public class WhenIndirectlyUsingConcreteInstanceForInterface : Spec<InterfaceSer
 public class WhenUsingConcreteInstanceForInterfaceWithAutoMockedConstructorArgument : Spec<InterfaceService, int>
 {
     public WhenUsingConcreteInstanceForInterfaceWithAutoMockedConstructorArgument()
-        => When(_ => _.GetValue()).Given(A<MyComponent>).And(An<int>);
+        => When(_ => _.GetValue()).Using(A<MyComponent>).And(An<int>);
 
     [Fact]
     public void ThenAutoMockComponent()
@@ -105,7 +105,7 @@ public class WhenUsingConcreteInstanceForInterfaceWithAutoMockedConstructorArgum
         Result.Is(The<int>());
         Specification.Is(
             """
-            Given an int
+            Using an int
               and a MyComponent
             When _.GetValue()
             Then Result is the int

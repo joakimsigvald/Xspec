@@ -25,11 +25,11 @@ public class WhenMockStringAndInt : Spec<StaticStringAndIntService, string>
         [InlineData("hej")]
         public void Then_It_Has_ProvidedValue(string value)
         {
-            Using(value).Given(A<string>).And(An<int>).Then().Result.Does().Contain(value);
+            Using(value).And(A<string>).And(An<int>).Then().Result.Does().Contain(value);
             Specification.Is(
                 """
                 Using value
-                Given an int
+                  and an int
                   and a string
                 When _.GetValue()
                 Then Result contains value

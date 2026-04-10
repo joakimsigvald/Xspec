@@ -8,47 +8,12 @@ namespace Xspec.Continuations;
 public interface IGivenContinuation<TSUT, TResult>
 {
     /// <summary>
-    /// Provide a default value, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
-    /// Provide a default value, that will be used as test data where no specific value is given
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using` instead")]
-    IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
-    /// Provide a value or object instance that will be used when creating subject under test
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using(, Scope)` instead")]
-    IGivenTestPipeline<TSUT, TResult> Using<TValue>(
-        TValue defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
     /// Provide a concrete type to be used in auto-mocking, instead of a mocked interface
     /// </summary>
     /// <typeparam name="TConcrete">Concrete class to be used in auto-mocking, in place of any of its interfaces</typeparam>
     /// <returns></returns>
-    IGivenTestPipeline<TSUT, TResult> Using<TConcrete>();
+    [Obsolete]
+    IUsingTestPipeline<TSUT, TResult> Using<TConcrete>();
 
     /// <summary>
     /// Provide a tagged default value, that will be used as test data where no specific value is given
@@ -75,18 +40,6 @@ public interface IGivenContinuation<TSUT, TResult>
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
 
     /// <summary>
-    /// Provide a value or object instance that will be used when creating subject under test
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValue"></param>
-    /// <param name="defaultValueExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use `Using(, Scope)` instead")]
-    IGivenTestPipeline<TSUT, TResult> Using<TValue>(
-        Func<TValue> defaultValue, 
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null);
-
-    /// <summary>
     /// Provide a default setup, that will be applied in all mocks and auto-generated test-data.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
@@ -108,14 +61,6 @@ public interface IGivenContinuation<TSUT, TResult>
     IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null);
-
-    /// <summary>
-    /// Ensure that all values generated of the given type are different with regards to equality.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <returns></returns>
-    [Obsolete("All values of the same or equivalent types are guaranteed to be unique, within a test run")]
-    IGivenTestPipeline<TSUT, TResult> Unique<TValue>();
 
     /// <summary>
     /// Provide a value of a given type, that can be mentioned in the test pipeline as A, An, The, or TheFirst.

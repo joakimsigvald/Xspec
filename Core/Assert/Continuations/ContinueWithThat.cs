@@ -19,19 +19,6 @@ public class ContinueWithThat<TContinuation, TThat> : ContinueWith<TContinuation
     /// <summary>
     /// Continuation to apply assertions on the element
     /// </summary>
-    [Obsolete("Use that instead")]
-    public TThat That
-    {
-        get
-        {
-            SpecificationGenerator.AddThat();
-            return _that;
-        }
-    }
-
-    /// <summary>
-    /// Continuation to apply assertions on the element
-    /// </summary>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
     public TThat that
     {

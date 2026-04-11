@@ -38,13 +38,13 @@ internal class Repository
     internal void Use<TValue>(TValue value, For scope)
     {
         if (scope.HasFlag(For.Input))
-            _inputProvider.Use(value);
+            _inputProvider.UseValue(value);
 
-        if (value is Moq.Internals.InterfaceProxy)
-            return;
+        //if (value is Moq.Internals.InterfaceProxy)
+        //    return;
 
         if (scope.HasFlag(For.Subject))
-            _subjectProvider.Use(value);
+            _subjectProvider.UseValue(value);
 
         if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
             Use(Task.FromResult(value), scope);
@@ -53,7 +53,15 @@ internal class Repository
     internal void Use<TValue>(Func<TValue> factory, For scope)
     {
         Use<Func<TValue>>(factory, scope); //register factory as value
-        Use(factory(), scope); //register factory-output as value
+
+        if (scope.HasFlag(For.Input))
+            _inputProvider.UseFactory(factory);
+
+        if (scope.HasFlag(For.Subject))
+            _subjectProvider.UseFactory(factory);
+
+        if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
+            Use(() => Task.FromResult(factory()), scope);
     }
 
     internal void AddDefaultSetup(Type type, Func<object, object> mutation) => _mutator.AddMutation(type, mutation);

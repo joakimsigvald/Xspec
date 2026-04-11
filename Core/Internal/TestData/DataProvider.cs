@@ -1,7 +1,6 @@
 ﻿using Moq;
 using Moq.AutoMock;
 using Moq.AutoMock.Resolvers;
-using System.Collections.Concurrent;
 using Xspec.Internal.TestData.Generation;
 using Xspec.Internal.TestData.Generation.Strategies;
 using Xspec.Internal.TestData.Mocking;
@@ -14,8 +13,7 @@ internal class DataProvider
     private readonly Mutator _mutator;
     private readonly AutoMocker _mocker;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
-    private readonly ConcurrentDictionary<Type, object?> _defaultValues = [];
-
+    private readonly Dictionary<Type, Arrangement> _defaults = [];
     public DataProvider(Counter counter, Mutator mutator, TypeConversionStrategy typeConversionStrategy)
     {
         _generator = new(this, counter, typeConversionStrategy);
@@ -34,7 +32,7 @@ internal class DataProvider
 
     internal bool TryGetDefault(Type type, out object? val)
     {
-        var found = _defaultValues.TryGetValue(type, out val);
+        var found = TryGetValue(type, out val);
         if (found)
             return true;
 
@@ -45,23 +43,42 @@ internal class DataProvider
         return true;
     }
 
-    internal void Use<TValue>(TValue value)
+    internal void UseValue<TValue>(TValue value)
     {
         var type = typeof(TValue);
-        if (_defaultValues.ContainsKey(type))
+        if (_defaults.ContainsKey(type))
             return;
 
-        _defaultValues[type] = value;
+        _defaults[type] = new ValueArrangement(value);
         if (value is null)
             return;
 
-        _mocker.Use(value);
+        _mocker.Use(value); //TODO: remove?
         if (type != value?.GetType()) //Explicit cast was provided, so don't use implicit cast to all interfaces
             return;
 
         var allInterfaces = type.GetInterfaces();
         foreach (var anInterface in allInterfaces)
             _mocker.Use(anInterface, value);
+    }
+
+    internal void UseFactory<TValue>(Func<TValue> factory)
+    {
+        var type = typeof(TValue);
+        if (_defaults.TryGetValue(type, out var arr))
+        {
+            if (arr is FactoryArrangement farr)
+            {
+                _defaults[type] = new FactoryArrangement(() =>
+                {
+                    farr.Factory();
+                    return factory();
+                });
+            }
+            //Ignore factory if a value was already provided
+        }
+        else
+            _defaults[type] = new FactoryArrangement(() => factory());
     }
 
     internal object? Instantiate<TValue>()
@@ -81,7 +98,7 @@ internal class DataProvider
     {
         try
         {
-            if (_defaultValues.TryGetValue(typeof(TValue), out var val))
+            if (TryGetValue(typeof(TValue), out var val))
                 return val;
 
             var type = typeof(TValue);
@@ -95,6 +112,24 @@ internal class DataProvider
             TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {typeof(TValue).Name}. Fallback to DataGenerator. Reason: {ex.Message}");
             return null;
         }
+    }
+
+    internal bool TryGetValue(Type type, out object? val)
+    {
+        if (!_defaults.TryGetValue(type, out var arr))
+        {
+            val = null;
+            return false;
+        }
+
+        if (arr is FactoryArrangement farr) 
+        {
+            _defaults.Remove(type); //Make sure circular evaluation of factory value break on second pass
+            _defaults[type] = arr = new ValueArrangement(farr.Factory());
+        }
+
+        val = (arr as ValueArrangement)?.Value;
+        return true;
     }
 
     private AutoMocker CreateAutoMocker()

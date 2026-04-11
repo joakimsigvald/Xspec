@@ -98,11 +98,13 @@ internal class Context
     }
 
     internal TValue[] MentionMany<TValue>(int count, int? minCount)
+        => Assign(Reuse(GetArray<TValue>(), count, minCount));
+
+    private TValue[]? GetArray<TValue>()
     {
-        var (val, found) = _repository.Retrieve(typeof(TValue[]));
-        return found && val is TValue[] arr
-            ? Assign(Reuse(arr, count, minCount))
-            : MentionMany<TValue>(count);
+        var type = typeof(TValue[]);
+        var (val, found) = _repository.Retrieve(type);
+        return (found || _repository.TryGetDefault(type, out val)) ? val as TValue[] : null;
     }
 
     internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
@@ -128,7 +130,7 @@ internal class Context
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _repository.SetDefaultException(typeof(TService), ex);
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _repository.Register(convert);
 
     private int GetTagIndex<TValue>(Tag<TValue> tag, string tagName)
@@ -146,15 +148,10 @@ internal class Context
     private static int GetNextTagIndex(Dictionary<object, int> typedTagIndices)
         => typedTagIndices.Count > 0 ? typedTagIndices.Values.Min() - 1 : -1;
 
-    private TValue[] MentionMany<TValue>(int count)
-        => count == 0 ? Assign(Array.Empty<TValue>())
-        : Assign(Enumerable.Range(0, count)
-            .Select(i => Produce<TValue>(i))
-            .ToArray());
-
-    private TValue[] Reuse<TValue>(TValue[] arr, int count, int? minCount)
-        => arr.Length >= minCount || arr.Length == count ? arr
-        : arr.Length > count ? arr[..count]
+    private TValue[] Reuse<TValue>(TValue[]? arr, int count, int? minCount)
+        => arr is null ? [..Enumerable.Range(0, count).Select(i => Produce<TValue>(i))]
+        : arr.Length >= minCount || arr?.Length == count ? arr
+        : arr!.Length > count ? arr[..count]
         : Extend(arr, count);
 
     private TValue[] Extend<TValue>(TValue[] arr, int count)

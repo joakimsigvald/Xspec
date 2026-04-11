@@ -143,7 +143,7 @@ Then three MyModel is equal to three MyModel");
         [Fact]
         public void ThenReturnFourAsMany()
         {
-            Given<IMyRepository>().That(_ => _.List()).Returns(() => Many<MyModel>())
+            Given<IMyRepository>().That(_ => _.List()).Returns(Many<MyModel>)
                 .Using(Four<MyModel>).Then().Result.Has().Count(4);
             Specification.Is(
 @"Using four MyModel

@@ -34,6 +34,7 @@ In real-world usage, this typically leads to substantially smaller tests compare
 4. [Mocking & Auto-Mocking](#4-mocking--auto-mocking)  
 5. [Asserting Results](#5-asserting-results)  
 6. [Guidelines](#6-guidelines) 
+7. [Beyond TDD: Specification-Driven Agentic Development](#7-beyond-tdd:-specification--driven-agentic-development)
 
 ## 1. Introduction
 
@@ -139,13 +140,23 @@ Other overloads exist for cases without a subject under test or return value.
 
 You can choose to pass a class fixture (a feature of xUnit) to the constructor or start with an empty test pipeline.
 
-#### 2.1.2 Preparing the Pipeline
+#### 2.1.2 Scope of Arrangement
+When preparing the pipeline, values are provided either for the **Subject** or for the **Input**. 
+* **Subject**: The subject under test or any of its components, provided as constructor arguments, properties, or through type cast.
+* **Input**: Data supplied directly to the execution pipeline.
+
+Arrangements are categorized into three types, using specific verbs to dictate their scope:
+* **Values**: Configured using the verb **`Given`** and apply *only* to the **Input**.
+* **Types**: Configured using the verb **`Using`**. A scope must be provided to indicate whether they apply to the **Input**, the **Subject**, or both.
+* **Mocks**: Configured using the verb **`Given`** and apply to *both* **Input** and **Subject**.
+
+#### 2.1.3 Preparing the Pipeline
 The preparation steps are recorded and later applied in the following order:
 
-1. Default, constraints, and test data are applied *in reverse order of declaration*
-1. Mocked behaviour *in the order of declaration*
+1. Default, constraints, and test data are applied *in reverse order of declaration*.
+1. Mocked behaviour *in the order of declaration*.
 
-#### 2.1.3 Creating the Subject Under Test
+#### 2.1.4 Creating the Subject Under Test
 After preparation, the pipeline will use AutoMock to create a new instance of your subject under test (unless you provided a value of that type explicitly).
 If you haven't mocked a certain interface or method that the subject uses, a default mock will be auto-generated.
 
@@ -271,9 +282,25 @@ Given().Default(name).and.Using(age);
 
 ### 3.3 Data Generation and Pipeline
 
-Xspec utilizes an internal `DataGenerator` orchestrator to supply arbitrary data cleanly. Values are generated utilizing a fallback strategy chain, which evaluates types using conversion relays, primitives, semantics, collections, or generic objects.
+Xspec utilizes an internal `DataGenerator` orchestrator to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (last first):
 
-* **Internal Resolution:** You can directly trigger generation via the internal generator's `Create<TValue>()` method.
+**1. Value**
+* **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
+* **Factory**: Provide a value from a factory, or continue.
+* **Value**: Provide an explicitly supplied value, or continue.
+
+**2. Default**
+* **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
+* **Factory**: Provide a value from a factory, or continue.
+* **Value**: Provide an explicitly supplied value, or continue.
+
+**3. Generation**
+* **Map value**: Get a value of a different type from the default-pipeline and map to type.
+* **Relay type**: Get a value of a different type from the default-pipeline and convert to type.
+* **Generate value**: Use the generation strategy of the given type.
+* **Return type default**: Use the types default-value or null.
+
+If generation is required, Xspec evaluates types using a fallback strategy chain:
 * **Primitives:** Out-of-the-box generation natively supports standard primitives like `int`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
 * **Semantic Types:** Objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are securely auto-generated using their base values.
 * **Abstracts & Interfaces:** Pure interfaces and abstract classes can be successfully requested and mocked instantly without boilerplate.
@@ -630,3 +657,17 @@ multiple *closely related* assertions into the same test method to reduce overal
 Xspec is designed to thrive in clean, well-structured codebases.
 Its emphasis on explicit structure and readable specifications is intended to reinforce those qualities,
 helping teams maintain clarity and confidence as both code and test suites grow.
+
+## 7. Beyond TDD: Specification-Driven Agentic Development
+
+While Xspec is a highly effective tool for traditional Test-Driven Development (TDD), it is ultimately designed to facilitate a new paradigm: **Specification-Driven Agentic Development (SDAD)**. 
+
+SDAD evolves TDD by treating the developer as the specifier and the AI agent as the implementer. Because Xspec enforces a strict, readable, and declarative structure, it creates the perfect shared language between human intent and AI generation.
+
+The SDAD cycle works as follows:
+1. **Specify (Human):** The developer writes a clear, executable specification using Xspec to define the exact requirements and expected behavior.
+2. **Red Phase (Automated):** An AI agent takes over, generating the production code necessary to make all specifications (tests) pass.
+3. **Grey Phase (Semi-Automated):** The AI agent switches to refactoring mode, cleaning up the generated code and providing quality metrics.
+4. **Green Phase (Manual):** The human developer reviews the clean code, collaborating with the AI to optimize structure and readability before starting the next cycle.
+
+By removing boilerplate and focusing purely on the *Given-When-Then* logic, Xspec allows developers to focus on the "what" while the AI handles the "how."

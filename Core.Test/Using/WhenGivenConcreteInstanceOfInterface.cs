@@ -31,11 +31,11 @@ public class WhenUsingConcreteInstanceOfInterface : Spec<MyService, int>
     [Fact]
     public void GivenConcreteTypeArg_ThenUseIt()
     {
-        Given().Using<FakeRepository>().Using(123, For.Subject).Then().Result.Is(123);
+        Using<FakeRepository>().And(123, For.Subject).Then().Result.Is(123);
         Specification.Is(
             """
-            Using 123 for Subject
-            Given using FakeRepository
+            Using FakeRepository for Subject
+              and 123 for Subject
             When _.GetNextId()
             Then Result is 123
             """

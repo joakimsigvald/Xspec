@@ -3,7 +3,7 @@ using Xspec.Test.Subjects;
 
 namespace Xspec.Test.Tests.ShoppingServiceAsync;
 
-public abstract class WhenCreateCart : ShoppingServiceAsyncSpec<ShoppingCart>
+public abstract class WhenCreateCart : Spec<Subjects.ShoppingServiceAsync, ShoppingCart>
 {
     protected int Id;
 

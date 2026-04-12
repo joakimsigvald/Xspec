@@ -46,9 +46,14 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
 
     [Obsolete("Use `Using(For)` instead")]
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Func<TValue, TValue> defaultTransform,
+    Func<TValue, TValue> defaultTransform,
         [CallerArgumentExpression(nameof(defaultTransform))] string? defaultTransformExpr = null)
         => _spec.Given(defaultTransform, defaultTransformExpr!);
+
+    public IGivenTestPipeline<TSUT, TResult> That(
+        Action customArrangement,
+        [CallerArgumentExpression(nameof(customArrangement))] string? customArrangementExpr = null)
+        => _spec.GivenThat(customArrangement, customArrangementExpr!);
 
     public IGivenTestPipeline<TSUT, TResult> A<TValue>(
         TValue value,

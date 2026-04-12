@@ -13,7 +13,7 @@ public class WhenCreateOrder : PurchaseOrderFactorySpec<OrderRecord>
 
     public class GivenBasket : WhenCreateOrder
     {
-        public GivenBasket() => Using(() => Checkout = new() { Basket = new() { Id = BasketId } });
+        public GivenBasket() => Given().That(() => Checkout = new() { Basket = new() { Id = BasketId } });
 
         [Fact]
         public void ThenQuotationId_Is_BasketId()
@@ -21,7 +21,7 @@ public class WhenCreateOrder : PurchaseOrderFactorySpec<OrderRecord>
             Result.QuotationId.Is(BasketId);
             Specification.Is(
                 """
-                Using Checkout = new() { Basket = new() { Id = BasketId } }
+                Given that Checkout = new() { Basket = new() { Id = BasketId } }
                 When _.CreateOrder(Checkout)
                 Then Result.QuotationId is BasketId
                 """);
@@ -33,7 +33,7 @@ public class WhenCreateOrder : PurchaseOrderFactorySpec<OrderRecord>
             Result.OrderNo.Is($"{BasketId}");
             Specification.Is(
                 """
-                Using Checkout = new() { Basket = new() { Id = BasketId } }
+                Given that Checkout = new() { Basket = new() { Id = BasketId } }
                 When _.CreateOrder(Checkout)
                 Then Result.OrderNo is "{BasketId}"
                 """);

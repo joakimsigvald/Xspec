@@ -3,15 +3,15 @@ using Xspec.Test.Subjects;
 
 namespace Xspec.Test.Tests.ShoppingServiceAsync;
 
-public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
+public abstract class WhenPlaceOrder : Spec<Subjects.ShoppingServiceAsync, object>
 {
     protected ShoppingCart Cart;
 
-    protected WhenPlaceOrder() => When(_ => _.PlaceOrder(Cart));
+    protected WhenPlaceOrder() => When(_ => _.PlaceOrder(Cart!));
 
     public class GivenOpenCart : WhenPlaceOrder
     {
-        public GivenOpenCart() => Using(() => Cart = new() { IsOpen = true });
+        public GivenOpenCart() => Given().That(() => Cart = new() { IsOpen = true });
 
         [Fact]
         public void ThenOrderIsCreated()
@@ -19,8 +19,8 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
             Then<IOrderService>(_ => _.CreateOrder(Cart));
             Specification.Is(
                 """
-                Using Cart = new() { IsOpen = true }
-                When _.PlaceOrder(Cart)
+                Given that Cart = new() { IsOpen = true }
+                When _.PlaceOrder(Cart!)
                 Then IOrderService.CreateOrder(Cart)
                 """);
         }
@@ -28,7 +28,7 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
 
     public class GivenClosedCart : WhenPlaceOrder
     {
-        public GivenClosedCart() => Using(() => Cart = new() { IsOpen = false });
+        public GivenClosedCart() => Given().That(() => Cart = new() { IsOpen = false });
 
         [Fact]
         public void ThenThrowsNotPurchasable()
@@ -36,8 +36,8 @@ public abstract class WhenPlaceOrder : ShoppingServiceAsyncSpec<object>
             Then().Throws<NotPurchasable>();
             Specification.Is(
                 """
-                Using Cart = new() { IsOpen = false }
-                When _.PlaceOrder(Cart)
+                Given that Cart = new() { IsOpen = false }
+                When _.PlaceOrder(Cart!)
                 Then throws NotPurchasable
                 """);
         }

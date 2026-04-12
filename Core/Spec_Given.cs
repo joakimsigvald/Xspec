@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using Xspec.Continuations;
 using Xspec.Internal.Pipelines;
 using Xspec.Internal.Specification;
-using Xspec.Internal.TestData;
 
 namespace Xspec;
 
@@ -24,6 +23,13 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         _pipeline.SetDefault(setup, setupExpr!);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
+
+    internal IGivenTestPipeline<TSUT, TResult> GivenThat(Action customArrangement, string customArrangementExpr)
+        => AppendGiven(() =>
+        {
+            SpecificationGenerator.AddGivenThat(customArrangementExpr);
+            customArrangement();
+        });
 
     /// <summary>
     /// Transform any value and use the transformed value as default

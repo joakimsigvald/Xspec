@@ -16,8 +16,10 @@ internal class Repository
     public Repository()
     {
         Counter counter = new();
-        _inputProvider = new(counter, _mutator, _typeConversionStrategy);
         _subjectProvider = new(counter, _mutator, _typeConversionStrategy);
+        var mocker = _subjectProvider.CreateAutoMocker();
+        _subjectProvider.Mocker = mocker;
+        _inputProvider = new(counter, _mutator, _typeConversionStrategy) { Mocker = mocker };
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
@@ -44,7 +46,11 @@ internal class Repository
         //    return;
 
         if (scope.HasFlag(For.Subject))
+        {
             _subjectProvider.UseValue(value);
+            if (value is not null)
+                _subjectProvider.UseForMock(typeof(TValue), value);
+        }
 
         if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
             Use(Task.FromResult(value), scope);

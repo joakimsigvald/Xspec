@@ -3,7 +3,7 @@ using Xspec.Test.Subjects;
 
 namespace Xspec.Test.Tests.ShoppingServiceAsync;
 
-public abstract class WhenRemoveItem : ShoppingServiceAsyncSpec<ShoppingCart>
+public abstract class WhenRemoveItem : Spec<Subjects.ShoppingServiceAsync, ShoppingCart>
 {
     protected int CartId = 123;
     protected ShoppingCartItem[] CartItems;
@@ -12,13 +12,14 @@ public abstract class WhenRemoveItem : ShoppingServiceAsyncSpec<ShoppingCart>
 
     protected WhenRemoveItem()
         => When(_ => _.RemoveFromCart(CartId, Cart.Items[0]))
-        .Given<IShoppingCartRepository>().That(_ => _.GetCart(CartId)).Returns(() => new ShoppingCart { Id = CartId, Items = CartItems });
+        .Given<IShoppingCartRepository>().That(_ => _.GetCart(CartId))
+        .Returns(() => new ShoppingCart { Id = CartId, Items = CartItems! });
 
     protected ShoppingCart Cart => _cart ??= new() { Id = CartId, Items = CartItems };
 
     public class GivenCartWithOneItem : WhenRemoveItem
     {
-        public GivenCartWithOneItem() => Using(() => CartItems = [new ShoppingCartItem("X")]);
+        public GivenCartWithOneItem() => Given().That(() => CartItems = [new ShoppingCartItem("X")]);
 
         [Fact]
         public void ThenCartIsEmpty()
@@ -26,9 +27,9 @@ public abstract class WhenRemoveItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Is().Empty();
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("X")]
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems! }
+                  and that CartItems = [new ShoppingCartItem("X")]
                 When _.RemoveFromCart(CartId, Cart.Items[0])
                 Then Result.Items is empty
                 """);

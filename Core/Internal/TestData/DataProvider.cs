@@ -11,7 +11,6 @@ internal class DataProvider
 {
     private readonly DataGenerator _generator;
     private readonly Mutator _mutator;
-    private readonly AutoMocker _mocker;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
     private readonly Dictionary<Type, Arrangement> _defaults = [];
     public DataProvider(Counter counter, Mutator mutator, TypeConversionStrategy typeConversionStrategy)
@@ -19,8 +18,9 @@ internal class DataProvider
         _generator = new(this, counter, typeConversionStrategy);
         _mutator = mutator;
         _fluentDefaultProvider = new(this);
-        _mocker = CreateAutoMocker();
     }
+
+    internal AutoMocker Mocker { get; set; }
 
     internal object Create(Type type) => _mutator.Mutate(type, _generator.Create(type))!;
 
@@ -50,16 +50,17 @@ internal class DataProvider
             return;
 
         _defaults[type] = new ValueArrangement(value);
-        if (value is null)
-            return;
+    }
 
-        _mocker.Use(value); //TODO: remove?
+    internal void UseForMock<TValue>(Type type, TValue value)
+    {
+        Mocker.Use(value); //TODO: remove?
         if (type != value?.GetType()) //Explicit cast was provided, so don't use implicit cast to all interfaces
             return;
 
         var allInterfaces = type.GetInterfaces();
         foreach (var anInterface in allInterfaces)
-            _mocker.Use(anInterface, value);
+            Mocker.Use(anInterface, value);
     }
 
     internal void UseFactory<TValue>(Func<TValue> factory)
@@ -71,8 +72,8 @@ internal class DataProvider
             {
                 _defaults[type] = new FactoryArrangement(() =>
                 {
-                    farr.Factory();
-                    return factory();
+                    factory();
+                    return farr.Factory();
                 });
             }
             //Ignore factory if a value was already provided
@@ -88,8 +89,8 @@ internal class DataProvider
         return _mutator.Mutate(type, instance);
     }
 
-    internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.GetMock<TObject>();
-    internal Mock GetMock(Type type) => _mocker.GetMock(type);
+    internal Mock<TObject> GetMock<TObject>() where TObject : class => Mocker.GetMock<TObject>();
+    internal Mock GetMock(Type type) => Mocker.GetMock(type);
 
     internal void SetDefaultException(Type type, Func<Exception> ex)
         => _fluentDefaultProvider.SetDefaultException(type, ex);
@@ -105,7 +106,10 @@ internal class DataProvider
             if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
                 return null;
 
-            return _mocker.CreateInstance(typeof(TValue));
+            //if (type.IsInterface || type.IsAbstract)
+            //    return GetMock(type).Object;
+
+            return Mocker.CreateInstance(typeof(TValue));
         }
         catch (Exception ex)
         {
@@ -132,7 +136,7 @@ internal class DataProvider
         return true;
     }
 
-    private AutoMocker CreateAutoMocker()
+    internal AutoMocker CreateAutoMocker()
     {
         var autoMocker = new AutoMocker(
             MockBehavior.Loose,

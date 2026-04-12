@@ -63,6 +63,16 @@ public interface IGivenContinuation<TSUT, TResult>
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null);
 
     /// <summary>
+    /// Provide custom arrangement
+    /// </summary>
+    /// <param name="customArrangement"></param>
+    /// <param name="customArrangementExpr"></param>
+    /// <returns></returns>
+    IGivenTestPipeline<TSUT, TResult> That(
+        Action customArrangement,
+        [CallerArgumentExpression(nameof(customArrangement))] string? customArrangementExpr = null);
+
+    /// <summary>
     /// Provide a value of a given type, that can be mentioned in the test pipeline as A, An, The, or TheFirst.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>

@@ -58,14 +58,14 @@ Then Result has count 3");
         public GivenEmptyIsMentionedAfter() => Using(Array.Empty<MyModel>);
 
         [Fact]
-        public void ThenCountIsTwo()
+        public void ThenCountIsZero()
         {
-            Result.Has().Count(2);
+            Result.Has().Count(0);
             Specification.Is(
 @"Using Array.Empty<MyModel>
   and some MyModel
 When _.List()
-Then Result has count 2");
+Then Result has count 0");
         }
     }
 
@@ -74,14 +74,14 @@ Then Result has count 2");
         public GivenManyIsMentionedAfter() => Using(Many<MyModel>);
 
         [Fact]
-        public void ThenCountIsFour()
+        public void ThenCountIsTwo()
         {
-            Result.Has().Count(3);
+            Result.Has().Count(2);
             Specification.Is(
 @"Using many MyModel
   and some MyModel
 When _.List()
-Then Result has count 3");
+Then Result has count 2");
         }
     }
 

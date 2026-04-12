@@ -94,6 +94,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="tearDown"></param>
     /// <param name="expr"></param>
     /// <returns></returns>
+    //TODO: replace with Finally
     public ITestPipeline<TSUT, TResult> Before(
         Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
@@ -104,6 +105,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="tearDown"></param>
     /// <param name="expr"></param>
     /// <returns></returns>
+    //TODO: replace with Finally
     public ITestPipeline<TSUT, TResult> Before(
         Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
@@ -116,6 +118,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="expr">Provided by the compiler</param>
     /// <param name="delayExpr">Provided by the compiler</param>
     /// <returns></returns>
+    //TODO: replace with Given
     public ITestPipeline<TSUT, TResult> After(
         Action<TSUT> setUp, 
         Func<int>? delayMs = null,
@@ -134,6 +137,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="expr">Provided by the compiler</param>
     /// <param name="delayExpr">Provided by the compiler</param>
     /// <returns></returns>
+    //TODO: replace with Given
     public ITestPipeline<TSUT, TResult> After(
         Func<TSUT, Task> setUp, Func<int>? delayMs = null,
         [CallerArgumentExpression(nameof(setUp))] string? expr = null,

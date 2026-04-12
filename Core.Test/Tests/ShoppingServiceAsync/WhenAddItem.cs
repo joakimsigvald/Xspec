@@ -3,7 +3,7 @@ using Xspec.Test.Subjects;
 
 namespace Xspec.Test.Tests.ShoppingServiceAsync;
 
-public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
+public abstract class WhenAddItem : Spec<Subjects.ShoppingServiceAsync, ShoppingCart>
 {
     protected int CartId = 123;
     protected ShoppingCartItem[] CartItems;
@@ -11,9 +11,8 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
 
     protected WhenAddItem()
         => Given<IShoppingCartRepository>()
-        .That(_ => _.GetCart(CartId)).Returns(() => new ShoppingCart { Id = CartId, Items = CartItems })
-        .When(_ => _.AddToCart(CartId, NewItem))
-        .Using(() => CartItems ??= []);
+        .That(_ => _.GetCart(CartId)).Returns(() => new ShoppingCart { Id = CartId, Items = CartItems ?? [] })
+        .When(_ => _.AddToCart(CartId, NewItem));
 
     public class GivenEmptyCart : WhenAddItem
     {
@@ -23,9 +22,8 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Is().not.Null();
             Specification.Is(
                 """
-                Using CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items is not null
                 """);
@@ -37,9 +35,8 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Is().not.Empty();
             Specification.Is(
                 """
-                Using CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items is not empty
                 """);
@@ -51,9 +48,8 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Id.Is(CartId);
             Specification.Is(
                 """
-                Using CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Id is CartId
                 """);
@@ -65,9 +61,8 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Then<IShoppingCartRepository>(_ => _.StoreCart(Result));
             Specification.Is(
                 """
-                Using CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
                 When _.AddToCart(CartId, NewItem)
                 Then IShoppingCartRepository.StoreCart(Result)
                 """);
@@ -76,7 +71,7 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
 
     public class GivenCartWithOneItem : WhenAddItem
     {
-        public GivenCartWithOneItem() => Using(() => CartItems = [new ShoppingCartItem("A1")]);
+        public GivenCartWithOneItem() => Given().That(() => CartItems = [new ShoppingCartItem("A1")]);
 
         [Fact]
         public void ThenDoNotThrow()
@@ -84,10 +79,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Then().DoesNotThrow();
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then does not throw
                 """);
@@ -99,10 +93,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Length.Is(2);
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items.Length is 2
                 """);
@@ -114,10 +107,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Last().Sku.Is(NewItem.Sku);
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items.Last().Sku is NewItem.Sku
                 """);
@@ -129,10 +121,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Last().Is().Not(NewItem);
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items.Last() is not NewItem
                 """);
@@ -144,10 +135,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Has().All(it => it != null);
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items has all it != null
                 """);
@@ -159,10 +149,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Has().All((it, i) => it.LineNumber == i + 1);
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items has all LineNumber = i + 1
                 """);
@@ -174,10 +163,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Has().All(it => it.Is().not.Null());
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items has all it.Is().not.Null()
                 """);
@@ -189,10 +177,9 @@ public abstract class WhenAddItem : ShoppingServiceAsyncSpec<ShoppingCart>
             Result.Items.Has().All((it, i) => it.LineNumber.Is(i + 1));
             Specification.Is(
                 """
-                Using CartItems = [new ShoppingCartItem("A1")]
-                  and CartItems ??= []
                 Given IShoppingCartRepository.GetCart(CartId) returns new ShoppingCart { Id =
-                      CartId, Items = CartItems }
+                      CartId, Items = CartItems ?? [] }
+                  and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
                 Then Result.Items has all (it, i) => it.LineNumber.Is(i + 1)
                 """);

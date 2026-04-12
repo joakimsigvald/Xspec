@@ -91,6 +91,9 @@ internal static class SpecificationGenerator
     internal static void AddGivenCount<TModel>(string count)
         => Builder.Add(() => Builder.AddGivenCount<TModel>(count));
 
+    internal static void AddGivenThat(string customArrangementExpr)
+        => Builder.Add(() => Builder.AddGivenThat(customArrangementExpr));
+
     internal static void AddVerify<TService>(string expressionExpr)
         => Builder.Add(() => Builder.AddVerify<TService>(expressionExpr));
 

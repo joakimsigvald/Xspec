@@ -24,6 +24,7 @@ internal class SpecificationBuilder
         _applications.Add(apply);
     }
 
+    //TODO: add 'that' after given to make it read better
     private string Build()
     {
         foreach (var apply in _applications) apply();
@@ -144,6 +145,9 @@ internal class SpecificationBuilder
         var articleStr = string.IsNullOrEmpty(count) ? string.Empty : $"{count.AsWords()} ";
         _textBuilder.AddPhraseOrSentence($"{Given} {articleStr}{NameOf<TModel>()}");
     }
+
+    internal void AddGivenThat(string customArrangementExpr)
+        => _textBuilder.AddPhraseOrSentence($"{Given} that {customArrangementExpr.ParseValue()}");
 
     internal void AddVerify<TService>(string expressionExpr)
         => _textBuilder.AddWord($"{NameOf<TService>()}.{expressionExpr.ParseCall(true)}");

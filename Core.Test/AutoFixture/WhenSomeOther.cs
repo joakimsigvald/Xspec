@@ -26,25 +26,14 @@ public abstract class WhenSomeOther : Spec<MyRetriever, MyModel[]>
         public GivenOneIsMentionedAfter() => Using(One<MyModel>);
 
         [Fact]
-        public void ThenCountIsTwo()
+        public void ThenCountIsThatOne()
         {
-            Result.Has().Count(2);
+            Result.Has().OneItem().that.Is(The<MyModel>());
             Specification.Is(
 @"Using one MyModel
   and some other MyModel
 When _.List()
-Then Result has count 2");
-        }
-
-        [Fact]
-        public void ThenFirstModelIsNotTheOneModel()
-        {
-            Result.First().Is().Not(TheFirst<MyModel>());
-            Specification.Is(
-@"Using one MyModel
-  and some other MyModel
-When _.List()
-Then Result.First() is not the first MyModel");
+Then Result has one item that is the MyModel");
         }
     }
 
@@ -53,14 +42,14 @@ Then Result.First() is not the first MyModel");
         public GivenThreeIsMentionedAfter() => Using(Three<MyModel>);
 
         [Fact]
-        public void ThenCountIsTwo()
+        public void ThenCountIsThree()
         {
-            Result.Has().Count(2);
+            Result.Has().Count(3);
             Specification.Is(
 @"Using three MyModel
   and some other MyModel
 When _.List()
-Then Result has count 2");
+Then Result has count 3");
         }
     }
 
@@ -69,15 +58,15 @@ Then Result has count 2");
         public GivenOneIsMentionedBefore() => Using(One<MyModel>).And(Some<MyModel>);
 
         [Fact]
-        public void ThenCountIsTwo()
+        public void ThenCountIsOne()
         {
-            Result.Has().Count(2);
+            Result.Has().Count(1);
             Specification.Is(
 @"Using some MyModel
   and one MyModel
   and some other MyModel
 When _.List()
-Then Result has count 2");
+Then Result has count 1");
         }
     }
 
@@ -86,15 +75,15 @@ Then Result has count 2");
         public GivenTwoIsMentionedBefore() => Using(Two<MyModel>).And(Some<MyModel>);
 
         [Fact]
-        public void ThenTwoModelsAreNotThoseTwoModels()
+        public void ThenTwoModelsAreThoseTwoModels()
         {
-            Result.Is().not.Like(Two<MyModel>());
+            Result.Is(Two<MyModel>());
             Specification.Is(
 @"Using some MyModel
   and two MyModel
   and some other MyModel
 When _.List()
-Then Result is not like two MyModel");
+Then Result is two MyModel");
         }
     }
 

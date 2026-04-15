@@ -50,31 +50,37 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
         return _context.Assign(tag, value, tagName);
     }
 
-    internal TValue Apply<TValue>(Tag<TValue> tag, Action<TValue> setup, string tagName)
+    internal TValue Apply<TValue>(Tag<TValue> tag, Mutation<TValue> mutation, string tagName)
     {
         AssertHasNotRun();
-        return _context.Apply(tag, setup, tagName);
+        return _context.Apply(tag, mutation, tagName);
     }
 
-    internal TValue Apply<TValue>(Tag<TValue> tag, Func<TValue, TValue> transform, string tagName)
-    {
-        AssertHasNotRun();
-        return _context.Apply(tag, transform, tagName);
-    }
+    //internal TValue Apply<TValue>(Tag<TValue> tag, Action<TValue> setup, string tagName)
+    //{
+    //    AssertHasNotRun();
+    //    return _context.Apply(tag, setup, tagName);
+    //}
+
+    //internal TValue Apply<TValue>(Tag<TValue> tag, Func<TValue, TValue> transform, string tagName)
+    //{
+    //    AssertHasNotRun();
+    //    return _context.Apply(tag, transform, tagName);
+    //}
 
     internal TValue Create<TValue>(Action<TValue> setup)
         => Context.ApplyTo(setup, _context.Create<TValue>());
 
-    internal TValue Apply<TValue>(Action<TValue> setup, int index)
-    {
-        AssertHasNotRun();
-        return _context.Apply(setup, index);
-    }
+    //internal TValue Apply<TValue>(Action<TValue> setup, int index)
+    //{
+    //    AssertHasNotRun();
+    //    return _context.Apply(setup, index);
+    //}
 
-    internal TValue Apply<TValue>(Func<TValue, TValue> transform, int index)
+    internal TValue Apply<TValue>(Mutation<TValue> mutation, int? index = null)
     {
         AssertHasNotRun();
-        return _context.Apply(transform, index);
+        return _context.Apply(mutation, index);
     }
 
     internal TValue Assign<TValue>(int index, TValue value)
@@ -89,17 +95,20 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
     internal TValue[] AssignMany<TValue>(TValue[] values)
         => _context.AssignMany(values);
 
-    internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
-        => _context.ApplyMany(setup, count);
+    internal TValue[] ApplyMany<TValue>(Mutation<TValue> mutation, int count)
+        => _context.ApplyMany(mutation, count);
 
-    internal TValue[] ApplyMany<TValue>(Func<TValue, TValue> transform, int count)
-        => _context.ApplyMany(transform, count);
+    //internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
+    //    => _context.ApplyMany(setup, count);
 
-    internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
-        => _context.ApplyMany(transform, count);
+    //internal TValue[] ApplyMany<TValue>(Func<TValue, TValue> transform, int count)
+    //    => _context.ApplyMany(transform, count);
 
-    internal TValue[] ApplyMany<TValue>(Action<TValue, int> setup, int count)
-        => _context.ApplyMany(setup, count);
+    //internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
+    //    => _context.ApplyMany(transform, count);
+
+    //internal TValue[] ApplyMany<TValue>(Action<TValue, int> setup, int count)
+    //    => _context.ApplyMany(setup, count);
 
     internal void SetAction(Delegate act, string actExpr)
     {

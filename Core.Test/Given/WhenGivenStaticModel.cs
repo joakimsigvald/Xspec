@@ -98,8 +98,8 @@ public class WhenGivenStaticModel : Spec<MyModel>
             .Then().Result.Name.Is(name).And(Result).Id.Is(id);
         Specification.Is(
             """
-            Given MyModel has Name = name
             Using new MyModel { Id = id }
+            Given MyModel has Name = name
             When _
             Then Result.Name is name
               and Result.Id is id

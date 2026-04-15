@@ -31,8 +31,8 @@ public class WhenMockInt : Spec<StaticIntService, int>
             Using(value).Then().Result.Is(value);
             Specification.Is(
                 """
-                Using value
-                  and an int
+                Using an int
+                  and value
                 When _.GetValue()
                 Then Result is value
                 """);

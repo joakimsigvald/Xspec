@@ -55,7 +55,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
     {
-        _pipeline.Using(value, scope, valueExpr!);
+        _pipeline.AppendUsing(() => _pipeline.Using(value, scope, valueExpr!));
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -72,7 +72,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(factory))] string? factoryExpr = null)
     {
-        _pipeline.PrependUsing(() => _pipeline.Using(factory, scope, factoryExpr!));
+        _pipeline.AppendUsing(() => _pipeline.Using(factory, scope, factoryExpr!));
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 }

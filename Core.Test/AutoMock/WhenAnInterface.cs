@@ -65,8 +65,8 @@ public class WhenUsingConcreteInstanceForInterface : Spec<InterfaceService, int>
         Then().Throws<ApplicationException>();
         Specification.Is(
             """
-            Using new MyInvalidLogger<ApplicationException>()
-              and new MyComponent(an IMyLogger, an int)
+            Using new MyComponent(an IMyLogger, an int)
+              and new MyInvalidLogger<ApplicationException>()
             When _.GetValue()
             Then throws ApplicationException
             """);
@@ -86,8 +86,8 @@ public class WhenIndirectlyUsingConcreteInstanceForInterface : Spec<InterfaceSer
         Then().Throws<ApplicationException>();
         Specification.Is(
             """
-            Using new MyInvalidLogger<ApplicationException>()
-              and a MyComponent
+            Using a MyComponent
+              and new MyInvalidLogger<ApplicationException>()
             When _.GetValue()
             Then throws ApplicationException
             """);
@@ -105,8 +105,8 @@ public class WhenUsingConcreteInstanceForInterfaceWithAutoMockedConstructorArgum
         Result.Is(The<int>());
         Specification.Is(
             """
-            Using an int
-              and a MyComponent
+            Using a MyComponent
+              and an int
             When _.GetValue()
             Then Result is the int
             """);

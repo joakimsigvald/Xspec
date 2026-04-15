@@ -30,8 +30,8 @@ public class WhenSome : Spec<MyRetriever, MyModel[]>
         {
             Result.Has().Count(1);
             Specification.Is(
-@"Using one MyModel
-  and some MyModel
+@"Using some MyModel
+  and one MyModel
 When _.List()
 Then Result has count 1");
         }
@@ -46,8 +46,8 @@ Then Result has count 1");
         {
             Result.Has().Count(3);
             Specification.Is(
-@"Using three MyModel
-  and some MyModel
+@"Using some MyModel
+  and three MyModel
 When _.List()
 Then Result has count 3");
         }
@@ -62,8 +62,8 @@ Then Result has count 3");
         {
             Result.Has().Count(0);
             Specification.Is(
-@"Using Array.Empty<MyModel>
-  and some MyModel
+@"Using some MyModel
+  and Array.Empty<MyModel>
 When _.List()
 Then Result has count 0");
         }
@@ -78,8 +78,8 @@ Then Result has count 0");
         {
             Result.Has().Count(2);
             Specification.Is(
-@"Using many MyModel
-  and some MyModel
+@"Using some MyModel
+  and many MyModel
 When _.List()
 Then Result has count 2");
         }

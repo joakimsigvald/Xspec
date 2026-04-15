@@ -31,8 +31,8 @@ public class WhenMockTuple : Spec<StaticTupleService, (int, string)>
             Using((v1, v2)).Then().Result.Is((v1, v2));
             Specification.Is(
                 """
-                Using (v1, v2)
-                  and a (int, string)
+                Using a (int, string)
+                  and (v1, v2)
                 When _.GetValue()
                 Then Result is (v1, v2)
                 """);

@@ -1,4 +1,5 @@
 ﻿using Xspec.Continuations;
+using Xspec.Internal.TestData;
 
 namespace Xspec;
 
@@ -55,8 +56,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue A<TValue>(Action<TValue> setup) 
-        => _pipeline.Apply(setup, 0);
+    protected internal TValue A<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 0);
 
     /// <summary>
     /// Yields a customized value of the given type
@@ -64,8 +64,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue An<TValue>(Action<TValue> setup)
-        => _pipeline.Apply(setup, 0);
+    protected internal TValue An<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 0);
 
     /// <summary>
     /// Yields a customized value of the given type
@@ -74,7 +73,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="setup"></param>
     /// <returns></returns>
     protected internal TValue AFirst<TValue>(Action<TValue> setup)
-        => _pipeline.Apply(setup, 0);
+        => _pipeline.Apply<TValue>(setup, 0);
 
     /// <summary>
     /// Yields a customized value of the given type
@@ -82,7 +81,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue A<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 0);
+    protected internal TValue A<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 0);
 
     /// <summary>
     /// Yields a customized value of the given type
@@ -90,7 +89,10 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue An<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 0);
+    protected internal TValue An<TValue>(Func<TValue, TValue> transform)
+    {
+        return _pipeline.Apply<TValue>(transform, 0);
+    }
 
     /// <summary>
     /// Yields a customized value of the given type
@@ -98,7 +100,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue AFirst<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 0);
+    protected internal TValue AFirst<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 0);
 
     /// <summary>
     /// Provide a specific value for the first instance of the given type
@@ -136,7 +138,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue ASecond<TValue>(Action<TValue> setup) => _pipeline.Apply(setup, 1);
+    protected internal TValue ASecond<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 1);
 
     /// <summary>
     /// Provide transform for a second value of a given type, that can be mentioned in the test pipeline as ASecond or TheSecond.
@@ -144,7 +146,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue ASecond<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 1);
+    protected internal TValue ASecond<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 1);
 
     /// <summary>
     /// Provide a specific value for the second instance of the given type
@@ -174,7 +176,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue AThird<TValue>(Action<TValue> setup) => _pipeline.Apply(setup, 2);
+    protected internal TValue AThird<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 2);
 
     /// <summary>
     /// Provide transform for a third value of a given type, that can be mentioned in the test pipeline as AThird or TheThird.
@@ -182,7 +184,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue AThird<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 2);
+    protected internal TValue AThird<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 2);
 
     /// <summary>
     /// Provide a specific value for the third instance of the given type
@@ -212,7 +214,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue AFourth<TValue>(Action<TValue> setup) => _pipeline.Apply(setup, 3);
+    protected internal TValue AFourth<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 3);
 
     /// <summary>
     /// Provide transform for a fourth value of a given type, that can be mentioned in the test pipeline as AFourth or TheFourth.
@@ -220,7 +222,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue AFourth<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 3);
+    protected internal TValue AFourth<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 3);
 
     /// <summary>
     /// Provide a specific value for the fourth instance of the given type
@@ -250,7 +252,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <returns></returns>
-    protected internal TValue AFifth<TValue>(Action<TValue> setup) => _pipeline.Apply(setup, 4);
+    protected internal TValue AFifth<TValue>(Action<TValue> setup) => _pipeline.Apply<TValue>(setup, 4);
 
     /// <summary>
     /// Provide a specific value for the fifth instance of the given type
@@ -266,7 +268,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="transform"></param>
     /// <returns></returns>
-    protected internal TValue AFifth<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply(transform, 4);
+    protected internal TValue AFifth<TValue>(Func<TValue, TValue> transform) => _pipeline.Apply<TValue>(transform, 4);
 
     /// <summary>
     /// Yields a value of the given type that cannot be retrieved again

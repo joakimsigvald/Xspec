@@ -23,9 +23,11 @@ internal class Repository
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
-        => _numberedMentions.TryGetValue(type, out var map) && map.TryGetValue(index, out var val)
-        ? (val, found: true)
-        : (null, found: false);
+    {
+        return _numberedMentions.TryGetValue(type, out var map) && map.TryGetValue(index, out var val)
+            ? (val, found: true)
+            : (null, found: false);
+    }
 
     internal bool TryGetDefault(Type type, out object? val) => _inputProvider.TryGetDefault(type, out val);
 
@@ -46,14 +48,7 @@ internal class Repository
         //    return;
 
         if (scope.HasFlag(For.Subject))
-        {
             _subjectProvider.UseValue(value);
-            if (value is not null)
-                _subjectProvider.UseForMock(typeof(TValue), value);
-        }
-
-        if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
-            Use(Task.FromResult(value), scope);
     }
 
     internal void Use<TValue>(Func<TValue> factory, For scope)
@@ -65,9 +60,6 @@ internal class Repository
 
         if (scope.HasFlag(For.Subject))
             _subjectProvider.UseFactory(factory);
-
-        if (!typeof(Task).IsAssignableFrom(typeof(TValue)))
-            Use(() => Task.FromResult(factory()), scope);
     }
 
     internal void AddDefaultSetup(Type type, Func<object, object> mutation) => _mutator.AddMutation(type, mutation);

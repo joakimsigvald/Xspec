@@ -13,6 +13,8 @@ internal class DataProvider
     private readonly Mutator _mutator;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
     private readonly Dictionary<Type, Arrangement> _defaults = [];
+    private bool _isMockerPreparedForInstantiation = false;
+
     public DataProvider(Counter counter, Mutator mutator, TypeConversionStrategy typeConversionStrategy)
     {
         _generator = new(this, counter, typeConversionStrategy);
@@ -46,24 +48,23 @@ internal class DataProvider
     internal void UseValue<TValue>(TValue value)
     {
         var type = typeof(TValue);
-        if (_defaults.ContainsKey(type))
-            return;
-
         _defaults[type] = new ValueArrangement(value);
     }
 
-    internal void UseForMock<TValue>(Type type, TValue value)
+    internal void UseFactory<TValue>(Func<TValue> factory)
     {
-        Mocker.Use(value); //TODO: remove?
-        if (type != value?.GetType()) //Explicit cast was provided, so don't use implicit cast to all interfaces
-            return;
-
-        var allInterfaces = type.GetInterfaces();
-        foreach (var anInterface in allInterfaces)
-            Mocker.Use(anInterface, value);
+        var type = typeof(TValue);
+        if (_defaults.TryGetValue(type, out var arr) && arr is FactoryArrangement farr)
+            _defaults[type] = new FactoryArrangement(() =>
+            {
+                farr.Factory();
+                return factory();
+            });
+        else
+            _defaults[type] = new FactoryArrangement(() => factory());
     }
 
-    internal void UseFactory<TValue>(Func<TValue> factory)
+    internal void UseFactoryOld<TValue>(Func<TValue> factory)
     {
         var type = typeof(TValue);
         if (_defaults.TryGetValue(type, out var arr))
@@ -86,7 +87,8 @@ internal class DataProvider
     {
         var type = typeof(TValue);
         var instance = DoInstantiate<TValue>();
-        return _mutator.Mutate(type, instance);
+        var mutatedInstance = _mutator.Mutate(type, instance);
+        return mutatedInstance;
     }
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class => Mocker.GetMock<TObject>();
@@ -97,6 +99,7 @@ internal class DataProvider
 
     private object? DoInstantiate<TValue>()
     {
+        PrepareMockerForInstantiation();
         try
         {
             if (TryGetValue(typeof(TValue), out var val))
@@ -120,21 +123,34 @@ internal class DataProvider
 
     internal bool TryGetValue(Type type, out object? val)
     {
-        if (!_defaults.TryGetValue(type, out var arr))
+        if (_defaults.TryGetValue(type, out var arr))
         {
-            val = null;
-            return false;
+            if (arr is FactoryArrangement farr)
+            {
+                _defaults.Remove(type); //Make sure circular evaluation of factory value break on second pass
+                _defaults[type] = arr = new ValueArrangement(farr.Factory());
+            }
+
+            val = (arr as ValueArrangement)?.Value;
+            return true;
         }
 
-        if (arr is FactoryArrangement farr) 
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
         {
-            _defaults.Remove(type); //Make sure circular evaluation of factory value break on second pass
-            _defaults[type] = arr = new ValueArrangement(farr.Factory());
+            var innerType = type.GetGenericArguments()[0];
+            if (TryGetValue(innerType, out var innerVal))
+            {
+                val = CreateCompletedTask(innerType, innerVal);
+                return true;
+            }
         }
 
-        val = (arr as ValueArrangement)?.Value;
-        return true;
+        val = null;
+        return false;
     }
+
+    private static object CreateCompletedTask(Type innerType, object? value)
+        => typeof(Task).GetMethod("FromResult")!.MakeGenericMethod(innerType).Invoke(null, [value])!;
 
     internal AutoMocker CreateAutoMocker()
     {
@@ -161,5 +177,47 @@ internal class DataProvider
 
         int GetArrayResolverIndex()
             => resolverList.FindIndex(_ => _.GetType() == typeof(ArrayResolver));
+    }
+
+    private void PrepareMockerForInstantiation()
+    {
+        if (_isMockerPreparedForInstantiation)
+            return;
+
+        _isMockerPreparedForInstantiation = true;
+        Dictionary<Type, object?> mockValues = [];
+        Type[] types = [.. _defaults.Keys
+            .SelectMany(t => new[] { t, typeof(Task<>).MakeGenericType(t) })
+            .Distinct()];
+
+        foreach (var type in types)
+        {
+            if (!TryGetValue(type, out var val))
+                continue;
+
+            var actualType = val?.GetType();
+            mockValues[type] = val;
+            if (type == actualType)
+            {
+                var allInterfaces = type.GetInterfaces();
+                foreach (var anInterface in allInterfaces)
+                    mockValues[anInterface] = val;
+            }
+            //else if (actualType is not null)
+            //{
+            //    Mocker.Use(actualType, val);
+            //}
+        }
+        foreach (var kvp in mockValues)
+        {
+            try
+            {
+                Mocker.Use(kvp.Key, kvp.Value);
+            }
+            catch (InvalidOperationException ioex) when (ioex.Message.Contains("The service instance has already been added")) 
+            {
+                TestContext.Current?.AddWarning($"[Xspec] Mocker.Use ignored, value has already been added: {ioex.Message}");
+            }
+        }
     }
 }

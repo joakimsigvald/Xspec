@@ -41,7 +41,7 @@ public class WhenGivenSetupModelWithDefault : Spec<MyService, MyModel>
     public void GivenTwoDefaultSetups_ThenApplySecond()
     {
         Given<MyModel>(_ => _.Name = "123")
-            .Given<MyModel>(_ => _.Name = _defaultName)
+            .And<MyModel>(_ => _.Name = _defaultName)
             .And<IMyRepository>().That(_ => _.GetModel()).Returns(ASecond<MyModel>)
             .When(_ => _.GetModel())
             .Then().Result.Name.Is(_defaultName);

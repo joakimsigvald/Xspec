@@ -30,8 +30,8 @@ public abstract class WhenSomeOther : Spec<MyRetriever, MyModel[]>
         {
             Result.Has().OneItem().that.Is(The<MyModel>());
             Specification.Is(
-@"Using one MyModel
-  and some other MyModel
+@"Using some other MyModel
+  and one MyModel
 When _.List()
 Then Result has one item that is the MyModel");
         }
@@ -46,8 +46,8 @@ Then Result has one item that is the MyModel");
         {
             Result.Has().Count(3);
             Specification.Is(
-@"Using three MyModel
-  and some other MyModel
+@"Using some other MyModel
+  and three MyModel
 When _.List()
 Then Result has count 3");
         }
@@ -62,9 +62,9 @@ Then Result has count 3");
         {
             Result.Has().Count(1);
             Specification.Is(
-@"Using some MyModel
+@"Using some other MyModel
   and one MyModel
-  and some other MyModel
+  and some MyModel
 When _.List()
 Then Result has count 1");
         }
@@ -79,9 +79,9 @@ Then Result has count 1");
         {
             Result.Is(Two<MyModel>());
             Specification.Is(
-@"Using some MyModel
+@"Using some other MyModel
   and two MyModel
-  and some other MyModel
+  and some MyModel
 When _.List()
 Then Result is two MyModel");
         }

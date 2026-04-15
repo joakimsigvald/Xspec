@@ -12,8 +12,8 @@ public class WhenMockStringAndInt : Spec<StaticStringAndIntService, string>
         Using(A<string>).And(An<int>).Then().Result.Is($"{The<string>()}:{The<int>()}");
         Specification.Is(
             """
-            Using an int
-              and a string
+            Using a string
+              and an int
             When _.GetValue()
             Then Result is "{The<string>()}:{The<int>()}"
             """);
@@ -29,8 +29,8 @@ public class WhenMockStringAndInt : Spec<StaticStringAndIntService, string>
             Specification.Is(
                 """
                 Using value
-                  and an int
                   and a string
+                  and an int
                 When _.GetValue()
                 Then Result contains value
                 """);
@@ -47,9 +47,9 @@ public class WhenMockStringAndInt : Spec<StaticStringAndIntService, string>
             Using(A<string>).And(An<int>).Using(value).Then().Result.Does().Contain($"{value}");
             Specification.Is(
                 """
-                Using value
+                Using a string
                   and an int
-                  and a string
+                  and value
                 When _.GetValue()
                 Then Result contains "{value}"
                 """);

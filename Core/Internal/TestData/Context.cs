@@ -11,28 +11,27 @@ internal class Context
     internal TClass Instantiate<TClass>()
         => (TClass)(_repository.Instantiate<TClass>() ?? Create<TClass>())!;
 
-    internal TValue Apply<TValue>(Action<TValue> setup, int index)
-        => Produce<TValue>(index, (v, i) =>
-        {
-            setup(v);
-            return v;
-        });
+    //internal TValue Apply<TValue>(Action<TValue> setup, int index)
+    //    => Produce<TValue>(index, new((v, i) =>
+    //    {
+    //        setup(v);
+    //        return v;
+    //    }));
 
-    internal TValue Apply<TValue>(Func<TValue, TValue> transform, int index)
-        => Produce<TValue>(index, (v, i) => transform(v));
+    //internal TValue Apply<TValue>(Func<TValue, TValue> transform, int index)
+    //    => Produce<TValue>(index, new((value, i) => transform(value)));
 
-    internal TValue Apply<TValue>(int index, Func<TValue, int, TValue> transform)
-        => Produce(index, transform);
+    internal TValue Apply<TValue>(Mutation<TValue>? mutation, int? index) => Produce(index, mutation);
 
-    internal TValue Produce<TValue>(int? index, Func<TValue, int, TValue>? transform = null)
+    internal TValue Produce<TValue>(int? index, Mutation<TValue>? mutation = null)
     {
         if (index is null)
             return Create<TValue>();
 
         var (val, found) = _repository.Retrieve(typeof(TValue), index.Value);
-        return found && transform is null
-            ? (TValue)val!
-            : Assign(Get(), index.Value);
+        if (found && mutation is null)
+            return (TValue)val!;
+        return Assign(Get(), index.Value);
 
         TValue Get()
         {
@@ -41,11 +40,11 @@ internal class Context
                 : _repository.TryGetDefault(typeof(TValue), out var defaultValue)
                 ? (TValue)defaultValue!
                 : Create<TValue>();
-            if (transform is null)
+            if (mutation is null)
                 return newValue;
             try
             {
-                return transform(newValue, index.Value);
+                return mutation.Apply(newValue, index);
             }
             catch (Exception ex)
             {
@@ -60,11 +59,11 @@ internal class Context
     internal TValue Assign<TValue>(Tag<TValue> tag, TValue value, string tagName)
         => Assign(value, GetTagIndex(tag, tagName));
 
-    internal TValue Apply<TValue>(Tag<TValue> tag, Action<TValue> setup, string tagName)
-        => Apply(setup, GetTagIndex(tag, tagName));
+    internal TValue Apply<TValue>(Tag<TValue> tag, Mutation<TValue> mutation, string tagName)
+        => Apply(mutation, GetTagIndex(tag, tagName));
 
-    internal TValue Apply<TValue>(Tag<TValue> tag, Func<TValue, TValue> transform, string tagName)
-        => Apply(transform, GetTagIndex(tag, tagName));
+    //internal TValue Apply<TValue>(Tag<TValue> tag, Func<TValue, TValue> transform, string tagName)
+    //    => Apply(transform, GetTagIndex(tag, tagName));
 
     internal Dictionary<object, int> GetTagIndices(Type type)
         => _tagIndices.TryGetValue(type, out var val) ? val : _tagIndices[type] = [];
@@ -107,17 +106,20 @@ internal class Context
         return (found || _repository.TryGetDefault(type, out val)) ? val as TValue[] : null;
     }
 
-    internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
-        => Assign(Enumerable.Range(0, count).Select(i => Apply(setup, i)).ToArray());
+    internal TValue[] ApplyMany<TValue>(Mutation<TValue> mutation, int count)
+        => Assign(Enumerable.Range(0, count).Select(i => Apply(mutation with { }, i)).ToArray());
 
-    internal TValue[] ApplyMany<TValue>(Action<TValue, int> setup, int count)
-        => Assign(Enumerable.Range(0, count).Select(i => Apply<TValue>(_ => setup(_, i), i)).ToArray());
+    //internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
+    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(setup, i)).ToArray());
 
-    internal TValue[] ApplyMany<TValue>(Func<TValue, TValue> transform, int count)
-        => Assign(Enumerable.Range(0, count).Select(i => Apply(transform, i)).ToArray());
+    //internal TValue[] ApplyMany<TValue>(Action<TValue, int> setup, int count)
+    //    => Assign(Enumerable.Range(0, count).Select(i => Apply<TValue>(_ => setup(_, i), i)).ToArray());
 
-    internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
-        => Assign(Enumerable.Range(0, count).Select(i => Apply(i, transform)).ToArray());
+    //internal TValue[] ApplyMany<TValue>(Func<TValue, TValue> transform, int count)
+    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(transform, i)).ToArray());
+
+    //internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
+    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(i, new Mutation<TValue>(transform))).ToArray());
 
     internal TValue Create<TValue>() => _repository.Create<TValue>();
 
@@ -149,7 +151,7 @@ internal class Context
         => typedTagIndices.Count > 0 ? typedTagIndices.Values.Min() - 1 : -1;
 
     private TValue[] Reuse<TValue>(TValue[]? arr, int count, int? minCount)
-        => arr is null ? [..Enumerable.Range(0, count).Select(i => Produce<TValue>(i))]
+        => arr is null ? [.. Enumerable.Range(0, count).Select(i => Produce<TValue>(i))]
         : arr.Length >= minCount || arr?.Length == count ? arr
         : arr!.Length > count ? arr[..count]
         : Extend(arr, count);

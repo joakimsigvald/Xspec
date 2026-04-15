@@ -23,15 +23,15 @@ public class WhenGivenUsingAndDefaultValue : Spec<MyWrapper<string>, (string, st
     [Fact]
     public void ThenApplyBothAsLambdas()
     {
-        Using(() => "ABC", For.Input).And(() => "DEF")
+        Using(() => "ABC").And(() => "DEF", For.Input)
             .When(_ => _.GetValues(A<string>()))
-            .Then().Result.Is(("DEF", "ABC"));
+            .Then().Result.Is(("ABC", "DEF"));
         Specification.Is(
             """
-            Using "DEF"
-              and "ABC" for Input
+            Using "ABC"
+              and "DEF" for Input
             When _.GetValues(a string)
-            Then Result is ("DEF", "ABC")
+            Then Result is ("ABC", "DEF")
             """);
     }
 
@@ -102,8 +102,8 @@ public class WhenGivenUsingAndDefaultModel : Spec<MyWrapper<MyModel>, (MyModel, 
             .Then().Result.Is((_second, _first));
         Specification.Is(
             """
-            Using _second for Subject
-              and _first for Input
+            Using _first for Input
+              and _second for Subject
             When _.GetValues(a MyModel)
             Then Result is (_second, _first)
             """);

@@ -31,8 +31,8 @@ public class WhenMockString : Spec<StaticStringService, string>
             Using(value).Then().Result.Is(value);
             Specification.Is(
                 """
-                Using value
-                  and a string
+                Using a string
+                  and value
                 When _.GetValue()
                 Then Result is value
                 """);

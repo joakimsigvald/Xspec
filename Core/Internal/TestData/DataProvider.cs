@@ -12,7 +12,7 @@ internal class DataProvider
     private readonly DataGenerator _generator;
     private readonly Mutator _mutator;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
-    private readonly Dictionary<Type, Arrangement> _defaults = [];
+    private readonly Dictionary<Type, Stack<Arrangement>> _defaults = [];
     private bool _isMockerPreparedForInstantiation = false;
 
     public DataProvider(Counter counter, Mutator mutator, TypeConversionStrategy typeConversionStrategy)
@@ -48,39 +48,24 @@ internal class DataProvider
     internal void UseValue<TValue>(TValue value)
     {
         var type = typeof(TValue);
-        _defaults[type] = new ValueArrangement(value);
+        _defaults[type] = new([new ValueArrangement(value)]);
     }
 
     internal void UseFactory<TValue>(Func<TValue> factory)
     {
         var type = typeof(TValue);
-        if (_defaults.TryGetValue(type, out var arr) && arr is FactoryArrangement farr)
-            _defaults[type] = new FactoryArrangement(() =>
-            {
-                farr.Factory();
-                return factory();
-            });
-        else
-            _defaults[type] = new FactoryArrangement(() => factory());
-    }
-
-    internal void UseFactoryOld<TValue>(Func<TValue> factory)
-    {
-        var type = typeof(TValue);
-        if (_defaults.TryGetValue(type, out var arr))
+        if (_defaults.TryGetValue(type, out var arr) && arr.Count > 0)
         {
-            if (arr is FactoryArrangement farr)
-            {
-                _defaults[type] = new FactoryArrangement(() =>
+            if (arr.Peek() is FactoryArrangement farr)
+                _defaults[type] = new([new FactoryArrangement(() =>
                 {
-                    factory();
-                    return farr.Factory();
-                });
-            }
-            //Ignore factory if a value was already provided
+                    farr.Factory();
+                    return factory();
+                })]);
+            else
+                _defaults[type].Push(new FactoryArrangement(() => factory()));
         }
-        else
-            _defaults[type] = new FactoryArrangement(() => factory());
+        else _defaults[type] = new([new FactoryArrangement(() => factory())]);
     }
 
     internal object? Instantiate<TValue>()
@@ -123,15 +108,15 @@ internal class DataProvider
 
     internal bool TryGetValue(Type type, out object? val)
     {
-        if (_defaults.TryGetValue(type, out var arr))
+        if (_defaults.TryGetValue(type, out var arr) && arr.Count > 0)
         {
-            if (arr is FactoryArrangement farr)
+            if (arr.Peek() is FactoryArrangement farr)
             {
-                _defaults.Remove(type); //Make sure circular evaluation of factory value break on second pass
-                _defaults[type] = arr = new ValueArrangement(farr.Factory());
+                _defaults[type].Pop(); //Make sure circular evaluation of factory value break on second pass
+                _defaults[type].Push(new ValueArrangement(farr.Factory()));
             }
 
-            val = (arr as ValueArrangement)?.Value;
+            val = (_defaults[type].Peek() as ValueArrangement)?.Value;
             return true;
         }
 
@@ -214,7 +199,7 @@ internal class DataProvider
             {
                 Mocker.Use(kvp.Key, kvp.Value);
             }
-            catch (InvalidOperationException ioex) when (ioex.Message.Contains("The service instance has already been added")) 
+            catch (InvalidOperationException ioex) when (ioex.Message.Contains("The service instance has already been added"))
             {
                 TestContext.Current?.AddWarning($"[Xspec] Mocker.Use ignored, value has already been added: {ioex.Message}");
             }

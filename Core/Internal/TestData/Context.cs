@@ -109,18 +109,6 @@ internal class Context
     internal TValue[] ApplyMany<TValue>(Mutation<TValue> mutation, int count)
         => Assign(Enumerable.Range(0, count).Select(i => Apply(mutation with { }, i)).ToArray());
 
-    //internal TValue[] ApplyMany<TValue>(Action<TValue> setup, int count)
-    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(setup, i)).ToArray());
-
-    //internal TValue[] ApplyMany<TValue>(Action<TValue, int> setup, int count)
-    //    => Assign(Enumerable.Range(0, count).Select(i => Apply<TValue>(_ => setup(_, i), i)).ToArray());
-
-    //internal TValue[] ApplyMany<TValue>(Func<TValue, TValue> transform, int count)
-    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(transform, i)).ToArray());
-
-    //internal TValue[] ApplyMany<TValue>(Func<TValue, int, TValue> transform, int count)
-    //    => Assign(Enumerable.Range(0, count).Select(i => Apply(i, new Mutation<TValue>(transform))).ToArray());
-
     internal TValue Create<TValue>() => _repository.Create<TValue>();
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class

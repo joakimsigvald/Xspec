@@ -68,37 +68,27 @@ internal class DataProvider
         else _defaults[type] = new([new FactoryArrangement(() => factory())]);
     }
 
-    internal object? Instantiate<TValue>()
-    {
-        var type = typeof(TValue);
-        var instance = DoInstantiate<TValue>();
-        var mutatedInstance = _mutator.Mutate(type, instance);
-        return mutatedInstance;
-    }
-
-    internal Mock<TObject> GetMock<TObject>() where TObject : class => Mocker.GetMock<TObject>();
     internal Mock GetMock(Type type) => Mocker.GetMock(type);
 
     internal void SetDefaultException(Type type, Func<Exception> ex)
         => _fluentDefaultProvider.SetDefaultException(type, ex);
 
-    private object? DoInstantiate<TValue>()
+    internal object? Instantiate(Type type)
     {
         PrepareMockerForInstantiation();
         try
         {
-            if (TryGetValue(typeof(TValue), out var val))
+            if (TryGetValue(type, out var val))
                 return val;
 
-            var type = typeof(TValue);
             if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
                 return null;
 
-            return Mocker.CreateInstance(typeof(TValue));
+            return Mocker.CreateInstance(type);
         }
         catch (Exception ex)
         {
-            TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {typeof(TValue).Name}. Fallback to DataGenerator. Reason: {ex.Message}");
+            TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {type.Name}. Fallback to DataGenerator. Reason: {ex.Message}");
             return null;
         }
     }

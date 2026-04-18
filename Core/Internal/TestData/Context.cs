@@ -11,16 +11,6 @@ internal class Context
     internal TClass Instantiate<TClass>()
         => (TClass)(_repository.Instantiate<TClass>() ?? Create<TClass>())!;
 
-    //internal TValue Apply<TValue>(Action<TValue> setup, int index)
-    //    => Produce<TValue>(index, new((v, i) =>
-    //    {
-    //        setup(v);
-    //        return v;
-    //    }));
-
-    //internal TValue Apply<TValue>(Func<TValue, TValue> transform, int index)
-    //    => Produce<TValue>(index, new((value, i) => transform(value)));
-
     internal TValue Apply<TValue>(Mutation<TValue>? mutation, int? index) => Produce(index, mutation);
 
     internal TValue Produce<TValue>(int? index, Mutation<TValue>? mutation = null)
@@ -61,9 +51,6 @@ internal class Context
 
     internal TValue Apply<TValue>(Tag<TValue> tag, Mutation<TValue> mutation, string tagName)
         => Apply(mutation, GetTagIndex(tag, tagName));
-
-    //internal TValue Apply<TValue>(Tag<TValue> tag, Func<TValue, TValue> transform, string tagName)
-    //    => Apply(transform, GetTagIndex(tag, tagName));
 
     internal Dictionary<object, int> GetTagIndices(Type type)
         => _tagIndices.TryGetValue(type, out var val) ? val : _tagIndices[type] = [];

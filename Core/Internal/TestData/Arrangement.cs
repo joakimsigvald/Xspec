@@ -1,3 +1,3 @@
 ﻿namespace Xspec.Internal.TestData;
 
-internal abstract record Arrangement { }
+internal abstract record Arrangement;

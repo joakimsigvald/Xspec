@@ -94,9 +94,6 @@ internal class DataProvider
             if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
                 return null;
 
-            //if (type.IsInterface || type.IsAbstract)
-            //    return GetMock(type).Object;
-
             return Mocker.CreateInstance(typeof(TValue));
         }
         catch (Exception ex)
@@ -112,7 +109,7 @@ internal class DataProvider
         {
             if (arr.Peek() is FactoryArrangement farr)
             {
-                _defaults[type].Pop(); //Make sure circular evaluation of factory value break on second pass
+                _defaults[type].Pop();
                 _defaults[type].Push(new ValueArrangement(farr.Factory()));
             }
 
@@ -188,10 +185,6 @@ internal class DataProvider
                 foreach (var anInterface in allInterfaces)
                     mockValues[anInterface] = val;
             }
-            //else if (actualType is not null)
-            //{
-            //    Mocker.Use(actualType, val);
-            //}
         }
         foreach (var kvp in mockValues)
         {

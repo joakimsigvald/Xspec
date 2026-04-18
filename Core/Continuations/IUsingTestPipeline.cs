@@ -49,4 +49,17 @@ public interface IUsingTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
         Func<TValue> factory,
         For scope = For.All,
         [CallerArgumentExpression(nameof(factory))] string? factoryExpr = null);
+
+    /// <summary>
+    /// Instructs the test pipeline to use the value associated with the specified tag when resolving dependencies or generating test data.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value associated with the tag.</typeparam>
+    /// <param name="tag">The tag used to identify the specific value instance.</param>
+    /// <param name="scope">Determines whether the tag's value is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
+    /// <param name="tagExpr">Automatically populated by the compiler to capture the argument expression.</param>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    IUsingTestPipeline<TSUT, TResult> And<TValue>(
+        Tag<TValue> tag,
+        For scope = For.All,
+        [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
 }

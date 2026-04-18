@@ -103,6 +103,12 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
         => Parent.Using(defaultValue, scope, defaultValueExpr!);
 
+    public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
+            Tag<TValue> tag,
+            For scope = For.All,
+            [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
+            => Parent.Using(tag, scope, tagExpr!);
+
     public ITestResultWithSUT<TSUT, TResult> Then() => Parent.Then();
     public TSubject Then<TSubject>(TSubject subject) => Parent.Then(subject);
 

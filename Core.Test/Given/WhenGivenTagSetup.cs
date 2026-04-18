@@ -9,15 +9,15 @@ public class WhenGivenTagSetup : Spec<MyService, MyModel>
     public void ApplyAction() 
     { 
         Tag<MyModel> model = new();
-        Given(model).Has(_ => _.Name = A<string>())
+        Using(model, For.Subject)
+            .Given(model).Has(_ => _.Name = A<string>())
             .And(model).Has(_ => _.Id = An<int>())
-            .and.Default(model)
             .When(_ => _.GetModel())
             .Then().Result.Name.Is(The<string>()).And(Result).Id.Is(The<int>());
         Specification.Is(
             """
-            Given model is default
-              and model has Id = an int
+            Using model for Subject
+            Given model has Id = an int
               and model has Name = a string
             When _.GetModel()
             Then Result.Name is the string

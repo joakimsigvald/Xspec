@@ -7,7 +7,7 @@ public abstract class WhenGetStateAfterSetStateWithAfterDelay : Spec<DelayedStat
     private static readonly Tag<int> _delay = new(), _state = new(), _wait = new();
 
     protected WhenGetStateAfterSetStateWithAfterDelay()
-        => Given().Default(_delay)
+        => Using(_delay)
         .When(_ => _.State)
         .After(_ => _.SetState(The(_state)), () => The(_wait));
 
@@ -32,9 +32,9 @@ public abstract class WhenGetStateAfterSetStateWithAfterDelay : Spec<DelayedStat
             Result.Is(The(_state));
             Specification.Is(
                 """
+                Using _delay
                 Given _wait is 200
                   and _delay is 100
-                  and _delay is default
                 When _.State
                 After wait () => The(_wait) ms
                 After _.SetState(the _state)

@@ -23,6 +23,7 @@ public interface IGivenContinuation<TSUT, TResult>
     /// <param name="tag">Tag, which associated value will be used when auto-generating objects</param>
     /// <param name="tagExpr">Do not use, will be provided by the compiler</param>
     /// <returns></returns>
+    [Obsolete("Use `Using(For.Input)` instead")]
     IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
@@ -35,6 +36,7 @@ public interface IGivenContinuation<TSUT, TResult>
     /// <param name="tag">Tag, which associated value will be used when auto-generating objects</param>
     /// <param name="tagExpr">Do not use, will be provided by the compiler</param>
     /// <returns></returns>
+    [Obsolete("Use `Using(For.subject)` instead")]
     IGivenTestPipeline<TSUT, TResult> Using<TValue>(
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);

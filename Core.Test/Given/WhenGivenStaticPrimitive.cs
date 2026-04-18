@@ -21,7 +21,7 @@ public class WhenGivenStaticPrimitive : Spec<string>
     [InlineData("abc")]
     public void GivenDefaultSetup_ThenUseDefaultSetup(string value)
     {
-        Given().Default<string>(_ => value).When(_ => _).Then().Result.Is(value);
+        Given<string>(_ => value).When(_ => _).Then().Result.Is(value);
         Specification.Is(
             """
             Given string is value

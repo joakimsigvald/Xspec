@@ -9,42 +9,14 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
 
     internal GivenContinuation(Spec<TSUT, TResult> spec) => _spec = spec;
 
-    [Obsolete("Use `Using(For)` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, For.Input, defaultValueExpr!);
-
-    [Obsolete("Use `Using(For)` instead")]
-    public IUsingTestPipeline<TSUT, TResult> Using<TConcrete>()
-        => _spec.Using<TConcrete>();
-
-    [Obsolete("Use `Using(For)` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
-        Func<TValue> defaultValue,
-        [CallerArgumentExpression(nameof(defaultValue))] string? defaultValueExpr = null)
-        => _spec.GivenDefault(defaultValue, For.Subject, defaultValueExpr!);
-
-    [Obsolete("Use `Using(For)` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Tag<TValue> tag,
-        [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
-        => Default(() => _spec.The(tag), tagExpr!);
-
-    [Obsolete("Use `Using(For)` instead")]
-    public IGivenTestPipeline<TSUT, TResult> Using<TValue>(
-        Tag<TValue> tag,
-        [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
-        => Using(() => _spec.The(tag), tagExpr!);
-
-    [Obsolete("Use `Using(For)` instead")]
+    [Obsolete("Use Given instead")]
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Action<TValue> defaultSetup,
         [CallerArgumentExpression(nameof(defaultSetup))] string? defaultSetupExpr = null)
          where TValue : class
         => _spec.Given(defaultSetup, defaultSetupExpr!);
 
-    [Obsolete("Use `Using(For)` instead")]
+    [Obsolete("Use Given instead")]
     public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
     Func<TValue, TValue> defaultTransform,
         [CallerArgumentExpression(nameof(defaultTransform))] string? defaultTransformExpr = null)

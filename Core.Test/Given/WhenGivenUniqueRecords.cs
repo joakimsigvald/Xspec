@@ -10,7 +10,7 @@ public class WhenGivenUniqueRecords : Spec<MyRecord[]>
     public void WithEnoughValueSpace_ThenGenerateUniqueModelArray()
     {
         int range = 10;
-        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).Using("Abc", For.Input)
+        When(_ => Five<MyRecord>()).Given<int>(i => i % range).Using("Abc", For.Input)
             .Then().Result.Is().Distinct()
             .and.Has().All(m => m.Id >= 0 && m.Id < range);
         Specification.Is(
@@ -28,7 +28,7 @@ public class WhenGivenUniqueRecords : Spec<MyRecord[]>
     {
         int range = 4;
         Xunit.Assert.Throws<XunitException>(() => 
-        When(_ => Five<MyRecord>()).Given().Default<int>(i => i % range).Using("Abc", For.Input)
+        When(_ => Five<MyRecord>()).Given<int>(i => i % range).Using("Abc", For.Input)
             .Then().Result.Is().Distinct()
             .and.Has().All(m => m.Id >= 0 && m.Id < range));
     }

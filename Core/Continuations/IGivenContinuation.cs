@@ -8,46 +8,13 @@ namespace Xspec.Continuations;
 public interface IGivenContinuation<TSUT, TResult>
 {
     /// <summary>
-    /// Provide a concrete type to be used in auto-mocking, instead of a mocked interface
-    /// </summary>
-    /// <typeparam name="TConcrete">Concrete class to be used in auto-mocking, in place of any of its interfaces</typeparam>
-    /// <returns></returns>
-    [Obsolete]
-    IUsingTestPipeline<TSUT, TResult> Using<TConcrete>();
-
-    /// <summary>
-    /// Provide a tagged default value, that will be used as test data where no specific value is given
-    /// The tagged value is applied lazily while running the pipeline.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="tag">Tag, which associated value will be used when auto-generating objects</param>
-    /// <param name="tagExpr">Do not use, will be provided by the compiler</param>
-    /// <returns></returns>
-    [Obsolete("Use `Using(For.Input)` instead")]
-    IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Tag<TValue> tag,
-        [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
-
-    /// <summary>
-    /// Provide a tagged value or object instance that will be used when creating subject under test
-    /// The tagged value is applied lazily while running the pipeline.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="tag">Tag, which associated value will be used when auto-generating objects</param>
-    /// <param name="tagExpr">Do not use, will be provided by the compiler</param>
-    /// <returns></returns>
-    [Obsolete("Use `Using(For.subject)` instead")]
-    IGivenTestPipeline<TSUT, TResult> Using<TValue>(
-        Tag<TValue> tag,
-        [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
-
-    /// <summary>
     /// Provide a default setup, that will be applied in all mocks and auto-generated test-data.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="setup"></param>
     /// <param name="setupExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use Given instead")]
     IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Action<TValue> setup,
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
@@ -60,6 +27,7 @@ public interface IGivenContinuation<TSUT, TResult>
     /// <param name="transform"></param>
     /// <param name="transformExpr"></param>
     /// <returns></returns>
+    [Obsolete("Use Given instead")]
     IGivenTestPipeline<TSUT, TResult> Default<TValue>(
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null);

@@ -9,19 +9,6 @@ internal class GivenContinuation<TSUT, TResult> : IGivenContinuation<TSUT, TResu
 
     internal GivenContinuation(Spec<TSUT, TResult> spec) => _spec = spec;
 
-    [Obsolete("Use Given instead")]
-    public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Action<TValue> defaultSetup,
-        [CallerArgumentExpression(nameof(defaultSetup))] string? defaultSetupExpr = null)
-         where TValue : class
-        => _spec.Given(defaultSetup, defaultSetupExpr!);
-
-    [Obsolete("Use Given instead")]
-    public IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-    Func<TValue, TValue> defaultTransform,
-        [CallerArgumentExpression(nameof(defaultTransform))] string? defaultTransformExpr = null)
-        => _spec.Given(defaultTransform, defaultTransformExpr!);
-
     public IGivenTestPipeline<TSUT, TResult> That(
         Action customArrangement,
         [CallerArgumentExpression(nameof(customArrangement))] string? customArrangementExpr = null)

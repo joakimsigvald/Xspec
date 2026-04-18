@@ -8,31 +8,6 @@ namespace Xspec.Continuations;
 public interface IGivenContinuation<TSUT, TResult>
 {
     /// <summary>
-    /// Provide a default setup, that will be applied in all mocks and auto-generated test-data.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="setup"></param>
-    /// <param name="setupExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use Given instead")]
-    IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Action<TValue> setup,
-        [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
-        where TValue : class;
-
-    /// <summary>
-    /// Provide a default transform, that will be applied in all mocks and auto-generated test-data.
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="transform"></param>
-    /// <param name="transformExpr"></param>
-    /// <returns></returns>
-    [Obsolete("Use Given instead")]
-    IGivenTestPipeline<TSUT, TResult> Default<TValue>(
-        Func<TValue, TValue> transform,
-        [CallerArgumentExpression(nameof(transform))] string? transformExpr = null);
-
-    /// <summary>
     /// Provide custom arrangement
     /// </summary>
     /// <param name="customArrangement"></param>

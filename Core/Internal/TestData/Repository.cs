@@ -44,9 +44,6 @@ internal class Repository
         if (scope.HasFlag(For.Input))
             _inputProvider.UseValue(value);
 
-        //if (value is Moq.Internals.InterfaceProxy)
-        //    return;
-
         if (scope.HasFlag(For.Subject))
             _subjectProvider.UseValue(value);
     }

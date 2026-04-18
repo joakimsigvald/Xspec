@@ -134,12 +134,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         return Continue();
     }
 
-    private GivenTestPipeline<TSUT, TResult> PrependGeneralMutation(Action mutation)
-    {
-        _pipeline.PrependGeneralMutation(mutation);
-        return Continue();
-    }
-
     internal IGivenTestPipeline<TSUT, TResult> AppendGiven(Action given)
     {
         _pipeline.AppendGiven(given);

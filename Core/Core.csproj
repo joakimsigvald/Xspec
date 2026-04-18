@@ -23,7 +23,8 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Removed all obsolete methods
+			Restructured the arrange pipeline into three distinct phases: Using defaults, Given mutations and Given setup.
+			Replaced `Given.Using` and `Given.Default` with `Using` and context to target subject, input or both.
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

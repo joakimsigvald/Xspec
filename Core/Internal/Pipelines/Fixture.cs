@@ -80,22 +80,10 @@ internal abstract class Fixture<TSUT>
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _context.GetMock<TObject>();
 
-    internal void PrependUsing(Action given)
-    {
-        AssertIsNotSetUp();
-        _arranger.PrependUsing(given);
-    }
-
     internal void AppendUsing(Action given)
     {
         AssertIsNotSetUp();
         _arranger.AppendUsing(given);
-    }
-
-    internal void PrependGeneralMutation(Action given)
-    {
-        AssertIsNotSetUp();
-        _arranger.PrependGeneralMutation(given);
     }
 
     internal void AppendGeneralMutation(Action given)

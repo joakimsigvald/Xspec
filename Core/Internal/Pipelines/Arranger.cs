@@ -6,9 +6,7 @@ internal class Arranger
     private readonly List<Action> _generalMutations = [];
     private readonly List<Action> _givens = [];
 
-    internal void PrependUsing(Action arrangement) => _usings.Insert(0, arrangement);
     internal void AppendUsing(Action arrangement) => _usings.Add(arrangement);
-    internal void PrependGeneralMutation(Action arrangement) => _generalMutations.Insert(0, arrangement);
     internal void AppendGeneralMutation(Action arrangement) => _generalMutations.Add(arrangement);
     internal void PrependGiven(Action arrangement) => _givens.Insert(0, arrangement);
     internal void AppendGiven(Action arrangement) => _givens.Add(arrangement);

@@ -31,8 +31,8 @@ public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float
             Using((v1, v2, v3, v4)).Then().Result.Is((v1, v2, v3, v4));
             Specification.Is(
                 """
-                Using a (int, string, int, float)
-                  and (v1, v2, v3, v4)
+                Using (v1, v2, v3, v4)
+                  and a (int, string, int, float)
                 When _.GetValue()
                 Then Result is (v1, v2, v3, v4)
                 """);

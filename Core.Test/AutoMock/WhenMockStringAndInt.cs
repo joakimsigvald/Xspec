@@ -47,9 +47,9 @@ public class WhenMockStringAndInt : Spec<StaticStringAndIntService, string>
             Using(A<string>).And(An<int>).Using(value).Then().Result.Does().Contain($"{value}");
             Specification.Is(
                 """
-                Using a string
+                Using value
+                  and a string
                   and an int
-                  and value
                 When _.GetValue()
                 Then Result contains "{value}"
                 """);

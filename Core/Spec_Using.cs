@@ -55,7 +55,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
     {
-        _pipeline.AppendUsing(() => _pipeline.Using(value, scope, valueExpr!));
+        _pipeline.Using(value, scope, valueExpr!);
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 

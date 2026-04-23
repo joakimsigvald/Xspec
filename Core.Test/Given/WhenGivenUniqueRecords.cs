@@ -15,8 +15,8 @@ public class WhenGivenUniqueRecords : Spec<MyRecord[]>
             .and.Has().All(m => m.Id >= 0 && m.Id < range);
         Specification.Is(
             """
-            Using "Abc" for Input
             Given int is i % range
+            Using "Abc" for Input
             When five MyRecord
             Then Result is distinct
                 and has all m.Id >= 0 && m.Id < range

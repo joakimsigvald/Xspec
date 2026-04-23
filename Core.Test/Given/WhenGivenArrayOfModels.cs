@@ -18,8 +18,8 @@ public abstract class WhenGetArrayOfModels : Spec<MyService, MyModel[]>
             Then().Result.Is(Two<MyModel>()).And(Result).First().Name.Is(The<string>());
             Specification.Is(
                 """
-            Using two MyModel
             Given MyModel has Name = a string
+            Using two MyModel
               and IMyRepository.GetModels() returns a MyModel[]
             When _.GetModels()
             Then Result is two MyModel

@@ -86,12 +86,6 @@ internal abstract class Fixture<TSUT>
         _arranger.AppendUsing(given);
     }
 
-    internal void AppendGeneralMutation(Action given)
-    {
-        AssertIsNotSetUp();
-        _arranger.AppendGeneralMutation(given);
-    }
-
     internal void PrependGiven(Action given)
     {
         AssertIsNotSetUp();

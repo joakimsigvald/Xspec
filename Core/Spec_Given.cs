@@ -20,7 +20,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
         where TValue : class
     {
-        AppendGeneralMutation(() => _pipeline.SetDefault(setup, setupExpr!));
+        _pipeline.SetDefault(setup, setupExpr!);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
@@ -42,7 +42,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null)
     {
-        AppendGeneralMutation(() => _pipeline.SetDefault(transform, transformExpr!));
+        _pipeline.SetDefault(transform, transformExpr!);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
@@ -127,12 +127,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 
     internal void SetupThrows<TService>(Func<Exception> expected)
         => _pipeline.SetupThrows<TService>(expected);
-
-    internal IGivenTestPipeline<TSUT, TResult> AppendGeneralMutation(Action mutation)
-    {
-        _pipeline.AppendGeneralMutation(mutation);
-        return Continue();
-    }
 
     internal IGivenTestPipeline<TSUT, TResult> AppendGiven(Action given)
     {

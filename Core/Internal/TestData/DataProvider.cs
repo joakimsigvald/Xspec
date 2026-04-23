@@ -49,6 +49,8 @@ internal class DataProvider
     {
         var type = typeof(TValue);
         _defaults[type] = new([new ValueArrangement(value)]);
+        foreach (var iface in type.GetInterfaces())
+            _defaults[iface] = new([new ValueArrangement(value)]);
     }
 
     internal void UseFactory<TValue>(Func<TValue> factory)
@@ -169,12 +171,6 @@ internal class DataProvider
 
             var actualType = val?.GetType();
             mockValues[type] = val;
-            if (type == actualType)
-            {
-                var allInterfaces = type.GetInterfaces();
-                foreach (var anInterface in allInterfaces)
-                    mockValues[anInterface] = val;
-            }
         }
         foreach (var kvp in mockValues)
         {

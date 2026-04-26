@@ -1,5 +1,4 @@
 ﻿using Moq;
-using Moq.AutoMock;
 using Xspec.Internal.Specification;
 using Xspec.Internal.TestData.Generation;
 using Xspec.Internal.TestData.Generation.Strategies;
@@ -12,16 +11,16 @@ internal class Repository
     private readonly TypeConversionStrategy _typeConversionStrategy = new();
     private readonly DataProvider _inputProvider;
     private readonly DataProvider _subjectProvider;
-    private readonly AutoMocker _mocker;
+    private readonly MockProvider _mockProvider;
     private readonly Dictionary<Type, Dictionary<int, object?>> _numberedMentions = [];
 
     public Repository()
     {
         Counter counter = new();
         _subjectProvider = new(counter, _mutator, _typeConversionStrategy);
-        _mocker = _subjectProvider.CreateAutoMocker();
-        _subjectProvider.Mocker = _mocker;
-        _inputProvider = new(counter, _mutator, _typeConversionStrategy) { Mocker = _mocker };
+        _mockProvider = new(_subjectProvider);
+        _subjectProvider.MockProvider = _mockProvider;
+        _inputProvider = new(counter, _mutator, _typeConversionStrategy) { MockProvider = _mockProvider };
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
@@ -42,7 +41,7 @@ internal class Repository
     internal object? Instantiate<TValue>()
     {
         var type = typeof(TValue);
-        var instance = _subjectProvider.Instantiate(type);
+        var instance = _mockProvider.Instantiate(type);
         return _mutator.Mutate(type, instance);
     }
 
@@ -73,10 +72,10 @@ internal class Repository
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _typeConversionStrategy.Register(convert);
 
-    internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.GetMock<TObject>();
+    internal Mock<TObject> GetMock<TObject>() where TObject : class => _mockProvider.GetMock<TObject>();
 
     internal void SetDefaultException(Type type, Func<Exception> ex)
-        => _subjectProvider.SetDefaultException(type, ex);
+        => _mockProvider.SetDefaultException(type, ex);
 
     private Dictionary<int, object?> GetMentions(Type type)
         => _numberedMentions.TryGetValue(type, out var val) ? val : _numberedMentions[type] = [];

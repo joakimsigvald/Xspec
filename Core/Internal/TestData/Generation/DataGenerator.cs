@@ -4,16 +4,22 @@ namespace Xspec.Internal.TestData.Generation;
 
 internal class DataGenerator(DataProvider context, Counter counter, TypeConversionStrategy typeConversionStrategy)
 {
+    private static readonly StackStrategy _stackStrategy = new();
+    private static readonly NullableStrategy _nullableStrategy = new();
+    private static readonly EnumStrategy _enumStrategy = new();
+    private static readonly CollectionStrategy _collectionStrategy = new();
+    private static readonly ObjectStrategy _objectStrategy = new();
+
     private readonly IGenerationStrategy[] _strategies = [
         typeConversionStrategy,
         new DefaultStrategy(context),
-        new StackStrategy(),
-        new NullableStrategy(),
-        new EnumStrategy(),
+        _stackStrategy,
+        _nullableStrategy,
+        _enumStrategy,
         new PrimitiveStrategy(counter),
         new SemanticTypeStrategy(counter),
-        new CollectionStrategy(),
-        new ObjectStrategy(),
+        _collectionStrategy,
+        _objectStrategy,
         ];
 
     internal TValue Create<TValue>() => (TValue)Create(typeof(TValue))!;

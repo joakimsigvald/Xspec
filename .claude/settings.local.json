@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Read(//tmp/**)",
+      "PowerShell(dotnet test \"C:/Development/Applique/Xspec/Core.Test\" --no-build --filter \"FullyQualifiedName~Characterization\" 2>&1)",
+      "PowerShell(dotnet test \"C:/Development/Applique/Xspec/Core.Test/Core.Test.csproj\" --no-build --filter \"FullyQualifiedName~Characterization\" 2>&1 | Out-File \"$env:TEMP/charout.txt\"; Get-Content \"$env:TEMP/charout.txt\" | Select-Object -Last 50)",
+      "PowerShell(Test-Path \"$env:TEMP/charout.txt\"; Get-Item \"$env:TEMP/charout.txt\" | Select-Object -Property Length)",
+      "PowerShell($lines = Get-Content \"$env:TEMP/charout.txt\"; \"Lines: $\\($lines.Count\\)\"; $lines)",
+      "PowerShell($out = & dotnet test \"C:/Development/Applique/Xspec/Core.Test/Core.Test.csproj\" --no-build --filter \"FullyQualifiedName~Characterization\" 2>&1; \"ExitCode: $LASTEXITCODE\"; $out -join \"`n\")",
+      "PowerShell($out = & dotnet test \"C:/Development/Applique/Xspec/Core.Test/Core.Test.csproj\" --no-build --filter \"FullyQualifiedName~Characterization\" --logger \"trx;LogFileName=char.trx\" --results-directory \"$env:TEMP/xspecresults\" 2>&1; \"ExitCode: $LASTEXITCODE\"; Get-ChildItem \"$env:TEMP/xspecresults\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" -reporter verbose 2>&1; \"ExitCode: $LASTEXITCODE\"; $out -join \"`n\")",
+      "Bash(unix2dos \"C:/Development/Applique/Xspec/Core.Test/Characterization/WhenSUTHasBclTypeArgs.cs\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" -reporter quiet 2>&1; \"ExitCode: $LASTEXITCODE\"; $out -join \"`n\")",
+      "Bash(unix2dos \"C:/Development/Applique/Xspec/Core.Test/Characterization/WhenSUTHasGenericInterfaceArgs.cs\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|PASS|FAIL\"\\) -join \"`n\")",
+      "Bash(unix2dos \"C:/Development/Applique/Xspec/Core.Test/Characterization/WhenSUTHasCascadingConstruction.cs\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|FAIL\"\\) -join \"`n\")",
+      "Bash(unix2dos \"C:/Development/Applique/Xspec/Core.Test/Characterization/WhenUsingAndGivenInteract.cs\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|FAIL|PASS\"\\) -join \"`n\")",
+      "Bash(unix2dos \"C:/Development/Applique/Xspec/Core.Test/Characterization/WhenAutoMockerFallsBackToDataGenerator.cs\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -namespace \"Xspec.Test.Characterization\" 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|FAIL|\\\\[FAIL\\\\]\"\\) -join \"`n\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -reporter quiet 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|FAIL|\\\\[FAIL\\\\]\"\\) -join \"`n\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" -reporter quiet 2>&1; \"ExitCode: $LASTEXITCODE\"; \\($out | Select-String \"Total:|FAIL\"\\) -join \"`n\"; \"----\"; \\($out | Select-Object -Last 5\\) -join \"`n\")",
+      "PowerShell($out = & \"C:/Development/Applique/Xspec/Core.Test/bin/Debug/net10.0/Xspec.Test.exe\" 2>&1; \\($out | Where-Object { $_ -match \"TEST EXECUTION SUMMARY\" -or $_ -match \"Total:\" }\\) -join \"`n\")"
+    ]
+  }
+}

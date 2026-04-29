@@ -1,21 +1,21 @@
 ﻿namespace Xspec.Internal.TestData.Generation.Strategies;
 
-internal class DefaultStrategy(DataProvider context) : IGenerationStrategy
+internal class DefaultStrategy(DataProvider dataProvider, MockProvider mockProvider) : IGenerationStrategy
 {
     public bool TryGenerate(GenerationRequest request, ref object? result)
-        => request.WithDefaultFallback && TryGetDefault(request.Type, out result);
+        => request.WithDefaultFallback && TryGetDefault(request.Type, request.Scope, out result);
 
-    internal bool TryGetDefault(Type type, out object? val)
+    private bool TryGetDefault(Type type, For scope, out object? val)
     {
-        if (context.TryGetDefault(type, out val))
+        if (dataProvider.TryGetDefault(type, scope, out val))
             return true;
 
         if (type.IsInterface || type.IsAbstract)
         {
-            var (instance, found) = context.Use(type);
+            var (instance, found) = dataProvider.Use(type, scope);
             try
             {
-                val = found ? instance! : context.GetMock(type).Object;
+                val = found ? instance! : mockProvider.GetMock(type).Object;
                 return true;
             }
             catch { }

@@ -7,12 +7,12 @@ namespace Xspec.Internal.TestData;
 
 internal class MockProvider
 {
-    private readonly DataProvider _dataProvider;
+    private readonly IDataProvider _dataProvider;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
     private bool _isMockerPreparedForInstantiation = false;
     private readonly Lazy<AutoMocker> _mocker;
 
-    public MockProvider(DataProvider dataProvider)
+    public MockProvider(IDataProvider dataProvider)
     {
         _dataProvider = dataProvider;
         _fluentDefaultProvider = new(dataProvider);
@@ -30,7 +30,7 @@ internal class MockProvider
         PrepareMockerForInstantiation();
         try
         {
-            if (_dataProvider.TryGetValue(type, out var val))
+            if (_dataProvider.TryGetValue(type, For.Subject, out var val))
                 return val;
 
             if (type.IsValueType || type == typeof(string) || type.Namespace?.StartsWith("System") == true)
@@ -85,7 +85,7 @@ internal class MockProvider
 
         foreach (var type in types)
         {
-            if (!_dataProvider.TryGetValue(type, out var val))
+            if (!_dataProvider.TryGetValue(type, For.Subject, out var val))
                 continue;
 
             var actualType = val?.GetType();

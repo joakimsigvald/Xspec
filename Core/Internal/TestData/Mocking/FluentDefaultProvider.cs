@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Xspec.Internal.TestData.Mocking;
 
-internal class FluentDefaultProvider(DataProvider dataProvider) : DefaultValueProvider
+internal class FluentDefaultProvider(IDataProvider dataProvider) : DefaultValueProvider
 {
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
 
@@ -12,11 +12,11 @@ internal class FluentDefaultProvider(DataProvider dataProvider) : DefaultValuePr
         var ex = GetDefaultException(GetMockedType(mock));
         if (ex is not null)
             throw ex;
-        var (val, found) = dataProvider.Use(type);
+        var (val, found) = dataProvider.Use(type, For.Subject);
         return found ? val!
             : IsReturningSelf(type, mock) ? mock.Object
             : IsTask(type) ? GetTask(type, mock)
-            : dataProvider.Create(type);
+            : dataProvider.Create(type, For.Subject);
     }
 
     private Exception? GetDefaultException(Type type)

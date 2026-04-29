@@ -2,7 +2,7 @@
 
 namespace Xspec.Internal.TestData.Mocking;
 
-internal class ValueResolver(IDataProvider context) : IMockResolver
+internal class ValueResolver(Repository repository) : IMockResolver
 {
     public void Resolve(MockResolutionContext context)
     {
@@ -12,7 +12,7 @@ internal class ValueResolver(IDataProvider context) : IMockResolver
 
     private object GetValue(Type type)
     {
-        var (val, found) = context.Use(type, For.Subject);
-        return found ? val! : context.Create(type, For.Subject);
+        var (val, found) = repository.Use(type, For.Subject);
+        return found ? val! : repository.Create(type, For.Subject);
     }
 }

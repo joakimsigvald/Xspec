@@ -27,7 +27,7 @@ internal class Context
         {
             var newValue = found
                 ? (TValue)val!
-                : _repository.TryGetDefault(typeof(TValue), out var defaultValue)
+                : _repository.TryGetDefault(typeof(TValue), For.Input, out var defaultValue)
                 ? (TValue)defaultValue!
                 : Create<TValue>();
             if (mutation is null)
@@ -90,13 +90,13 @@ internal class Context
     {
         var type = typeof(TValue[]);
         var (val, found) = _repository.Retrieve(type);
-        return (found || _repository.TryGetDefault(type, out val)) ? val as TValue[] : null;
+        return (found || _repository.TryGetDefault(type, For.Input, out val)) ? val as TValue[] : null;
     }
 
     internal TValue[] ApplyMany<TValue>(Mutation<TValue> mutation, int count)
         => Assign(Enumerable.Range(0, count).Select(i => Apply(mutation with { }, i)).ToArray());
 
-    internal TValue Create<TValue>() => _repository.Create<TValue>();
+    internal TValue Create<TValue>() => _repository.Create<TValue>(For.Input);
 
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _repository.GetMock<TObject>();

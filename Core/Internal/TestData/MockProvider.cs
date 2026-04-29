@@ -5,25 +5,15 @@ using Xspec.Internal.TestData.Mocking;
 
 namespace Xspec.Internal.TestData;
 
-internal class MockProvider
+internal class MockProvider(IDataProvider dataProvider, ValueResolver valueResolver, FluentDefaultProvider fluentDefaultProvider)
 {
-    private readonly IDataProvider _dataProvider;
-    private readonly FluentDefaultProvider _fluentDefaultProvider;
-    private bool _isMockerPreparedForInstantiation = false;
-    private readonly Lazy<AutoMocker> _mocker;
+    private readonly IDataProvider _dataProvider = dataProvider;
+    private readonly Lazy<AutoMocker> _mocker = new(() => CreateAutoMocker(valueResolver, fluentDefaultProvider));
 
-    public MockProvider(IDataProvider dataProvider)
-    {
-        _dataProvider = dataProvider;
-        _fluentDefaultProvider = new(dataProvider);
-        _mocker = new(CreateAutoMocker);
-    }
+    private bool _isMockerPreparedForInstantiation = false;
 
     internal Mock GetMock(Type type) => _mocker.Value.GetMock(type);
     internal Mock<TObject> GetMock<TObject>() where TObject : class => _mocker.Value.GetMock<TObject>();
-
-    internal void SetDefaultException(Type type, Func<Exception> ex)
-        => _fluentDefaultProvider.SetDefaultException(type, ex);
 
     internal object? Instantiate(Type type)
     {
@@ -43,33 +33,6 @@ internal class MockProvider
             TestContext.Current?.AddWarning($"[Xspec] AutoMocking bypassed for {type.Name}. Fallback to DataGenerator. Reason: {ex.Message}");
             return null;
         }
-    }
-
-    private AutoMocker CreateAutoMocker()
-    {
-        var autoMocker = new AutoMocker(
-            MockBehavior.Loose,
-            DefaultValue.Custom,
-            _fluentDefaultProvider,
-            false);
-        CustomizeResolvers(autoMocker);
-        return autoMocker;
-    }
-
-    private void CustomizeResolvers(AutoMocker autoMocker)
-    {
-        var resolverList = (List<IMockResolver>)autoMocker.Resolvers;
-        AddValueResolver();
-        ReplaceArrayResolver();
-
-        void AddValueResolver() =>
-            resolverList.Insert(resolverList.Count - 1, new ValueResolver(_dataProvider));
-
-        void ReplaceArrayResolver()
-            => resolverList[GetArrayResolverIndex()] = new EmptyArrayResolver();
-
-        int GetArrayResolverIndex()
-            => resolverList.FindIndex(_ => _.GetType() == typeof(ArrayResolver));
     }
 
     private void PrepareMockerForInstantiation()
@@ -102,5 +65,32 @@ internal class MockProvider
                 TestContext.Current?.AddWarning($"[Xspec] Mocker.Use ignored, value has already been added: {ioex.Message}");
             }
         }
+    }
+
+    private static AutoMocker CreateAutoMocker(ValueResolver valueResolver, FluentDefaultProvider fluentDefaultProvider)
+    {
+        var autoMocker = new AutoMocker(
+            MockBehavior.Loose,
+            DefaultValue.Custom,
+            fluentDefaultProvider,
+            false);
+        CustomizeResolvers(autoMocker, valueResolver);
+        return autoMocker;
+    }
+
+    private static void CustomizeResolvers(AutoMocker autoMocker, ValueResolver valueResolver)
+    {
+        var resolverList = (List<IMockResolver>)autoMocker.Resolvers;
+        AddValueResolver();
+        ReplaceArrayResolver();
+
+        void AddValueResolver() =>
+            resolverList.Insert(resolverList.Count - 1, valueResolver);
+
+        void ReplaceArrayResolver()
+            => resolverList[GetArrayResolverIndex()] = new EmptyArrayResolver();
+
+        int GetArrayResolverIndex()
+            => resolverList.FindIndex(_ => _.GetType() == typeof(ArrayResolver));
     }
 }

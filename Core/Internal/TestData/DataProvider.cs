@@ -1,37 +1,12 @@
-﻿using Xspec.Internal.TestData.Generation;
+﻿namespace Xspec.Internal.TestData;
 
-namespace Xspec.Internal.TestData;
-
-internal class DataProvider(Mutator mutator) : IDataProvider
+internal class DataProvider : IDataProvider
 {
     private readonly Dictionary<Type, Stack<Arrangement>> _generalDefaults = [];
     private readonly Dictionary<Type, Stack<Arrangement>> _inputDefaults = [];
     private readonly Dictionary<Type, Stack<Arrangement>> _subjectDefaults = [];
 
-    internal DataGenerator Generator { get; set; } = null!;
-
     public Type[] UsedTypes => [.. _subjectDefaults.Keys.Concat(_generalDefaults.Keys).Distinct()];
-
-    public object Create(Type type, For scope) => mutator.Mutate(type, Generator.Create(type, scope))!;
-
-    internal TValue Create<TValue>(For scope)
-        => (TValue)mutator.Mutate(typeof(TValue), Generator.Create<TValue>(scope))!;
-
-    public (object? val, bool found) Use(Type type, For scope)
-        => TryGetDefault(type, scope, out var value) ? (value, true) : (null, false);
-
-    internal bool TryGetDefault(Type type, For scope, out object? val)
-    {
-        var found = TryGetValue(type, scope, out val);
-        if (found)
-            return true;
-
-        if (!mutator.HasMutation(type))
-            return false;
-
-        val = mutator.Mutate(type, Generator.CreateNew(type, scope));
-        return true;
-    }
 
     internal void UseValue<TValue>(TValue value, For scope)
     {

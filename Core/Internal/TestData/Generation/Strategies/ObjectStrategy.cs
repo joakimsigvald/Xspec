@@ -60,7 +60,7 @@ internal class ObjectStrategy : IGenerationStrategy
                 {
                     return Activator.CreateInstance(type)!;
                 }
-                catch (ArgumentException)
+                catch (Exception)
                 {
                     throw new SetupFailed($"Failed to create value for type {type.Name}", ex);
                 }

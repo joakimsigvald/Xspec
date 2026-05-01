@@ -1,41 +1,41 @@
 ﻿namespace Xspec.Internal.TestData;
 
-internal class DataProvider : IDataProvider
-{
-    private readonly Dictionary<Type, Stack<Arrangement>> _generalDefaults = [];
-    private readonly Dictionary<Type, Stack<Arrangement>> _inputDefaults = [];
-    private readonly Dictionary<Type, Stack<Arrangement>> _subjectDefaults = [];
+using Arrangement = (bool HasValue, object? Value, Func<object?>? Factory);
 
-    public Type[] UsedTypes => [.. _subjectDefaults.Keys.Concat(_generalDefaults.Keys).Distinct()];
+internal class DataProvider
+{
+    private readonly Dictionary<Type, Arrangement> _generalDefaults = [];
+    private readonly Dictionary<Type, Arrangement> _inputDefaults = [];
+    private readonly Dictionary<Type, Arrangement> _subjectDefaults = [];
 
     internal void UseValue<TValue>(TValue value, For scope)
     {
         var type = typeof(TValue);
         var defaults = GetDefaults(scope);
-        defaults[type] = new([new ValueArrangement(value)]);
+        defaults[type] = new Arrangement(true, value, null);
         foreach (var iface in type.GetInterfaces())
-            defaults[iface] = new([new ValueArrangement(value)]);
+            defaults[iface] = new Arrangement(true, value, null);
     }
 
     internal void UseFactory<TValue>(Func<TValue> factory, For scope)
     {
-        var type = typeof(TValue);
         var defaults = GetDefaults(scope);
-        if (defaults.TryGetValue(type, out var arr) && arr.Count > 0)
-        {
-            if (arr.Peek() is FactoryArrangement farr)
-                defaults[type] = new([new FactoryArrangement(() =>
-                {
-                    farr.Factory();
-                    return factory();
-                })]);
-            else
-                defaults[type].Push(new FactoryArrangement(() => factory()));
-        }
-        else defaults[type] = new([new FactoryArrangement(() => factory())]);
+        defaults[typeof(TValue)] = ArrangeFactory(defaults, factory);
     }
 
-    private Dictionary<Type, Stack<Arrangement>> GetDefaults(For scope)
+    private static Arrangement ArrangeFactory<TValue>(Dictionary<Type, Arrangement> defaults, Func<TValue> factory)
+    {
+        if (!defaults.TryGetValue(typeof(TValue), out var current))
+            return new(false, null, () => factory());
+
+        if (current.Factory is null)
+            return new(current.HasValue, current.Value, () => factory());
+
+        var oldFactory = current.Factory;
+        return new(current.HasValue, current.Value, () => { oldFactory(); return factory(); });
+    }
+
+    private Dictionary<Type, Arrangement> GetDefaults(For scope)
         => scope switch
         {
             For.Input => _inputDefaults,
@@ -71,16 +71,16 @@ internal class DataProvider : IDataProvider
         return false;
     }
 
-    private static bool TryGetValue(Dictionary<Type, Stack<Arrangement>> arrangements, Type type, out object? val)
+    private static bool TryGetValue(Dictionary<Type, Arrangement> arrangements, Type type, out object? val)
     {
-        if (arrangements.TryGetValue(type, out var arr) && arr.Count > 0)
+        if (arrangements.TryGetValue(type, out var arr) && (arr.HasValue || arr.Factory != null))
         {
-            if (arr.Peek() is FactoryArrangement farr)
+            if (arr.Factory != null)
             {
-                arrangements[type].Pop();
-                arrangements[type] = new([new ValueArrangement(farr.Factory())]);
+                arrangements[type] = new(arr.HasValue, arr.Value, null);
+                arrangements[type] = arr = new(true, arr.Factory(), null);
             }
-            val = (arrangements[type].Peek() as ValueArrangement)?.Value;
+            val = arr.Value;
             return true;
         }
         val = null;

@@ -6,12 +6,25 @@ public class WhenGivenStaticPrimitive : Spec<string>
 {
     [Theory]
     [InlineData("abc")]
-    public void GivenDefaultValue_ThenUseDefault(string value)
+    public void GivenDefaultForInput_ThenNotUseDefaultforSubject(string value)
     {
-        Using(value, For.Input).When(_ => _).Then().Result.Is(value);
+        Using(value, For.Input).When(_ => _).Then().Result.Is().Not(value);
         Specification.Is(
             """
             Using value for Input
+            When _
+            Then Result is not value
+            """);
+    }
+
+    [Theory]
+    [InlineData("abc")]
+    public void GivenDefaultForSubject_ThenUseDefaultForSubject(string value)
+    {
+        Using(value, For.Subject).When(_ => _).Then().Result.Is(value);
+        Specification.Is(
+            """
+            Using value for Subject
             When _
             Then Result is value
             """);

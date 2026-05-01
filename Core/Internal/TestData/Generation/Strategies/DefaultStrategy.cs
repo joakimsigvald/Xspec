@@ -1,6 +1,6 @@
 ﻿namespace Xspec.Internal.TestData.Generation.Strategies;
 
-internal class DefaultStrategy(Repository repository, MockProvider mockProvider) : IGenerationStrategy
+internal class DefaultStrategy(Repository repository) : IGenerationStrategy
 {
     public bool TryGenerate(GenerationRequest request, ref object? result)
         => request.WithDefaultFallback && TryGetDefault(request.Type, request.Scope, out result);
@@ -15,7 +15,7 @@ internal class DefaultStrategy(Repository repository, MockProvider mockProvider)
             var (instance, found) = repository.Use(type, scope);
             try
             {
-                val = found ? instance! : mockProvider.GetMock(type).Object;
+                val = found ? instance! : repository.GetMock(type).Object;
                 return true;
             }
             catch { }

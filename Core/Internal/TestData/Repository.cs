@@ -2,7 +2,6 @@
 using Xspec.Internal.Specification;
 using Xspec.Internal.TestData.Generation;
 using Xspec.Internal.TestData.Generation.Strategies;
-using Xspec.Internal.TestData.Mocking;
 
 namespace Xspec.Internal.TestData;
 
@@ -11,7 +10,7 @@ internal class Repository
     private readonly Mutator _mutator = new();
     private readonly TypeConversionStrategy _typeConversionStrategy = new();
     private readonly DataProvider _dataProvider;
-    private readonly MockProvider _mockProvider;
+    private readonly MockingStrategy _mockingStrategy;
     private readonly DataGenerator _generator;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
     private readonly Dictionary<Type, Dictionary<int, object?>> _numberedMentions = [];
@@ -20,8 +19,8 @@ internal class Repository
     {
         _dataProvider = new();
         _fluentDefaultProvider = new(this);
-        _mockProvider = new(_dataProvider, new(this), _fluentDefaultProvider);
-        _generator = new(new(), _typeConversionStrategy, new(this, _mockProvider));
+        _mockingStrategy = new(new(this), _fluentDefaultProvider);
+        _generator = new(new(), _typeConversionStrategy, new(this), _mockingStrategy);
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
@@ -38,7 +37,7 @@ internal class Repository
     internal object? Instantiate<TValue>()
     {
         var type = typeof(TValue);
-        var instance = _mockProvider.Instantiate(type);
+        var instance = _generator.Create(type, For.Subject);
         return _mutator.Mutate(type, instance);
     }
 
@@ -77,7 +76,9 @@ internal class Repository
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _typeConversionStrategy.Register(convert);
 
-    internal Mock<TObject> GetMock<TObject>() where TObject : class => _mockProvider.GetMock<TObject>();
+    internal Mock GetMock(Type type) => _mockingStrategy.GetMock(type);
+
+    internal Mock<TObject> GetMock<TObject>() where TObject : class => _mockingStrategy.GetMock<TObject>();
 
     internal void SetDefaultException(Type type, Func<Exception> ex)
         => _fluentDefaultProvider.SetDefaultException(type, ex);

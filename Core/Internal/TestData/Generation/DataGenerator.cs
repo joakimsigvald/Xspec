@@ -2,7 +2,11 @@
 
 namespace Xspec.Internal.TestData.Generation;
 
-internal class DataGenerator(Counter counter, TypeConversionStrategy typeConversionStrategy, DefaultStrategy defaultStrategy)
+internal class DataGenerator(
+    Counter counter,
+    TypeConversionStrategy typeConversionStrategy,
+    DefaultStrategy defaultStrategy,
+    MockingStrategy mockingStrategy)
 {
     private static readonly StackStrategy _stackStrategy = new();
     private static readonly NullableStrategy _nullableStrategy = new();
@@ -13,12 +17,13 @@ internal class DataGenerator(Counter counter, TypeConversionStrategy typeConvers
     private readonly IGenerationStrategy[] _strategies = [
         typeConversionStrategy,
         defaultStrategy,
-        _stackStrategy,
         _nullableStrategy,
         _enumStrategy,
         new PrimitiveStrategy(counter),
         new SemanticTypeStrategy(counter),
         _collectionStrategy,
+        _stackStrategy,
+        mockingStrategy,
         _objectStrategy,
         ];
 

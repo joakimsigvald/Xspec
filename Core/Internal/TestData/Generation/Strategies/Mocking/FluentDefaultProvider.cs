@@ -1,10 +1,14 @@
 ﻿using Moq;
+using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Xspec.Internal.TestData.Generation.Strategies;
+namespace Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 internal class FluentDefaultProvider(Repository repository) : DefaultValueProvider
 {
+    private static readonly ConcurrentDictionary<Type, PropertyInfo> _mockTypeProperties = [];
+    private static readonly ConcurrentDictionary<Type, MethodInfo> _taskFromResultMethods = [];
+
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
 
     protected override object GetDefaultValue(Type type, Mock mock)
@@ -37,8 +41,8 @@ internal class FluentDefaultProvider(Repository repository) : DefaultValueProvid
 
     private Task GetTaskOf(Type valueType, Mock mock)
     {
-        dynamic value = GetDefaultValue(valueType, mock);
-        if (value.GetType() != valueType) 
+        var value = GetDefaultValue(valueType, mock);
+        if (value.GetType() != valueType)
         {
             var mockName = GetMockedType(mock).Name;
             throw new SetupFailed(
@@ -46,16 +50,22 @@ internal class FluentDefaultProvider(Repository repository) : DefaultValueProvid
 Interface types returned as task must be provided explicitly in the test setup.
 You can provide a default interface instance with 'Given<{mockName}>().Returns(A<{valueType.Name}>)'.");
         }
-        return Task.FromResult(value);
+        var fromResultMethod = _taskFromResultMethods.GetOrAdd(valueType, FindFromResultMethod);
+        return (Task)fromResultMethod.Invoke(null, [value])!;
     }
+
+    private MethodInfo FindFromResultMethod(Type type) => typeof(Task).GetMethod("FromResult")!.MakeGenericMethod(type);
 
     private static Type GetMockedType(Mock mock)
     {
         var mockType = mock.GetType();
-        var mockedTypeProperty = 
-            mockType.GetProperty("MockedType", BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new InvalidOperationException($"Failed to get mocked type property of type {mockType}");
-        return mockedTypeProperty.GetValue(mock) as Type 
+        var mockedTypeProperty = _mockTypeProperties.GetOrAdd(mockType, FindMockedTypeProperty);
+
+        return mockedTypeProperty.GetValue(mock) as Type
             ?? throw new InvalidOperationException($"Failed to get type of mock property {mockedTypeProperty}");
     }
+
+    private static PropertyInfo FindMockedTypeProperty(Type t)
+        => t.GetProperty("MockedType", BindingFlags.NonPublic | BindingFlags.Instance)
+        ?? throw new InvalidOperationException($"Failed to get mocked type property of type {t}");
 }

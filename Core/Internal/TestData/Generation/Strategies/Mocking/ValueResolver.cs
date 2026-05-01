@@ -1,6 +1,6 @@
 ﻿using Moq.AutoMock.Resolvers;
 
-namespace Xspec.Internal.TestData.Generation.Strategies;
+namespace Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 internal class ValueResolver(Repository repository) : IMockResolver
 {

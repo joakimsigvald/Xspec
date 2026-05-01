@@ -1,4 +1,5 @@
 ﻿using Xspec.Internal.TestData.Generation.Strategies;
+using Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 namespace Xspec.Internal.TestData.Generation;
 

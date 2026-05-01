@@ -5,6 +5,8 @@ namespace Xspec.Internal.TestData.Generation.Strategies;
 
 internal class ObjectStrategy : IGenerationStrategy
 {
+    private static readonly ConcurrentDictionary<Type, ConstructorInfo?> _greediestConstructors = [];
+    
     private static readonly ConcurrentDictionary<Type, object?> _defaultCache = [];
     private static readonly Func<Type, object?> _defaultFactory =
         t => t.IsValueType ? Activator.CreateInstance(t) : null;
@@ -28,6 +30,9 @@ internal class ObjectStrategy : IGenerationStrategy
         }
 
         ConstructorInfo? GetGreediestConstructor()
+            => _greediestConstructors.GetOrAdd(type, FindGreediestConstructor);
+
+        ConstructorInfo? FindGreediestConstructor(Type type)
             => type.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
 
         object? InstantiateWithConversionOperator()
@@ -69,17 +74,16 @@ internal class ObjectStrategy : IGenerationStrategy
 
         void PopulatePublicProperties(object instance)
         {
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanWrite
-                && p.GetSetMethod(nonPublic: false) != null
-                && p.GetIndexParameters().Length == 0);
-
-            foreach (var prop in properties)
+            var accessors = PropertyAccessorCache.GetAccessors(type);
+            foreach (var accessor in accessors)
             {
-                var currentValue = prop.GetValue(instance);
-                var emptyValue = _defaultCache.GetOrAdd(prop.PropertyType, _defaultFactory);
+                var currentValue = accessor.Get(instance);
+                var emptyValue = _defaultCache.GetOrAdd(accessor.PropertyType, _defaultFactory);
                 if (Equals(emptyValue, currentValue))
-                    prop.SetValue(instance, request.Next.Create(prop.PropertyType));
+                {
+                    var newValue = request.Next.Create(accessor.PropertyType);
+                    accessor.Set(instance, newValue);
+                }
             }
         }
     }

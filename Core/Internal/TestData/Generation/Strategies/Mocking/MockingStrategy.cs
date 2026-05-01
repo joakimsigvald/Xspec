@@ -2,7 +2,7 @@
 using Moq.AutoMock;
 using Moq.AutoMock.Resolvers;
 
-namespace Xspec.Internal.TestData.Generation.Strategies;
+namespace Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 internal class MockingStrategy(ValueResolver valueResolver, FluentDefaultProvider fluentDefaultProvider) : IGenerationStrategy
 {

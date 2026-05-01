@@ -1,12 +1,10 @@
 ﻿using System.Collections.Concurrent;
-using System.Reflection;
+using Xspec.Internal.TestData.Generation.Strategies.IlCompilation;
 
 namespace Xspec.Internal.TestData.Generation.Strategies;
 
 internal class ObjectStrategy : IGenerationStrategy
 {
-    private static readonly ConcurrentDictionary<Type, ConstructorInfo?> _greediestConstructors = [];
-    
     private static readonly ConcurrentDictionary<Type, object?> _defaultCache = [];
     private static readonly Func<Type, object?> _defaultFactory =
         t => t.IsValueType ? Activator.CreateInstance(t) : null;
@@ -25,39 +23,16 @@ internal class ObjectStrategy : IGenerationStrategy
 
         object? InstantiateWithConstructor()
         {
-            var constructor = GetGreediestConstructor();
-            return constructor is null ? null! : DoInstantiate(constructor);
-        }
+            var compiled = ConstructorCompiler.Get(type);
+            if (compiled.Instantiate is null)
+                return null;
 
-        ConstructorInfo? GetGreediestConstructor()
-            => _greediestConstructors.GetOrAdd(type, FindGreediestConstructor);
-
-        ConstructorInfo? FindGreediestConstructor(Type type)
-            => type.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
-
-        object? InstantiateWithConversionOperator()
-        {
-            var castOperator = type.GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(m => (m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.ReturnType == type);
-
-            if (castOperator != null)
-            {
-                var parameter = castOperator.GetParameters().First();
-                var paramValue = request.Next.Create(parameter.ParameterType);
-                if (paramValue != null)
-                    return castOperator.Invoke(null, [paramValue]);
-            }
-            return null;
-        }
-
-        object? DoInstantiate(ConstructorInfo constructor)
-        {
-            var parameters = constructor.GetParameters()
-                .Select(p => request.Next.Create(p.ParameterType))
-                .ToArray();
+            var args = new object?[compiled.ParameterTypes.Length];
+            for (int i = 0; i < compiled.ParameterTypes.Length; i++)
+                args[i] = request.Next.Create(compiled.ParameterTypes[i]);
             try
             {
-                return constructor.Invoke(parameters);
+                return compiled.Instantiate(args);
             }
             catch (Exception ex)
             {
@@ -72,9 +47,21 @@ internal class ObjectStrategy : IGenerationStrategy
             }
         }
 
+        object? InstantiateWithConversionOperator()
+        {
+            var compiled = ConversionOperatorCompiler.Get(type);
+            if (compiled.Instantiate is null || compiled.ParameterType is null)
+                return null;
+
+            var paramValue = request.Next.Create(compiled.ParameterType);
+            return paramValue is not null
+                ? compiled.Instantiate(paramValue)
+                : null;
+        }
+
         void PopulatePublicProperties(object instance)
         {
-            var accessors = PropertyAccessorCache.GetAccessors(type);
+            var accessors = PropertyCompiler.GetAccessors(type);
             foreach (var accessor in accessors)
             {
                 var currentValue = accessor.Get(instance);

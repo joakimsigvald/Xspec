@@ -1,5 +1,6 @@
 ﻿namespace Xspec.Internal.TestData;
 
+using Xspec.Internal.TestData.Generation.Strategies.IlCompilation;
 using Arrangement = (bool HasValue, object? Value, Func<object?>? Factory);
 
 internal class DataProvider
@@ -62,8 +63,7 @@ internal class DataProvider
             var innerType = type.GetGenericArguments()[0];
             if (TryGetValue(innerType, scope, out var innerVal))
             {
-                var fromResult = typeof(Task).GetMethod("FromResult")!.MakeGenericMethod(innerType);
-                val = fromResult.Invoke(null, [innerVal])!;
+                val = TaskCompiler.GetFromResultMethod(innerType)(innerVal!);
                 return true;
             }
         }

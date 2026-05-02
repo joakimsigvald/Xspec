@@ -18,20 +18,19 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>0.8.0</PackageVersion>
+		<PackageVersion>0.9.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Unified AutoMocking with AutoFixture into one cohesive data generation pipeline
+			Removed AutoMocker dependency
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Moq" Version="4.20.72" />
-		<PackageReference Include="Moq.AutoMock" Version="4.0.1" />
-		<PackageReference Include="xunit.v3.extensibility.core" Version="3.0.0" />
-		<PackageReference Include="xunit.v3.assert" Version="3.0.0" />
+		<PackageReference Include="xunit.v3.extensibility.core" Version="3.2.2" />
+		<PackageReference Include="xunit.v3.assert" Version="3.2.2" />
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 		<None Include="..\TODO.txt" Pack="true" PackagePath="\" />
 		<None Include="..\icon.png" Pack="true" PackagePath="\" />

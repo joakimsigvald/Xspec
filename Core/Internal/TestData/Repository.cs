@@ -20,7 +20,7 @@ internal class Repository
     {
         _dataProvider = new();
         _fluentDefaultProvider = new(this);
-        _mockingStrategy = new(new(this), _fluentDefaultProvider);
+        _mockingStrategy = new(_fluentDefaultProvider);
         _generator = new(new(), _typeConversionStrategy, new(this), _mockingStrategy);
     }
 

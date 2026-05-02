@@ -337,7 +337,7 @@ Here we will examine how the mocking experience can be simplified with the help 
 
 ### 4.1 Auto-Mocking subject under test
 
-The subject under test will be created automatically with mocks and default values by AutoMock.
+The subject under test will be created automatically with mocks and default values.
 Remember from chapter 2 that all mocks are configured after test data has been generated. 
 So regardless of where you provide test data or constraints on test-data, they will be available in the mocking stage of the pipeline execution.
 

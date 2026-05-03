@@ -2,7 +2,7 @@
 
 internal class SpecificationBuilder
 {
-    private readonly List<Action> _applications = [];
+    private readonly List<Action> _applications = new(10);
     private int _givenCount;
     private int _usingCount;
     private int _recordingSuppressionCount;
@@ -11,24 +11,24 @@ internal class SpecificationBuilder
     private readonly TextBuilder _textBuilder = new();
     private bool _isChainOfAssertions = false;
 
-    private readonly Lazy<string> _lazySpecification;
+    private string? _cachedSpecification;
 
-    internal SpecificationBuilder() => _lazySpecification = new Lazy<string>(Build);
+    public override string ToString()
+    {
+        if (_cachedSpecification is not null)
+            return _cachedSpecification;
 
-    public override string ToString() => _lazySpecification.Value;
+        foreach (var apply in _applications)
+            apply();
+
+        return _cachedSpecification = _textBuilder.ToString();
+    }
 
     internal void Add(Action apply)
     {
         if (_recordingSuppressionCount > 0)
             return;
         _applications.Add(apply);
-    }
-
-    //TODO: add 'that' after given to make it read better
-    private string Build()
-    {
-        foreach (var apply in _applications) apply();
-        return _textBuilder.ToString();
     }
 
     internal void AddMockSetup<TService>(string callExpr)

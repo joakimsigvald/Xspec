@@ -16,7 +16,7 @@ internal class AndThen<TSUT, TResult> : IAndThen<TResult>
     {
         get
         {
-            SpecificationGenerator.AddThen();
+            SpecificationContext.Current.AddThen();
             return Parent;
         }
     }
@@ -29,7 +29,7 @@ internal class AndThen<TSUT, TResult> : IAndThen<TResult>
     /// <returns></returns>
     public TSubject And<TSubject>(TSubject subject)
     {
-        SpecificationGenerator.AddThen();
+        SpecificationContext.Current.AddThen();
         return subject;
     }
 }

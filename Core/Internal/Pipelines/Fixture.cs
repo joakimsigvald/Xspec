@@ -20,15 +20,16 @@ internal abstract class Fixture<TSUT> : ISpecificationProvider
     {
         _fixture = new(this);
         _context = new(this);
+        Specification = SpecificationContext.Create();
     }
 
-    public SpecificationContext Specification { get; } = new();
+    public SpecificationContext Specification { get; init; }
 
     public void TearDown()
     {
         if (_fixture.IsSetUp)
             _fixture.Dispose();
-        Specification.Release();
+        SpecificationContext.Release();
     }
 
     internal void SetDefault<TModel>(

@@ -51,7 +51,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
     /// <returns></returns>
     public IAndThen<TResult> Throws<TError>()
     {
-        SpecificationGenerator.AddAssertThrows<TError>();
+        SpecificationContext.Current.AddAssertThrows<TError>();
         AssertError<TError>();
         return And();
     }
@@ -67,7 +67,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
         Func<TError> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         where TError : Exception
     {
-        SpecificationGenerator.AddAssertThrows(expectedExpr!);
+        SpecificationContext.Current.AddAssertThrows(expectedExpr!);
         AssertError(expected());
         return And();
     }
@@ -81,7 +81,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
     public IAndThen<TResult> Throws<TError>(
         Action<TError> assert)
     {
-        SpecificationGenerator.AddAssertThrows<TError>("where");
+        SpecificationContext.Current.AddAssertThrows<TError>("where");
         AssertError(assert);
         return And();
     }
@@ -97,7 +97,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
         Func<TError, bool> condition, [CallerArgumentExpression(nameof(condition))] string? conditionExpr = null)
     {
         var conditionSpec = conditionExpr!.ParseValue();
-        SpecificationGenerator.AddAssertThrows<TError>($"where {conditionSpec}");
+        SpecificationContext.Current.AddAssertThrows<TError>($"where {conditionSpec}");
         AssertError(condition, conditionSpec);
         return And();
     }
@@ -129,7 +129,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
     /// <returns></returns>
     public IAndThen<TResult> DoesNotThrow()
     {
-        SpecificationGenerator.AddAssert();
+        SpecificationContext.Current.AddAssert();
         AssertNoError<Exception>();
         return And();
     }
@@ -216,7 +216,7 @@ Try providing a function with the Spec's declared return type instead as paramet
     {
         try
         {
-            SpecificationGenerator.AddVerify<TService>(expressionExpr);
+            SpecificationContext.Current.AddVerify<TService>(expressionExpr);
             verify(Mocked<TService>());
             return new AndVerify<TSUT, TResult>(this);
         }

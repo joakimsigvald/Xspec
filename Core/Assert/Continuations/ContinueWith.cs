@@ -31,7 +31,7 @@ public class ContinueWith<TContinuation> where TContinuation : Constraint
     private TContinuation Continue([CallerMemberName] string? conjunction = null) 
     {
         var isEither = _continuation.State.HasFlag(ConstraintState.Either);
-        SpecificationGenerator.AddAssertConjunction(conjunction!);
+        SpecificationContext.Current.AddAssertConjunction(conjunction!);
         if (isEither && conjunction != "or")
             throw new SetupFailed("Cannot continue either with and or but, only with or");
         if (!isEither && conjunction == "or")

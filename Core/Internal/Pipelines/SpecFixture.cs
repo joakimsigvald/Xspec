@@ -37,7 +37,7 @@ internal class SpecFixture<TSUT>(ISpecificationProvider specificationProvider) :
             specificationProvider.Specification.AddAfter(setUp.Expression);
         foreach (var tearDown in _tearDown)
             specificationProvider.Specification.AddBefore(tearDown.Expression);
-        SpecificationGenerator.AddThen();
+        specificationProvider.Specification.AddThen();
     }
 
     internal (TResult result, bool hasResult) Invoke<TResult>(

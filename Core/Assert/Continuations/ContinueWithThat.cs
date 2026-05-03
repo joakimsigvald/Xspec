@@ -24,7 +24,7 @@ public class ContinueWithThat<TContinuation, TThat> : ContinueWith<TContinuation
     {
         get
         {
-            SpecificationGenerator.AddThat();
+            SpecificationContext.Current.AddThat();
             return _that;
         }
     }

@@ -185,7 +185,7 @@ public abstract record Constraint<TActual, TContinuation>
         VerbalizationStrategy verbalizationStrategy = VerbalizationStrategy.None)
     {
         var verb = $"{AuxiliaryVerb} {methodName.AsWords(verbalizationStrategy)}".Trim();
-        SpecificationGenerator.Assert(assert, ActualExpr, expected, verb);
+        SpecificationContext.Current.Assert(assert, ActualExpr, expected, verb);
         return Continue();
     }
 }

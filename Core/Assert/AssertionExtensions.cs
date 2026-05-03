@@ -98,7 +98,7 @@ public static class AssertionExtensions
         TActual actual)
         where TContinuation : Constraint
     {
-        SpecificationGenerator.AddThen();
+        SpecificationContext.Current.AddThen();
         return actual;
     }
 

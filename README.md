@@ -1,7 +1,7 @@
 ﻿# Xspec — Fluent, specification-style unit testing for .NET
 
 Xspec is a fluent, specification-oriented testing framework for .NET that builds on xUnit.
-It follows the Given–When–Then pattern and integrates seamlessly with Moq and AutoMock.
+It follows the Given–When–Then pattern and integrates seamlessly with Moq.
 Tests run on the standard xUnit runner and can live side by side with existing xUnit tests.
 
 Whether you are new to unit testing or an experienced practitioner, Xspec helps you express test intent clearly by removing boilerplate, enforcing structure, and generating readable failure descriptions.
@@ -64,12 +64,15 @@ In Xspec, this is done by calling methods on `Spec`, either directly or fluently
 
 The following methods are used to arrange a test:
 
-* `Given`  — defines test setup and input data
-* `After`  — setup that runs *before* the action
-* `Before` — teardown or verification that runs *after* the action
+* `Given`  — defines test setup, mocks, and input data.
+* `Using`  — registers type conversions, defaults, and factories.
+* `After`  — setup that runs *before* the action.
+* `Before` — teardown or verification that runs *after* the action.
 
-Although the names `After` and `Before` may appear inverted at first glance, the naming reflects their position relative to the When stage, allowing specifications to read fluently as:
-*When executing the action after setup and before teardown, then this happens.*
+The names `After` and `Before` reflect their position relative to the `When` declaration in code, allowing specifications to read naturally: 
+*When executing the action after setup and before teardown, then this happens.* 
+
+Xspec uses a strongly typed API to guide your setup, preventing most invalid test configurations at compile time.
 
 Xspec also provides mechanisms for preparing and referring to test data in a stable way, so the same values can be consistently reused across arrangement, execution, and assertion.
 

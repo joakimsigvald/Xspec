@@ -3,7 +3,7 @@ using Xspec.Internal.Specification;
 
 namespace Xspec.Internal.Pipelines;
 
-internal class SpecFixture<TSUT> : IDisposable
+internal class SpecFixture<TSUT>(ISpecificationProvider specificationProvider) : IDisposable
 {
     private bool _disposed;
     private Lazy<TSUT>? _sut;
@@ -34,9 +34,9 @@ internal class SpecFixture<TSUT> : IDisposable
     internal void AddToSpecification()
     {
         foreach (var setUp in _setUp.Reverse<Command>())
-            SpecificationGenerator.AddAfter(setUp.Expression);
+            specificationProvider.Specification.AddAfter(setUp.Expression);
         foreach (var tearDown in _tearDown)
-            SpecificationGenerator.AddBefore(tearDown.Expression);
+            specificationProvider.Specification.AddBefore(tearDown.Expression);
         SpecificationGenerator.AddThen();
     }
 

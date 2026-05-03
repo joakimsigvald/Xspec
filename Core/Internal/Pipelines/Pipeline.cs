@@ -1,7 +1,6 @@
 ﻿using Moq;
 using System.Linq.Expressions;
 using Xspec.Continuations;
-using Xspec.Internal.Specification;
 using Xspec.Internal.TestData;
 using Xspec.Internal.Verification;
 
@@ -56,8 +55,13 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
         return _context.Apply(tag, mutation, tagName);
     }
 
-    internal TValue Create<TValue>(Action<TValue> setup)
-        => Context.ApplyTo(setup, _context.Create<TValue>());
+    internal TValue Create<TValue>(Action<TValue> setup) => ApplyTo(setup, _context.Create<TValue>());
+
+    private static TValue ApplyTo<TValue>(Action<TValue> setup, TValue value)
+    {
+        setup.Invoke(value);
+        return value;
+    }
 
     internal TValue Apply<TValue>(Mutation<TValue> mutation, int? index = null)
     {
@@ -99,7 +103,7 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
     {
         if (!_fixture.IsSetUp)
             _fixture.SetUp(Arrange());
-        SpecificationGenerator.AddWhen(MethodUnderTest.Expression);
+        Specification.AddWhen(MethodUnderTest.Expression);
         _fixture.AddToSpecification();
     }
 

@@ -95,7 +95,7 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
     private void SetupReturns()
     {
         SpecifyMock();
-        SpecificationGenerator.AddMockReturns();
+        _spec.Pipeline.Specification.AddMockReturns();
         if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, Task> taskContinuation)
             taskContinuation.Returns(Task.CompletedTask);
         else if (Continuation is Moq.Language.Flow.ISetup<TService> voidContinuation)
@@ -112,7 +112,7 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
     private void SetupReturns(Func<TReturns?> returns, string returnsExpr)
     {
         SpecifyMock();
-        SpecificationGenerator.AddMockReturns(returnsExpr);
+        _spec.Pipeline.Specification.AddMockReturns(returnsExpr);
         if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, TReturns?> syncContinuation)
             syncContinuation.Returns(returns);
         else if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, Task<TReturns?>> asyncContinuation)
@@ -128,7 +128,7 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
         where TException : Exception, new()
     {
         SpecifyMock();
-        SpecificationGenerator.AddMockThrows<TException>();
+        _spec.Pipeline.Specification.AddMockThrows<TException>();
         if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, TReturns> syncContinuation)
             syncContinuation.Throws<TException>();
         else if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, Task<TReturns>> asyncContinuation)
@@ -145,7 +145,7 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
     private void SetupThrows(Func<Exception> expected, string expectedExpr)
     {
         SpecifyMock();
-        SpecificationGenerator.AddMockThrows(expectedExpr);
+        _spec.Pipeline.Specification.AddMockThrows(expectedExpr);
         if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, TReturns> returnsThrows)
             returnsThrows.Throws(expected());
         else if (Continuation is Moq.Language.Flow.IReturnsThrows<TService, Task<TReturns>> asyncReturnsThrows)
@@ -164,8 +164,8 @@ internal abstract class GivenThatCommonContinuation<TSUT, TResult, TService, TRe
     private void SpecifyMock()
     {
         if (_callExpr is not null)
-            SpecificationGenerator.AddMockSetup<TService>(_callExpr);
+            _spec.Pipeline.Specification.AddMockSetup<TService>(_callExpr);
         if (_tapExpr is not null)
-            SpecificationGenerator.AddTap(_tapExpr);
+            _spec.Pipeline.Specification.AddTap(_tapExpr);
     }
 }

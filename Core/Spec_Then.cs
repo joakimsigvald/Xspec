@@ -11,7 +11,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// Run the test-pipeline and return the result
     /// </summary>
     /// <returns>The test result</returns>
-    public ITestResultWithSUT<TSUT, TResult> Then() => _pipeline.Then();
+    public ITestResultWithSUT<TSUT, TResult> Then() => Pipeline.Then();
 
     /// <summary>
     /// Run the test-pipeline and return a given subject to be used in chained assertions.
@@ -21,7 +21,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <returns>the given subject</returns>
     public TSubject Then<TSubject>(TSubject subject)
     {
-        _pipeline.Then();
+        Pipeline.Then();
         return subject;
     }
 
@@ -36,7 +36,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Expression<Action<TService>> expression,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) 
         where TService : class
-        => _pipeline.Then(expression, expressionExpr!);
+        => Pipeline.Then(expression, expressionExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify mock invocation.
@@ -49,7 +49,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression, Times times,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) where TService : class
-        => _pipeline.Then(expression, times, expressionExpr!);
+        => Pipeline.Then(expression, times, expressionExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify mock invocation.
@@ -62,7 +62,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression, Func<Times> times,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) where TService : class
-        => _pipeline.Then(expression, times, expressionExpr!);
+        => Pipeline.Then(expression, times, expressionExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify mock invocation.
@@ -75,7 +75,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public IAndVerify<TResult> Then<TService, TReturns>(
         Expression<Func<TService, TReturns>> expression,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null) where TService : class
-        => _pipeline.Then(expression, expressionExpr!);
+        => Pipeline.Then(expression, expressionExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify mock invocation.
@@ -90,7 +90,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Expression<Func<TService, TReturns>> expression, Times times,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)
         where TService : class
-        => _pipeline.Then(expression, times, expressionExpr!);
+        => Pipeline.Then(expression, times, expressionExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify mock invocation.
@@ -105,10 +105,10 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Expression<Func<TService, TReturns>> expression, Func<Times> times,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)
         where TService : class
-        => _pipeline.Then(expression, times, expressionExpr!);
+        => Pipeline.Then(expression, times, expressionExpr!);
 
     /// <summary>
     /// Contains the returned value after calling method-under-test
     /// </summary>
-    protected TResult Result => _pipeline.Then().Result;
+    protected TResult Result => Pipeline.Then().Result;
 }

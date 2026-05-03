@@ -156,19 +156,19 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 
     private Spec<TSUT, TResult> SetAction(Delegate act, string expr)
     {
-        _pipeline.SetAction(act, expr);
+        Pipeline.SetAction(act, expr);
         return this;
     }
 
     private Spec<TSUT, TResult> SetTearDown(Delegate act, string expr)
     {
-        _pipeline.SetTearDown(act, expr);
+        Pipeline.SetTearDown(act, expr);
         return this;
     }
 
     private Spec<TSUT, TResult> PrependSetUp(Delegate act, string expr)
     {
-        _pipeline.PrependSetUp(act, expr);
+        Pipeline.PrependSetUp(act, expr);
         return this;
     }
 }

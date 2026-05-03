@@ -15,7 +15,7 @@ internal class SpecificationBuilder
 
     internal SpecificationBuilder() => _lazySpecification = new Lazy<string>(Build);
 
-    internal string Specification => _lazySpecification.Value;
+    public override string ToString() => _lazySpecification.Value;
 
     internal void Add(Action apply)
     {

@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Xspec.Continuations;
-using Xspec.Internal.Specification;
 
 namespace Xspec.Internal.Pipelines;
 
@@ -24,7 +23,7 @@ internal class GivenServiceContinuation<TSUT, TResult, TService> : IGivenService
             var theValue = returns();
             _spec.GetMock<TService>().SetReturnsDefault(theValue);
             _spec.GetMock<TService>().SetReturnsDefault(Task.FromResult(theValue));
-            SpecificationGenerator.AddMockReturnsDefault<TService>(returnsExpr!);
+            _spec.Pipeline.Specification.AddMockReturnsDefault<TService>(returnsExpr!);
         }
     }
 
@@ -35,7 +34,7 @@ internal class GivenServiceContinuation<TSUT, TResult, TService> : IGivenService
 
     public IGivenTestPipeline<TSUT, TResult> Throws<TException>() where TException : Exception
     {
-        SpecificationGenerator.AddMockThrowsDefault<TService, TException>();
+        _spec.Pipeline.Specification.AddMockThrowsDefault<TService, TException>();
         _spec.SetupThrows<TService>(_spec.Another<TException>);
         return new GivenTestPipeline<TSUT, TResult>(_spec);
     }
@@ -43,7 +42,7 @@ internal class GivenServiceContinuation<TSUT, TResult, TService> : IGivenService
     public IGivenTestPipeline<TSUT, TResult> Throws(
         Func<Exception> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
     {
-        SpecificationGenerator.AddMockThrowsDefault<TService>(expectedExpr!);
+        _spec.Pipeline.Specification.AddMockThrowsDefault<TService>(expectedExpr!);
         _spec.SetupThrows<TService>(expected);
         return new GivenTestPipeline<TSUT, TResult>(_spec);
     }

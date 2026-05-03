@@ -20,14 +20,14 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
         where TValue : class
     {
-        _pipeline.SetDefault(setup, setupExpr!);
+        Pipeline.SetDefault(setup, setupExpr!);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
     internal IGivenTestPipeline<TSUT, TResult> GivenThat(Action customArrangement, string customArrangementExpr)
         => AppendGiven(() =>
         {
-            SpecificationGenerator.AddGivenThat(customArrangementExpr);
+            Pipeline.Specification.AddGivenThat(customArrangementExpr);
             customArrangement();
         });
 
@@ -42,7 +42,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null)
     {
-        _pipeline.SetDefault(transform, transformExpr!);
+        Pipeline.SetDefault(transform, transformExpr!);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
@@ -70,8 +70,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         TValue[] defaultValues,
         [CallerArgumentExpression(nameof(defaultValues))] string? defaultValuesExpr = null)
     {
-        _pipeline.SetDefault(defaultValues, For.All, defaultValuesExpr!);
-        defaultValues?.Take(5).Select((value, i) => _pipeline.Assign(i, value)).ToArray();
+        Pipeline.SetDefault(defaultValues, For.All, defaultValuesExpr!);
+        defaultValues?.Take(5).Select((value, i) => Pipeline.Assign(i, value)).ToArray();
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
@@ -95,13 +95,13 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         TValue defaultValue, For scope, string defaultValueExpr)
     {
-        _pipeline.SetDefault(defaultValue, scope, defaultValueExpr);
+        Pipeline.SetDefault(defaultValue, scope, defaultValueExpr);
         return new GivenTestPipeline<TSUT, TResult>(this);
     }
 
     internal IGivenTestPipeline<TSUT, TResult> GivenDefault<TValue>(
         Func<TValue> value, For scope, string defaultValueExpr)
-        => PrependGiven(() => _pipeline.SetDefault(value(), scope, defaultValueExpr));
+        => PrependGiven(() => Pipeline.SetDefault(value(), scope, defaultValueExpr));
 
     internal IGivenTestPipeline<TSUT, TResult> Apply<TValue>(
         Action setup,
@@ -110,7 +110,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         [CallerMemberName] string? article = null)
         => PrependGiven(() =>
         {
-            SpecificationGenerator.AddGiven<TValue>(setupExpr, isCustomExpression, article);
+            Pipeline.Specification.AddGiven<TValue>(setupExpr, isCustomExpression, article);
             setup();
         });
 
@@ -118,25 +118,25 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         Action setup, [CallerMemberName] string? count = null)
         => PrependGiven(() =>
         {
-            SpecificationGenerator.AddGivenCount<TValue>(count!);
+            Pipeline.Specification.AddGivenCount<TValue>(count!);
             setup();
         });
 
     internal Mock<TService> GetMock<TService>() where TService : class
-        => _pipeline.GetMock<TService>();
+        => Pipeline.GetMock<TService>();
 
     internal void SetupThrows<TService>(Func<Exception> expected)
-        => _pipeline.SetupThrows<TService>(expected);
+        => Pipeline.SetupThrows<TService>(expected);
 
     internal IGivenTestPipeline<TSUT, TResult> AppendGiven(Action given)
     {
-        _pipeline.AppendGiven(given);
+        Pipeline.AppendGiven(given);
         return Continue();
     }
 
     private GivenTestPipeline<TSUT, TResult> PrependGiven(Action given)
     {
-        _pipeline.PrependGiven(given);
+        Pipeline.PrependGiven(given);
         return Continue();
     }
 

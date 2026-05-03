@@ -4,23 +4,37 @@ using Xspec.Internal.TestData;
 
 namespace Xspec.Internal.Pipelines;
 
-internal abstract class Fixture<TSUT>
+internal interface ISpecificationProvider
 {
-    private protected readonly Context _context = new();
-    private protected readonly SpecFixture<TSUT> _fixture = new();
+    SpecificationContext Specification { get; }
+}
+
+internal abstract class Fixture<TSUT> : ISpecificationProvider
+{
+    private protected readonly Context _context = null!;
+    private protected readonly SpecFixture<TSUT> _fixture = null!;
     private protected readonly Arranger _arranger = new();
     private protected Command? _methodUnderTest;
+
+    protected Fixture()
+    {
+        _fixture = new(this);
+        _context = new(this);
+    }
+
+    public SpecificationContext Specification { get; } = new();
 
     public void TearDown()
     {
         if (_fixture.IsSetUp)
             _fixture.Dispose();
+        Specification.Release();
     }
 
     internal void SetDefault<TModel>(
         Action<TModel> setup, string setupExpr) where TModel : class
     {
-        SpecificationGenerator.AddGiven<TModel>(setupExpr, false);
+        Specification.AddGiven<TModel>(setupExpr, false);
         AssertIsNotSetUp();
         _context.SetDefault(setup);
     }
@@ -28,7 +42,7 @@ internal abstract class Fixture<TSUT>
     internal void SetDefault<TValue>(
         Func<TValue, TValue> transform, string transformExpr)
     {
-        SpecificationGenerator.AddGiven<TValue>(transformExpr, false);
+        Specification.AddGiven<TValue>(transformExpr, false);
         AssertIsNotSetUp();
         _context.SetDefault(transform);
     }
@@ -36,7 +50,7 @@ internal abstract class Fixture<TSUT>
     internal void SetDefault<TValue>(TValue defaultValue, For scope, string defaultValuesExpr)
     {
         if (!string.IsNullOrEmpty(defaultValuesExpr))
-            SpecificationGenerator.AddGiven(defaultValuesExpr, scope);
+            Specification.AddGiven(defaultValuesExpr, scope);
         AssertIsNotSetUp();
         _context.Use(defaultValue, scope);
     }
@@ -44,7 +58,7 @@ internal abstract class Fixture<TSUT>
     internal void Using<TValue>(TValue defaultValue, For scope, string defaultValuesExpr)
     {
         if (!string.IsNullOrEmpty(defaultValuesExpr))
-            SpecificationGenerator.AddUsing(defaultValuesExpr, scope);
+            Specification.AddUsing(defaultValuesExpr, scope);
         AssertIsNotSetUp();
         _context.Use(defaultValue, scope);
     }
@@ -52,7 +66,7 @@ internal abstract class Fixture<TSUT>
     internal void Using<TValue>(Func<TValue> defaultFactory, For scope, string defaultFactoryExpr)
     {
         if (!string.IsNullOrEmpty(defaultFactoryExpr))
-            SpecificationGenerator.AddUsing(defaultFactoryExpr, scope);
+            Specification.AddUsing(defaultFactoryExpr, scope);
         AssertIsNotSetUp();
         _context.Use(defaultFactory, scope);
     }
@@ -104,7 +118,7 @@ internal abstract class Fixture<TSUT>
         _context.SetupThrows<TService>(expected);
     }
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null) 
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
         => _context.Register(convert);
 
     private void AssertIsNotSetUp()

@@ -1,12 +1,12 @@
 ﻿using Moq;
-using Xspec.Internal.Specification;
+using Xspec.Internal.Pipelines;
 using Xspec.Internal.TestData.Generation;
 using Xspec.Internal.TestData.Generation.Strategies;
 using Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 namespace Xspec.Internal.TestData;
 
-internal class Repository
+internal class Repository : IRepository
 {
     private readonly Mutator _mutator = new();
     private readonly TypeConversionStrategy _typeConversionStrategy = new();
@@ -15,13 +15,15 @@ internal class Repository
     private readonly DataGenerator _generator;
     private readonly FluentDefaultProvider _fluentDefaultProvider;
     private readonly Dictionary<Type, Dictionary<int, object?>> _numberedMentions = [];
+    private readonly ISpecificationProvider _specificationProvider;
 
-    public Repository()
+    public Repository(ISpecificationProvider specificationProvider)
     {
         _dataProvider = new();
         _fluentDefaultProvider = new(this);
         _mockingStrategy = new(_fluentDefaultProvider);
         _generator = new(new(), _typeConversionStrategy, new(this), _mockingStrategy);
+        _specificationProvider = specificationProvider;
     }
 
     internal (object? val, bool found) Retrieve(Type type, int index = 0)
@@ -31,7 +33,7 @@ internal class Repository
 
     internal void Assign(Type type, object? value, int index)
     {
-        SpecificationGenerator.Assign(type, index, value);
+        _specificationProvider.Specification.Assign(type, index, value);
         GetMentions(type)[index] = value;
     }
 
@@ -42,7 +44,7 @@ internal class Repository
         return _mutator.Mutate(type, instance);
     }
 
-    internal bool TryGetDefault(Type type, For scope, out object? val)
+    public bool TryGetDefault(Type type, For scope, out object? val)
     {
         var found = _dataProvider.TryGetValue(type, scope, out val);
         if (found)

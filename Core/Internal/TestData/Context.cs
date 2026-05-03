@@ -1,11 +1,11 @@
 ﻿using Moq;
-using Xspec.Internal.Specification;
+using Xspec.Internal.Pipelines;
 
 namespace Xspec.Internal.TestData;
 
-internal class Context
+internal class Context(ISpecificationProvider specificationProvider)
 {
-    private readonly Repository _repository = new();
+    private readonly Repository _repository = new(specificationProvider);
     private readonly Dictionary<Type, Dictionary<object, int>> _tagIndices = [];
 
     internal TClass Instantiate<TClass>()
@@ -54,12 +54,6 @@ internal class Context
 
     internal Dictionary<object, int> GetTagIndices(Type type)
         => _tagIndices.TryGetValue(type, out var val) ? val : _tagIndices[type] = [];
-
-    internal static TValue ApplyTo<TValue>(Action<TValue> setup, TValue value)
-    {
-        setup.Invoke(value);
-        return value;
-    }
 
     internal void SetDefault<TModel>(Action<TModel> setup) where TModel : class
         => _repository.AddDefaultSetup(
@@ -118,7 +112,7 @@ internal class Context
             return index;
 
         index = GetNextTagIndex(typedTagIndices);
-        SpecificationGenerator.TagIndex(type, index, tagName);
+        specificationProvider.Specification.TagIndex(type, index, tagName);
         return typedTagIndices[tag] = index;
     }
 

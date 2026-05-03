@@ -3,7 +3,7 @@ using Xspec.Internal.TestData.Generation.Strategies.IlCompilation;
 
 namespace Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
-internal class FluentDefaultProvider(Repository repository) : DefaultValueProvider
+internal class FluentDefaultProvider(IRepository repository) : DefaultValueProvider
 {
     private readonly Dictionary<Type, Func<Exception>> _defaultExceptions = [];
 

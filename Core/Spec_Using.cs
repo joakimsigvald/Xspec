@@ -13,7 +13,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <returns></returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TConcrete>()
     {
-        _pipeline.Using(_pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
+        Pipeline.Using(Pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -25,7 +25,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TTarget, TSource>()
     {
-        _pipeline.Register<TTarget, TSource>();
+        Pipeline.Register<TTarget, TSource>();
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -38,7 +38,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TTarget, TSource>(Func<TSource, TTarget> convert)
     {
-        _pipeline.Register(convert);
+        Pipeline.Register(convert);
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -55,7 +55,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null)
     {
-        _pipeline.Using(value, scope, valueExpr!);
+        Pipeline.Using(value, scope, valueExpr!);
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -72,7 +72,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(factory))] string? factoryExpr = null)
     {
-        _pipeline.AppendUsing(() => _pipeline.Using(factory, scope, factoryExpr!));
+        Pipeline.AppendUsing(() => Pipeline.Using(factory, scope, factoryExpr!));
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 
@@ -89,7 +89,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         For scope = For.All,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
     {
-        _pipeline.AppendUsing(() => _pipeline.Using(() => The(tag), scope, tagExpr!));
+        Pipeline.AppendUsing(() => Pipeline.Using(() => The(tag), scope, tagExpr!));
         return new UsingTestPipeline<TSUT, TResult>(this);
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 
 namespace Xspec.Internal.Specification;
 
 /// <summary>
 /// Only made public for unit testing
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
 {
     private const int _maxIndentation = 3;

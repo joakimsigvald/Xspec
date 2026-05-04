@@ -7,8 +7,9 @@ internal record GenerationRequest(
     bool WithDefaultFallback,
     ImmutableStack<Type> Stack,
     DataGenerator Orchestrator,
-    For Scope)
+    For Scope,
+    int Depth = 0)
 {
     internal object? Create(Type type) => Orchestrator.Create(this with { Type = type });
-    internal GenerationRequest Next => this with { WithDefaultFallback = true, Stack = Stack.Push(Type) };
+    internal GenerationRequest Next => this with { WithDefaultFallback = true, Stack = Stack.Push(Type), Depth = this.Depth + 1 };
 }

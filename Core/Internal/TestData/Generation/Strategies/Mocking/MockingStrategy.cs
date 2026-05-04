@@ -1,4 +1,5 @@
 ﻿using Moq;
+
 namespace Xspec.Internal.TestData.Generation.Strategies.Mocking;
 
 internal class MockingStrategy(FluentDefaultProvider fluentDefaultProvider) : IGenerationStrategy
@@ -10,7 +11,7 @@ internal class MockingStrategy(FluentDefaultProvider fluentDefaultProvider) : IG
 
     public bool TryGenerate(GenerationRequest request, ref object? result)
     {
-        if (request.WithDefaultFallback && IsMockingResponsibility(request)) 
+        if (request.WithDefaultFallback && IsMockingResponsibility(request))
         {
             result = _registry.GetMock(request.Type).Object;
             return true;
@@ -21,6 +22,5 @@ internal class MockingStrategy(FluentDefaultProvider fluentDefaultProvider) : IG
     private static bool IsMockingResponsibility(GenerationRequest request)
         => request.Type.IsInterface
         || request.Type.IsAbstract
-        || typeof(Delegate).IsAssignableFrom(request.Type)
-        || request.Type.Name.StartsWith("Lazy`");
+        || typeof(Delegate).IsAssignableFrom(request.Type);
 }

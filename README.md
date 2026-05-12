@@ -66,11 +66,26 @@ The following methods are used to arrange a test:
 
 * `Given`  — defines test setup, mocks, and input data.
 * `Using`  — registers type conversions, defaults, and factories.
-* `After`  — setup that runs *before* the action.
-* `Before` — teardown or verification that runs *after* the action.
+* `Having` — setup that runs *before* the action.
+* `Until`  — teardown or verification that runs *after* the action.
 
-The names `After` and `Before` reflect their position relative to the `When` declaration in code, allowing specifications to read naturally: 
-*When executing the action after setup and before teardown, then this happens.* 
+`Having` and `Until` compose fluently in chain form, with the action at the centre and each clause extending outward in time.
+
+```csharp
+public class WhenSendReport : Spec<EmailService, SendResult>
+{
+    public WhenSendReport()
+        => When(_ => _.Send(A<Report>()))
+           .Having(_ => _.SignIn(A<Credentials>()))
+           .Having(_ => _.Configure(A<SmtpSettings>()))
+           .Until(_ => _.FlushOutbox())
+           .Until(_ => _.Disconnect());
+
+    [Fact] public void ThenReturnsSent() => Then().Result.Is(SendResult.Sent);
+}
+```
+
+The chain reads as one sentence: *having signed in, having configured SmtpSettings, when sending a Report, until the outbox is flushed, until disconnected.*
 
 Xspec uses a strongly typed API to guide your setup, preventing most invalid test configurations at compile time.
 
@@ -83,9 +98,9 @@ The lambda takes the subject under test as an argument and should execute the be
 
 The subject under test is automatically created based on the arrangement, unless it is static or explicitly provided.
 
-As with arrangement, the order in which `Given`, `After`, `Before`, and `When`
+As with arrangement, the order in which `Given`, `Having`, `Until`, and `When`
 are declared does not matter. Because execution is deferred until assertion, Xspec can deterministically reorder the pipeline before running it.
-So the execution order of the steps is always: `Given` -> `After` -> `When` -> `Before`.
+So the execution order of the steps is always: `Given` -> `Having` -> `When` -> `Until`.
 
 Each specification defines exactly one action under test and therefore contains a single `When` stage.
 
@@ -169,11 +184,11 @@ Execution is triggered by the first assertion (technically when `Result` is refe
 The pipeline then executes and captures the outcome of the execution.
 
 #### 2.2.1 Running Setup
-Setup steps can be provided as lambdas that take the subject under test as arguments, with `After()`.
+Setup steps can be provided as lambdas that take the subject under test as arguments, with `Having()`.
 Setup will be executed in the reverse order of declaration, right after creating the subject under test.
 
 Example:
-`When(A).After(B).After(C).` will result in the execution order: C -> B -> A.
+`When(A).Having(B).Having(C)` will result in the execution order: C -> B -> A.
 
 #### 2.2.2 Executing the Behavior Under Test
 The lambda provided with `When()` will be executed right after setup.
@@ -193,18 +208,18 @@ Assertions are covered in depth in Chapters 5 and 6.
 
 ### 2.4 Teardown
 
-Teardown steps can be provided as lambdas that take subject under test as arguments, with `Before()`.
+Teardown steps can be provided as lambdas that take subject under test as arguments, with `Until()`.
 Teardown will be executed in the order of declaration when the test class and pipeline are disposed, after the test method has been executed.
 
 Example:
-`When(A).Before(B).Before(C)` will result in the execution order: A -> B -> C.
+`When(A).Until(B).Until(C)` will result in the execution order: A -> B -> C.
 
 ### 2.5 Sync vs. Async Execution
 
 Xspec supports testing synchronous and asynchronous code using the same test pipeline.
 
 When the behavior under test is asynchronous (returns `Task` or `Task<T>`), Xspec waits for completion and captures the outcome in the same way as for synchronous code.
-The only difference is the lambda signature provided to `When`, `Before`, `After`, and mock setup methods.
+The only difference is the lambda signature provided to `When`, `Having`, `Until`, and mock setup methods.
 Test methods themselves do not need to be `async`.
 
 As a result, tests for async code read and behave the same way as tests for synchronous code.

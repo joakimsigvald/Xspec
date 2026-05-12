@@ -8,7 +8,7 @@ public class AfterWhenBefore : Spec<MyStateService, int>
     [Fact]
     public void AfterIsExecutedBeforeWhen()
     {
-        When(_ => ++_.Counter).After(_ => _.Counter++).Then().Result.Is(2);
+        When(_ => ++_.Counter).Having(_ => _.Counter++).Then().Result.Is(2);
         Specification.Is(
             """
             When ++_.Counter
@@ -21,8 +21,8 @@ public class AfterWhenBefore : Spec<MyStateService, int>
     public void FirstAfterIsExecutedAfterSecondAfterBeforeWhen()
     {
         When(_ => _.Counter *= 2)
-            .After(_ => _.Counter = 3)
-            .After(_ => _.Counter = 5)
+            .Having(_ => _.Counter = 3)
+            .Having(_ => _.Counter = 5)
             .Then().Result.Is(6);
         Specification.Is(
             """
@@ -41,7 +41,7 @@ public class AfterWhenBefore : Spec<MyStateService, int>
     [Fact]
     public void GivenBeforeExecutedTwice_BothAreExecuted()
     {
-        When(_ => _.Counter = 1).Before(_ => _.Counter = 3).Before(_ => _.Counter = 2)
+        When(_ => _.Counter = 1).Until(_ => _.Counter = 3).Until(_ => _.Counter = 2)
             .Then().Result.Is(1);
         Specification.Is(
             """
@@ -58,7 +58,7 @@ public class AfterWhenBefore : Spec<MyStateService, int>
         var ex = Xunit.Assert.Throws<SetupFailed>(() 
             => Given().A<MyModel>(m => throw new ApplicationException())
             .When(_ => A<MyModel>())
-            .Before(_ => throw new InvalidOperationException("Unexpected exception"))
+            .Until(_ => throw new InvalidOperationException("Unexpected exception"))
             .Then());
         ex.InnerException.Has().Type<ApplicationException>();
         Specification.Is(
@@ -75,7 +75,7 @@ public class AfterWhenBefore : Spec<MyStateService, int>
     [Fact]
     public void WhenBeforeGivenAfter()
     {
-        When(_ => ++_.Counter).Before(_ => ++_.Counter).Using(1).After(_ => _.Counter++).Then().Result.Is(2);
+        When(_ => ++_.Counter).Until(_ => ++_.Counter).Using(1).Having(_ => _.Counter++).Then().Result.Is(2);
         Specification.Is(
             """
             Using 1
@@ -94,7 +94,7 @@ public class GivenTearDown : Spec<MyStateService, int>
     [Fact]
     public void BeforeIsExecutedAfterWhen()
     {
-        When(_ => ++_.Counter).Before(_ => _theCounterAfterTest = --_.Counter).Then().Result.Is(1);
+        When(_ => ++_.Counter).Until(_ => _theCounterAfterTest = --_.Counter).Then().Result.Is(1);
         Specification.Is(
             """
             When ++_.Counter

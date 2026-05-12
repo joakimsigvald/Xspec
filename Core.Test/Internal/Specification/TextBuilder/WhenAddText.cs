@@ -81,5 +81,5 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
         """)]
     public void GivenHasTextAndNextWordDoesNotFit_ThenBreakBeforeWord(
         string existingText, string newText, string expected)
-        => After(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected);
+        => Having(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected);
 }

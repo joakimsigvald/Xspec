@@ -89,38 +89,35 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         => SetAction(act, expr!);
 
     /// <summary>
-    /// Provide the tearDown to the test-pipeline
+    /// Provide a teardown to the test-pipeline. Teardowns run in declaration order, after the method-under-test.
     /// </summary>
     /// <param name="tearDown"></param>
     /// <param name="expr"></param>
     /// <returns></returns>
-    //TODO: replace with Finally
-    public ITestPipeline<TSUT, TResult> Before(
+    public ITestPipeline<TSUT, TResult> Until(
         Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
 
     /// <summary>
-    /// Provide the tearDown to the test-pipeline
+    /// Provide a teardown to the test-pipeline. Teardowns run in declaration order, after the method-under-test.
     /// </summary>
     /// <param name="tearDown"></param>
     /// <param name="expr"></param>
     /// <returns></returns>
-    //TODO: replace with Finally
-    public ITestPipeline<TSUT, TResult> Before(
+    public ITestPipeline<TSUT, TResult> Until(
         Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
 
     /// <summary>
-    /// Provide the setUp to the test-pipeline
+    /// Provide a setup to the test-pipeline. Setups run in reverse declaration order, before the method-under-test.
     /// </summary>
     /// <param name="setUp"></param>
     /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
     /// <param name="expr">Provided by the compiler</param>
     /// <param name="delayExpr">Provided by the compiler</param>
     /// <returns></returns>
-    //TODO: replace with Given
-    public ITestPipeline<TSUT, TResult> After(
-        Action<TSUT> setUp, 
+    public ITestPipeline<TSUT, TResult> Having(
+        Action<TSUT> setUp,
         Func<int>? delayMs = null,
         [CallerArgumentExpression(nameof(setUp))] string? expr = null,
         [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
@@ -130,15 +127,14 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     }
 
     /// <summary>
-    /// Provide the setUp to the test-pipeline
+    /// Provide a setup to the test-pipeline. Setups run in reverse declaration order, before the method-under-test.
     /// </summary>
     /// <param name="setUp"></param>
     /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
     /// <param name="expr">Provided by the compiler</param>
     /// <param name="delayExpr">Provided by the compiler</param>
     /// <returns></returns>
-    //TODO: replace with Given
-    public ITestPipeline<TSUT, TResult> After(
+    public ITestPipeline<TSUT, TResult> Having(
         Func<TSUT, Task> setUp, Func<int>? delayMs = null,
         [CallerArgumentExpression(nameof(setUp))] string? expr = null,
         [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
@@ -146,6 +142,59 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         AddDelay(delayMs, delayExpr!);
         return PrependSetUp(setUp, expr!);
     }
+
+    /// <summary>
+    /// Provide the tearDown to the test-pipeline
+    /// </summary>
+    /// <param name="tearDown"></param>
+    /// <param name="expr"></param>
+    /// <returns></returns>
+    [Obsolete("Use Until instead. Before will be removed in a future release.")]
+    public ITestPipeline<TSUT, TResult> Before(
+        Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
+        => Until(tearDown, expr);
+
+    /// <summary>
+    /// Provide the tearDown to the test-pipeline
+    /// </summary>
+    /// <param name="tearDown"></param>
+    /// <param name="expr"></param>
+    /// <returns></returns>
+    [Obsolete("Use Until instead. Before will be removed in a future release.")]
+    public ITestPipeline<TSUT, TResult> Before(
+        Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
+        => Until(tearDown, expr);
+
+    /// <summary>
+    /// Provide the setUp to the test-pipeline
+    /// </summary>
+    /// <param name="setUp"></param>
+    /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
+    /// <param name="expr">Provided by the compiler</param>
+    /// <param name="delayExpr">Provided by the compiler</param>
+    /// <returns></returns>
+    [Obsolete("Use Having instead. After will be removed in a future release.")]
+    public ITestPipeline<TSUT, TResult> After(
+        Action<TSUT> setUp,
+        Func<int>? delayMs = null,
+        [CallerArgumentExpression(nameof(setUp))] string? expr = null,
+        [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
+        => Having(setUp, delayMs, expr, delayExpr);
+
+    /// <summary>
+    /// Provide the setUp to the test-pipeline
+    /// </summary>
+    /// <param name="setUp"></param>
+    /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
+    /// <param name="expr">Provided by the compiler</param>
+    /// <param name="delayExpr">Provided by the compiler</param>
+    /// <returns></returns>
+    [Obsolete("Use Having instead. After will be removed in a future release.")]
+    public ITestPipeline<TSUT, TResult> After(
+        Func<TSUT, Task> setUp, Func<int>? delayMs = null,
+        [CallerArgumentExpression(nameof(setUp))] string? expr = null,
+        [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
+        => Having(setUp, delayMs, expr, delayExpr);
 
     private void AddDelay(Func<int>? delayMs, string delayExpr)
     {

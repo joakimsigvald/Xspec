@@ -9,7 +9,7 @@ public abstract class WhenGetStateAfterSetStateWithAfterDelay : Spec<DelayedStat
     protected WhenGetStateAfterSetStateWithAfterDelay()
         => Using(_delay)
         .When(_ => _.State)
-        .After(_ => _.SetState(The(_state)), () => The(_wait));
+        .Having(_ => _.SetState(The(_state)), () => The(_wait));
 
     public class GivenZeroDelay : WhenGetStateAfterSetStateWithAfterDelay
     {
@@ -51,7 +51,7 @@ public abstract class WhenGetStateAfterSetStateWithAsyncTaskDelay : Spec<Delayed
     protected WhenGetStateAfterSetStateWithAsyncTaskDelay()
         => Using(() => The(_delay), For.Subject)
         .When(_ => _.State)
-        .After(async _ =>
+        .Having(async _ =>
         {
             _.SetState(The(_state));
             await Task.Delay(The(_wait));

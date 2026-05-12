@@ -11,9 +11,6 @@ internal class ObjectStrategy : IGenerationStrategy
 
     public bool TryGenerate(GenerationRequest request, ref object? result)
     {
-        if (request.Depth > 2)
-            return true;
-
         var type = request.Type;
         var stack = request.Stack;
         result = InstantiateWithConstructor()

@@ -2,7 +2,7 @@
 
 namespace Xspec.Test.AutoFixture.Generator;
 
-public class WhenGenerateTwoLevelModel : Spec<ModelLevel1>
+public class WhenGenerateDeepModel : Spec<ModelLevel1>
 {
     [Fact]
     public void ThenRootIsGenerated()
@@ -15,13 +15,10 @@ public class WhenGenerateTwoLevelModel : Spec<ModelLevel1>
     [Fact]
     public void Then2ndLevelSubComponentIsGenerated()
         => When(_ => _).Then().Result.Sub1.Sub2.Is().not.Null();
-}
 
-public class WhenGenerateThreeLevelModel : Spec<ModelLevel1>
-{
     [Fact]
-    public void ThenFourthLevelRemainsNull()
-        => When(_ => _).Then().Result.Sub1.Sub2.Sub3.Is().Null();
+    public void Then3rdLevelSubComponentIsGenerated()
+        => When(_ => _).Then().Result.Sub1.Sub2.Sub3.Is().not.Null();
 }
 
 public class WhenGenerateWrappedSubComponent : Spec<WrappedModel>
@@ -35,11 +32,19 @@ public class WhenGenerateWrappedSubComponent : Spec<WrappedModel>
         => When(_ => _).Then().Result.LazySub.Value.Is().not.Null();
 
     [Fact]
-    public void ThenWrappedSubComponentBypassesRootDepthLimit()
-        // Because Lazy<T> defers generation to the MockingStrategy, 
-        // evaluating .Value triggers a fresh GenerationRequest with Depth = 0.
-        // Therefore, its sub-component (SubSub) is successfully generated.
+    public void ThenDeepNestedSubComponentIsGenerated()
         => When(_ => _).Then().Result.LazySub.Value.Sub2.Sub3.Is().not.Null();
+}
+
+public class WhenGenerateSelfReferencingModel : Spec<SelfReferencingModel>
+{
+    [Fact]
+    public void ThenRootIsGenerated()
+        => When(_ => _).Then().Result.Is().not.Null();
+
+    [Fact]
+    public void ThenCycleTerminatesWithNull()
+        => When(_ => _).Then().Result.Self.Is().Null();
 }
 
 public class ModelLevel4
@@ -63,6 +68,10 @@ public class ModelLevel1
 
 public class WrappedModel
 {
-    // Lazy<T> is handled by MockingStrategy, so it resets the depth counter
     public Lazy<ModelLevel2> LazySub { get; set; }
+}
+
+public class SelfReferencingModel
+{
+    public SelfReferencingModel Self { get; set; }
 }

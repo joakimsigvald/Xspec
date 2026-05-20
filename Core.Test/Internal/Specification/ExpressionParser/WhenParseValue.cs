@@ -18,7 +18,11 @@ public class WhenParseValue : Spec<string>
     [InlineData("new MyComponent(An<IMyLogger>(), An<int>())", "new MyComponent(an IMyLogger, an int)")]
     [InlineData("new (An<IMyLogger>(), An<int>())", "new(an IMyLogger, an int)")]
     [InlineData("new(An<IMyLogger>(), An<int>())", "new(an IMyLogger, an int)")]
+    [InlineData("new(An<IMyLogger>(), An<Action<int>>())", "new(an IMyLogger, an Action<int>)")]
+    [InlineData("new(An<Action<int, string>>())", "new(an Action<int, string>)")]
     [InlineData("A<MyValue<int>>()", "a MyValue<int>")]
+    [InlineData("A<MyValue<int, string>>()", "a MyValue<int, string>")]
+    [InlineData("A<MyValue<int, Task<string>>>()", "a MyValue<int, Task<string>>")]
     [InlineData("A<(int, string, int, float)>", "a (int, string, int, float)")]
     [InlineData("i => $\"{2 * i}\"", "\"{2 * i}\"")]
     [InlineData("_ => _ with { Name = A<string>() }", "Name = a string")]
@@ -36,6 +40,8 @@ public class WhenParseValue : Spec<string>
         """, "Name = a string + a second string")]
     [InlineData("() => The(delay)", "the delay")]
     public void ThenReturnDescription(string valueExpr, string expected)
-        => When(_ => valueExpr.ParseValue())
-        .Then().Result.Is(expected);
+    {
+        When(_ => valueExpr.ParseValue())
+            .Then().Result.Is(expected);
+    }
 }

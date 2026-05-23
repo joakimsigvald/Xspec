@@ -2,143 +2,126 @@ namespace Xspec.Internal.Specification.ExpressionParserInternals;
 
 internal static class Describer
 {
-    public static string DescribeValue(Expr expr) => expr switch
+    public static string DescribeValue(Expr expr)
     {
-        Lambda l when l.Params.Count <= 2 && l.Body is Assign a && IsParamRefAssignment(l.Params, a, out var prop, out var value, out var op) && op == "="
-            => $"{prop} = {DescribeValue(value)}",
-        Lambda l when l.Params.Count <= 1 && l.Body is With w => DescribeWithInits(w),
-        Lambda l when l.Params.Count <= 1 => DescribeValue(l.Body),
-        Lambda l => l.Raw,
-        Assign a => $"{DescribeAssignTarget(a.Target)} {a.Op} {DescribeValue(a.Value)}",
-        With w => DescribeWithInits(w),
-        Tuple t => $"({string.Join(", ", t.Items.Select(DescribeValue))})",
-        ArrayLit arr => $"[{string.Join(", ", arr.Items.Select(DescribeValue))}]",
-        Binary b => $"{DescribeValue(b.Left)} {b.Op} {DescribeValue(b.Right)}",
-        Unary u => $"{u.Op}{DescribeValue(u.Operand)}",
-        Postfix p => $"{DescribeValue(p.Operand)}{p.Op}",
-        Conditional c => $"{DescribeValue(c.Cond)} ? {DescribeValue(c.Then)} : {DescribeValue(c.Else)}",
-        Cast c => $"({c.TypeName}){DescribeValue(c.Operand)}",
-        IsAs ia => $"{DescribeValue(ia.Operand)} {ia.Op} {ia.TypeName}",
-        InterpolatedString s => DescribeQuoted(s.Raw),
-        Literal lit => DescribeLiteral(lit.Raw),
-        New n => DescribeNew(n),
-        Call call when call.Target is Literal litT && litT.Raw == "default" && call.Args.Count == 1
-            => $"default {DescribeValue(call.Args[0])}",
-        Call call when TryDescribeMention(call, out var m) => m,
-        Generic g when TryDescribeMention(g, out var m) => m,
-        Member memx when TryDescribeMention(memx, out var m) => m,
-        Index idxx when TryDescribeMention(idxx, out var m) => m,
-        Call call when call.Target is Identifier id && call.Args.Count >= 1
-            => $"{Xspec.Internal.Specification.StringExtensions.AsWords(id.Name)} {string.Join(", ", call.Args.Select(DescribeValue))}",
-        Call call => DescribeCallShape(call),
-        Generic g => g.Raw,
-        Member m => DescribeMember(m),
-        Identifier id => id.Name,
-        Unknown u => u.Raw,
-        _ => expr.Raw,
-    };
+        if (TryDescribeMention(expr, out var mention)) return mention;
+        return expr switch
+        {
+            Lambda l when l.Params.Count <= 2 && IsParamRefAssignment(l, out var prop, out var value, out var op) && op == "="
+                => $"{prop} = {DescribeValue(value)}",
+            Lambda l when l.Params.Count <= 1 && l.Body is With w => DescribeWithInits(w),
+            Lambda l when l.Params.Count <= 1 => DescribeValue(l.Body),
+            Lambda l => l.Raw,
+            Assign a => $"{DescribeAssignTarget(a.Target)} {a.Op} {DescribeValue(a.Value)}",
+            With w => DescribeWithInits(w),
+            Tuple t => $"({JoinDescribed(t.Items)})",
+            ArrayLit arr => $"[{JoinDescribed(arr.Items)}]",
+            Binary b => $"{DescribeValue(b.Left)} {b.Op} {DescribeValue(b.Right)}",
+            Unary u => $"{u.Op}{DescribeValue(u.Operand)}",
+            Postfix p => $"{DescribeValue(p.Operand)}{p.Op}",
+            Conditional c => $"{DescribeValue(c.Cond)} ? {DescribeValue(c.Then)} : {DescribeValue(c.Else)}",
+            Cast c => $"({c.TypeName}){DescribeValue(c.Operand)}",
+            IsAs ia => $"{DescribeValue(ia.Operand)} {ia.Op} {ia.TypeName}",
+            InterpolatedString s => Requote(s.Raw),
+            Literal lit => DescribeLiteral(lit.Raw),
+            New n => DescribeNew(n),
+            Call c when IsDefaultOf(c) => $"default {DescribeValue(c.Args[0])}",
+            Call c when c.Target is Identifier id && c.Args.Count >= 1
+                => $"{AsWords(id.Name)} {JoinDescribed(c.Args)}",
+            Call c => DescribeCallShape(c),
+            Generic g => g.Raw,
+            Member m => DescribeMember(m),
+            Identifier id => id.Name,
+            Unknown u => u.Raw,
+            _ => expr.Raw,
+        };
+    }
 
     public static string DescribeCall(Expr expr, bool skipSubjectRef = false)
     {
         if (expr is Lambda l)
         {
-            if (l.Params.Count == 1
-                && l.Body is Call mc && mc.Target is Member mem
+            // 1-param `_ => _.X(args)` / `x => x.X(args)` (with `_` as wildcard)
+            if (l.Params.Count == 1 && l.Body is Call mc && mc.Target is Member mem
                 && IsParamRef(l.Params, mem.Target))
             {
-                var argText = string.Join(", ", mc.Args.Select(DescribeValue));
-                return skipSubjectRef
-                    ? $"{mem.Name}({argText})"
-                    : $"{((Identifier)mem.Target).Name}.{mem.Name}({argText})";
+                var prefix = skipSubjectRef ? "" : $"{((Identifier)mem.Target).Name}.";
+                return $"{prefix}{mem.Name}({JoinDescribed(mc.Args)})";
             }
-            if (l.Params.Count == 1
-                && l.Body is Assign asgn && asgn.Target is Member assMem
+            // 1-param `_ => _.X = value` (any compound-assignment op)
+            if (l.Params.Count == 1 && l.Body is Assign asgn && asgn.Target is Member assMem
                 && IsParamRef(l.Params, assMem.Target))
             {
-                var paramName = ((Identifier)assMem.Target).Name;
-                return skipSubjectRef
-                    ? $"{assMem.Name} {asgn.Op} {DescribeValue(asgn.Value)}"
-                    : $"{paramName}.{assMem.Name} {asgn.Op} {DescribeValue(asgn.Value)}";
+                var prefix = skipSubjectRef ? "" : $"{((Identifier)assMem.Target).Name}.";
+                return $"{prefix}{assMem.Name} {asgn.Op} {DescribeValue(asgn.Value)}";
             }
-            if (l.Params.Count == 1 && skipSubjectRef
-                && l.Body is Unknown u && u.Raw.StartsWith(l.Params[0] + "."))
-            {
+            // 1-param `_ => _.<unparseable>` — strip `_.` from raw
+            if (l.Params.Count == 1 && skipSubjectRef && l.Body is Unknown u
+                && u.Raw.StartsWith(l.Params[0] + "."))
                 return u.Raw[(l.Params[0].Length + 1)..];
-            }
-            if (l.Params.Count >= 2
-                && l.Body is Assign asgn2 && asgn2.Target is Member assMem2
-                && IsParamRef(l.Params, assMem2.Target) && asgn2.Op == "=")
-            {
-                return $"{assMem2.Name} = {DescribeValue(asgn2.Value)}";
-            }
-            if (l.Params.Count == 1)
-                return DescribeValue(l.Body);
-            return l.Raw;
+            // multi-param `(x, i) => x.X = value` — strip params and subject
+            if (l.Params.Count >= 2 && IsParamRefAssignment(l, out var prop, out var value, out var op) && op == "=")
+                return $"{prop} = {DescribeValue(value)}";
+            return l.Params.Count == 1 ? DescribeValue(l.Body) : l.Raw;
         }
         return expr switch
         {
             New n => DescribeNew(n),
-            Call call when TryDescribeMention(call, out var m) => m,
-            Generic g when TryDescribeMention(g, out var m) => m,
-            Call call => DescribeCallShape(call),
+            _ when TryDescribeMention(expr, out var m) => m,
+            Call c => DescribeCallShape(c),
             _ => DescribeValue(expr),
         };
     }
 
     public static string DescribeActual(string source, Expr expr)
     {
-        if (string.IsNullOrEmpty(source))
-            return string.Empty;
-        if (source.EndsWith(".That", StringComparison.InvariantCultureIgnoreCase))
-            return string.Empty;
+        if (string.IsNullOrEmpty(source)) return string.Empty;
+        if (source.EndsWith(".That", StringComparison.InvariantCultureIgnoreCase)) return string.Empty;
 
         var tail = new List<string>();
         Expr cur = expr;
         while (true)
         {
-            if (cur is Member m)
-            {
-                tail.Insert(0, m.Name);
-                cur = m.Target;
-                continue;
-            }
-            if (cur is Call c)
-            {
-                string? methodName = GetMethodName(c);
-                if (methodName is "Then" or "And")
-                {
-                    if (methodName == "And" && c.Args.Any(ContainsMember))
-                        throw new SetupFailed("No trainwrecks in And! chain additional properties/method calls outside of the And-expression");
+            if (cur is Member m) { tail.Insert(0, m.Name); cur = m.Target; continue; }
+            if (cur is not Call c) break;
 
-                    string prefix = c.Args.Count >= 1 ? DescribeValue(c.Args[0]) : string.Empty;
-                    if (tail.Count == 0)
-                        return prefix;
-                    if (string.IsNullOrEmpty(prefix))
-                        return string.Join('.', tail);
-                    return IsOneWord(prefix)
-                        ? $"{prefix}.{string.Join('.', tail)}"
-                        : $"{prefix}'s {string.Join('.', tail)}";
-                }
-                if (c.Target is Member memCall)
-                {
-                    tail.Insert(0, $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})");
-                    cur = memCall.Target;
-                    continue;
-                }
+            string? methodName = GetMethodName(c);
+            if (methodName is "Then" or "And")
+            {
+                if (methodName == "And" && c.Args.Any(ContainsMember))
+                    throw new SetupFailed("No trainwrecks in And! chain additional properties/method calls outside of the And-expression");
+                return CombinePrefixTail(c.Args.Count >= 1 ? DescribeValue(c.Args[0]) : "", tail);
+            }
+            if (c.Target is Member memCall)
+            {
+                tail.Insert(0, $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})");
+                cur = memCall.Target;
+                continue;
             }
             break;
         }
 
-        if (tail.Count == 0)
-            return DescribeValue(expr);
-
-        var baseStr = cur switch
-        {
-            Identifier ii => ii.Name,
-            _ => cur.Raw,
-        };
+        if (tail.Count == 0) return DescribeValue(expr);
+        var baseStr = cur is Identifier ii ? ii.Name : cur.Raw;
         return string.Join('.', new[] { baseStr }.Concat(tail));
     }
+
+    private static string CombinePrefixTail(string prefix, List<string> tail)
+    {
+        if (tail.Count == 0) return prefix;
+        if (string.IsNullOrEmpty(prefix)) return string.Join('.', tail);
+        return IsOneWord(prefix)
+            ? $"{prefix}.{string.Join('.', tail)}"
+            : $"{prefix}'s {string.Join('.', tail)}";
+    }
+
+    // --- helpers ---
+
+    private static string AsWords(string s) => Xspec.Internal.Specification.StringExtensions.AsWords(s);
+    private static string JoinDescribed(IEnumerable<Expr> exprs) => string.Join(", ", exprs.Select(DescribeValue));
+
+    private static bool IsDefaultOf(Call c)
+        => c.Target is Literal lit && lit.Raw == "default" && c.Args.Count == 1;
 
     private static string? GetMethodName(Call c) => c.Target switch
     {
@@ -151,7 +134,7 @@ internal static class Describer
 
     private static string DescribeCallShape(Call call)
     {
-        var argText = string.Join(", ", call.Args.Select(DescribeValue));
+        var argText = JoinDescribed(call.Args);
         return call.Target switch
         {
             Generic g => $"{DescribeCallTarget(g)}({argText})",
@@ -190,66 +173,52 @@ internal static class Describer
         => e is Identifier id && paramList.Count > 0
             && (id.Name == paramList[0] || paramList[0] == "_");
 
-    private static bool IsParamRefAssignment(IReadOnlyList<string> paramList, Assign a, out string prop, out Expr value, out string op)
+    private static bool IsParamRefAssignment(Lambda l, out string prop, out Expr value, out string op)
     {
         prop = string.Empty;
-        value = a.Value;
-        op = a.Op;
-        if (a.Target is Member m && IsParamRef(paramList, m.Target))
+        value = l.Body;
+        op = string.Empty;
+        if (l.Body is Assign a && a.Target is Member m && IsParamRef(l.Params, m.Target))
         {
             prop = m.Name;
+            value = a.Value;
+            op = a.Op;
             return true;
         }
         return false;
     }
 
-    private static string DescribeWithInits(With w)
-        => string.Join(", ", w.Init.Select(DescribeValue));
+    private static string DescribeWithInits(With w) => JoinDescribed(w.Init);
 
     private static string DescribeNew(New n)
     {
-        var argText = string.Join(", ", n.Args.Select(DescribeValue));
         var name = n.TypeName ?? string.Empty;
         if (n.Init is null)
         {
             var prefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
-            return $"{prefix}({argText})";
+            return $"{prefix}({JoinDescribed(n.Args)})";
         }
-        var initText = string.Join(", ", n.Init.Select(DescribeValue));
-        var preBracePrefix = ExtractNewPrefix(n);
-        if (preBracePrefix is not null)
-            return $"{preBracePrefix} {{ {initText} }}";
-        var initPrefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
-        if (n.Args.Count == 0)
-            return $"{initPrefix} {{ {initText} }}";
-        return $"{initPrefix}({argText}) {{ {initText} }}";
-    }
-
-    private static string? ExtractNewPrefix(New n)
-    {
+        // With an init block, preserve the user-written prefix verbatim
+        // (covers `new T`, `new T()`, `new int[]`, `new T<U>()`, etc.).
+        var initText = JoinDescribed(n.Init);
         int braceIdx = n.Raw.IndexOf('{');
-        if (braceIdx <= 0) return null;
-        return n.Raw[..braceIdx].TrimEnd();
+        if (braceIdx > 0) return $"{n.Raw[..braceIdx].TrimEnd()} {{ {initText} }}";
+        var initPrefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
+        return n.Args.Count == 0
+            ? $"{initPrefix} {{ {initText} }}"
+            : $"{initPrefix}({JoinDescribed(n.Args)}) {{ {initText} }}";
     }
 
-    private static string DescribeLiteral(string raw)
+    private static string DescribeLiteral(string raw) => Requote(raw);
+
+    private static string Requote(string raw)
     {
-        if (raw.Length >= 2 && raw[^1] == '"')
-        {
-            int quoteStart = raw.IndexOf('"');
-            if (quoteStart >= 0)
-                return $"\"{raw[(quoteStart + 1)..^1]}\"";
-        }
-        return raw;
+        int q = raw.IndexOf('"');
+        if (q < 0 || raw.Length < 2 || raw[^1] != '"') return raw;
+        return $"\"{raw[(q + 1)..^1]}\"";
     }
 
-    private static string DescribeQuoted(string raw)
-    {
-        int quoteStart = raw.IndexOf('"');
-        if (quoteStart < 0 || raw.Length < 2 || raw[^1] != '"')
-            return raw;
-        return $"\"{raw[(quoteStart + 1)..^1]}\"";
-    }
+    // --- mention detection ---
 
     private static bool TryDescribeMention(Expr expr, out string description)
     {
@@ -257,25 +226,22 @@ internal static class Describer
         if (!TryGetMentionRoot(expr, out var mentionRoot, out var verb, out var typeArgsRaw, out var constraints))
             return false;
 
-        var verbWords = Xspec.Internal.Specification.StringExtensions.AsWords(verb);
-        string head = $"{verbWords} {typeArgsRaw}";
+        string head = $"{AsWords(verb)} {typeArgsRaw}";
 
-        if (constraints is not null && constraints.Count > 0)
+        if (constraints is { Count: > 0 })
         {
-            var inner = string.Join(", ", constraints.Select(DescribeValue));
-            description = $"{head} {{ {inner} }}";
+            description = $"{head} {{ {JoinDescribed(constraints)} }}";
             return true;
         }
 
-        string mentionRaw = mentionRoot.Raw;
-        string outerRaw = expr.Raw;
-        if (!ReferenceEquals(mentionRoot, expr) && outerRaw.Length > mentionRaw.Length && outerRaw.StartsWith(mentionRaw))
+        // Drilldown: mention sits at the START of the outer expression, followed by `.`
+        if (!ReferenceEquals(mentionRoot, expr)
+            && expr.Raw.Length > mentionRoot.Raw.Length
+            && expr.Raw.StartsWith(mentionRoot.Raw))
         {
-            string suffix = outerRaw[mentionRaw.Length..].TrimStart();
-            if (!suffix.StartsWith('.'))
-                return false;
-            string tail = suffix[1..];
-            description = $"{head}'s {tail}";
+            string suffix = expr.Raw[mentionRoot.Raw.Length..].TrimStart();
+            if (!suffix.StartsWith('.')) return false;
+            description = $"{head}'s {suffix[1..]}";
             return true;
         }
 
@@ -295,35 +261,26 @@ internal static class Describer
         typeArgsRaw = string.Empty;
         constraints = null;
 
+        // Walk down through Call/Member/Index wrappers looking for the Generic at the root.
         Expr root = expr;
-        while (true)
-        {
-            switch (root)
-            {
-                case Call c: root = c.Target; continue;
-                case Member m: root = m.Target; continue;
-                case Index i: root = i.Target; continue;
-            }
-            break;
-        }
-
-        if (root is not Generic g) return false;
-        if (g.Target is not Identifier id) return false;
-        if (g.TypeArgs.Count == 0) return false;
+        while (root is Call or Member or Index)
+            root = root switch { Call c => c.Target, Member m => m.Target, Index i => i.Target, _ => root };
+        if (root is not Generic g || g.Target is not Identifier id || g.TypeArgs.Count == 0)
+            return false;
 
         verb = id.Name;
         typeArgsRaw = string.Join(", ", g.TypeArgs.Select(t => t.Raw));
 
+        // Find the Call (if any) wrapping the Generic directly
         Expr cursor = expr;
-        Call? wrappingCall = null;
-        while (true)
+        while (!ReferenceEquals(cursor, g))
         {
             if (cursor is Call cc && ReferenceEquals(cc.Target, g))
             {
-                wrappingCall = cc;
-                break;
+                mentionRoot = cc;
+                if (cc.Args.Count > 0) constraints = cc.Args;
+                return true;
             }
-            if (ReferenceEquals(cursor, g)) break;
             cursor = cursor switch
             {
                 Call cc2 => cc2.Target,
@@ -332,17 +289,7 @@ internal static class Describer
                 _ => g,
             };
         }
-
-        if (wrappingCall is { } w)
-        {
-            mentionRoot = w;
-            if (w.Args.Count > 0)
-                constraints = w.Args;
-        }
-        else
-        {
-            mentionRoot = g;
-        }
+        mentionRoot = g;
         return true;
     }
 
@@ -373,7 +320,6 @@ internal static class Describer
         ArrayLit a => a.Items.Any(ContainsMember),
         Cast c => ContainsMember(c.Operand),
         IsAs ia => ContainsMember(ia.Operand),
-        InterpolatedString => false,
         _ => false,
     };
 }

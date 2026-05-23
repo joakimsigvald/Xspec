@@ -13,7 +13,7 @@ public class WhenGivenValue : Spec<MyService, MyModel>
             .Then().Result.Name.Is(The<string>());
         Specification.Is(
             """
-            Using new MyModel() { Name = A<string>() }
+            Using new MyModel() { Name = a string }
             When MyService.Echo(the MyModel)
             Then Result.Name is the string
             """);
@@ -28,7 +28,7 @@ public class WhenGivenValue : Spec<MyService, MyModel>
             .Then().Result.Name.Is(The<string>());
         Specification.Is(
             """
-            Using new MyModel() { Name = A<string>() }
+            Using new MyModel() { Name = a string }
             Given IMyRepository.GetModel() returns a MyModel
             When _.GetModel()
             Then Result.Name is the string
@@ -43,7 +43,7 @@ public class WhenGivenValue : Spec<MyService, MyModel>
             .Then().Result.Name.Is(The<string>());
         Specification.Is(
             """
-            Given IMyRepository.GetModel() returns a new MyModel() { Name = A<string>() }
+            Given IMyRepository.GetModel() returns a new MyModel() { Name = a string }
             When _.GetModel()
             Then Result.Name is the string
             """);

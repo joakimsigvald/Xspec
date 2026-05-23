@@ -103,7 +103,7 @@ public class WhenGivenThatThrows : Spec<MyService, MyModel>
             """
             Given IMyRepository.GetModel() throws a NotFound
             When _.GetModel()
-            Then throws NotFound where _.Message == The<NotFound>().Message
+            Then throws NotFound where _.Message == the NotFound's Message
             """);
     }
 

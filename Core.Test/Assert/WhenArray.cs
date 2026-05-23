@@ -59,7 +59,7 @@ public class WhenArray : Spec<int[]>
         Specification.Is(
             """
             Values is not empty
-                and has one item it = 1
+                and has one item it == 1
             """);
     }
 }

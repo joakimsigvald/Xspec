@@ -153,7 +153,7 @@ public abstract class WhenAddItem : Spec<Subjects.ShoppingServiceAsync, Shopping
                       CartId, Items = CartItems ?? [] }
                   and that CartItems = [new ShoppingCartItem("A1")]
                 When _.AddToCart(CartId, NewItem)
-                Then Result.Items has all LineNumber = i + 1
+                Then Result.Items has all (it, i) => it.LineNumber == i + 1
                 """);
         }
 

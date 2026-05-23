@@ -51,7 +51,7 @@ public class WhenGivenUniqueInt : Spec<int[]>
         Specification.Is(
             """
             Given int is i % range
-            When [Any<int>(), Any<int>(), Any<int>(), Any<int>(), Any<int>()]
+            When [any int, any int, any int, any int, any int]
             Then Result is distinct
                 and has all i >= 0 && i < range
             """);

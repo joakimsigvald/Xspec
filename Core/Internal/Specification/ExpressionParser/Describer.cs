@@ -4,23 +4,16 @@ internal static class Describer
 {
     public static string DescribeValue(Expr expr) => expr switch
     {
-        Lambda l when l.Params.Count <= 1 && l.Body is Assign a && IsParamRefAssignment(l.Params, a, out var prop, out var value, out var op) && op == "="
+        Lambda l when l.Params.Count <= 2 && l.Body is Assign a && IsParamRefAssignment(l.Params, a, out var prop, out var value, out var op) && op == "="
             => $"{prop} = {DescribeValue(value)}",
-        Lambda l when l.Params.Count == 2 && l.Body is Assign a && IsParamRefAssignment(l.Params, a, out var prop, out var value, out var op) && op == "="
-            => $"{prop} = {DescribeValue(value)}",
-        Lambda l when l.Params.Count == 2 && l.Body is Binary b && b.Op == "==" && b.Left is Member memEq && IsParamRef(l.Params, memEq.Target)
-            => $"{memEq.Name} = {DescribeValue(b.Right)}",
         Lambda l when l.Params.Count <= 1 && l.Body is With w => DescribeWithInits(w),
         Lambda l when l.Params.Count <= 1 => DescribeValue(l.Body),
         Lambda l => l.Raw,
         Assign a => $"{DescribeAssignTarget(a.Target)} {a.Op} {DescribeValue(a.Value)}",
         With w => DescribeWithInits(w),
         Tuple t => $"({string.Join(", ", t.Items.Select(DescribeValue))})",
-        ArrayLit arr => arr.Raw,
-        Binary b when b.Op == "==" && b.Left is Identifier idEq => $"{idEq.Name} = {DescribeValue(b.Right)}",
-        Binary b when b.Op is "+" or "-" or "*" or "/" or "%" or "&" or "|"
-            => $"{DescribeValue(b.Left)} {b.Op} {DescribeValue(b.Right)}",
-        Binary b => b.Raw,
+        ArrayLit arr => $"[{string.Join(", ", arr.Items.Select(DescribeValue))}]",
+        Binary b => $"{DescribeValue(b.Left)} {b.Op} {DescribeValue(b.Right)}",
         Unary u => $"{u.Op}{DescribeValue(u.Operand)}",
         Postfix p => $"{DescribeValue(p.Operand)}{p.Op}",
         Conditional c => $"{DescribeValue(c.Cond)} ? {DescribeValue(c.Then)} : {DescribeValue(c.Else)}",
@@ -29,7 +22,6 @@ internal static class Describer
         InterpolatedString s => DescribeQuoted(s.Raw),
         Literal lit => DescribeLiteral(lit.Raw),
         New n => DescribeNew(n),
-        Call call when call.Target is Generic gt && gt.Target is Member => call.Raw,
         Call call when call.Target is Literal litT && litT.Raw == "default" && call.Args.Count == 1
             => $"default {DescribeValue(call.Args[0])}",
         Call call when TryDescribeMention(call, out var m) => m,
@@ -223,18 +215,14 @@ internal static class Describer
             var prefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
             return $"{prefix}({argText})";
         }
-        var preBracePrefix = ExtractNewPrefix(n);
-        if (preBracePrefix is not null && preBracePrefix.Contains('('))
-            return n.Raw;
         var initText = string.Join(", ", n.Init.Select(DescribeValue));
-        if (preBracePrefix is null)
-        {
-            var prefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
-            if (n.Args.Count == 0)
-                return $"{prefix} {{ {initText} }}";
-            return $"{prefix}({argText}) {{ {initText} }}";
-        }
-        return $"{preBracePrefix} {{ {initText} }}";
+        var preBracePrefix = ExtractNewPrefix(n);
+        if (preBracePrefix is not null)
+            return $"{preBracePrefix} {{ {initText} }}";
+        var initPrefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
+        if (n.Args.Count == 0)
+            return $"{initPrefix} {{ {initText} }}";
+        return $"{initPrefix}({argText}) {{ {initText} }}";
     }
 
     private static string? ExtractNewPrefix(New n)

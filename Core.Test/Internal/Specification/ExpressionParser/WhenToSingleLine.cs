@@ -17,6 +17,8 @@ public class WhenToSingleLine : Spec<string>
     [InlineData("one \r\n line", "one line")]
     [InlineData("one(\r\nline)", "one(line)")]
     [InlineData("one[\r\nline]", "one[line]")]
+    [InlineData("\"//inside\" + foo // real comment", "\"//inside\" + foo")]
+    [InlineData("@\"path\\\" //comment", "@\"path\\\"")]
     public void ThenReturnSingleLine(string str, string expected)
         => When(_ => str.ToSingleLine()).Then().Result.Is(expected);
 }

@@ -10,14 +10,14 @@ namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 /// </summary>
 internal sealed class ActualDescriber : Describer
 {
-    private readonly string _source;
-
-    public ActualDescriber(string source) { _source = source; }
+    private const string _then = "Then";
+    private const string _and = "And";
+    private const string _that = "That";
 
     public override string Describe(Expr expr)
     {
-        if (string.IsNullOrEmpty(_source)) return string.Empty;
-        if (_source.EndsWith(".That", StringComparison.InvariantCultureIgnoreCase)) return string.Empty;
+        if (expr is Member top && string.Equals(top.Name, _that, StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
 
         var tail = new List<(string Name, bool NullCond)>();
         Expr cur = expr;
@@ -29,33 +29,37 @@ internal sealed class ActualDescriber : Describer
                 cur = m.Target;
                 continue;
             }
-            if (cur is not Call c) break;
+            if (cur is not Call c)
+                break;
 
-            if (c.MethodName is "Then" or "And")
-            {
-                if (c.MethodName == "And" && c.Args.Any(ContainsMember))
-                    throw new SetupFailed("No trainwrecks in And! chain additional properties/method calls outside of the And-expression");
-                return Combine(c.Args.Count >= 1 ? Value.Describe(c.Args[0]) : "", tail);
-            }
-            if (c.Target is Member memCall)
-            {
-                var segment = $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})";
-                tail.Insert(0, (segment, memCall.NullConditional));
-                cur = memCall.Target;
-                continue;
-            }
-            break;
+            if (c.MethodName is _then or _and)
+                return c.MethodName != _and || !c.Args.Any(ContainsMember)
+                    ? Combine(c.Args.Count >= 1 ? Value.Describe(c.Args[0]) : "", tail)
+                    : throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
+
+            if (c.Target is not Member memCall)
+                break;
+
+            var segment = $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})";
+            tail.Insert(0, (segment, memCall.NullConditional));
+            cur = memCall.Target;
         }
 
-        if (tail.Count == 0) return Value.Describe(expr);
+        if (tail.Count == 0) 
+            return Value.Describe(expr);
+
         var baseStr = cur is Identifier ii ? ii.Name : cur.Raw;
         return baseStr + Sep(tail[0]) + StitchBare(tail);
     }
 
     private static string Combine(string prefix, List<(string Name, bool NullCond)> tail)
     {
-        if (tail.Count == 0) return prefix;
-        if (string.IsNullOrEmpty(prefix)) return StitchBare(tail);
+        if (tail.Count == 0) 
+            return prefix;
+
+        if (string.IsNullOrEmpty(prefix)) 
+            return StitchBare(tail);
+
         return IsOneWord(prefix)
             ? prefix + Sep(tail[0]) + StitchBare(tail)
             : $"{prefix}'s {StitchBare(tail)}";
@@ -74,15 +78,7 @@ internal sealed class ActualDescriber : Describer
         return sb.ToString();
     }
 
-    private static bool IsOneWord(string s)
-    {
-        if (string.IsNullOrEmpty(s)) return false;
-        foreach (var c in s)
-            if (!(char.IsLetterOrDigit(c) || c is '_' or '(' or ')' or '?' or '!' or '.' or '<' or '>'))
-                return false;
-        return true;
-    }
+    private static bool IsOneWord(string s) => !string.IsNullOrEmpty(s) && s.All(char.IsLetterOrDigit);
 
-    private static bool ContainsMember(Expr e) =>
-        e is Member || e.Children.Any(ContainsMember);
+    private static bool ContainsMember(Expr e) => e is Member || e.Children.Any(ContainsMember);
 }

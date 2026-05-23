@@ -12,9 +12,13 @@ internal static class ConditionalRule
     {
         int save = ts.Pos;
         var cond = BinaryRule.Parse(ts, BinaryRule.MinPrecedence);
-        if (!ts.AcceptSym("?")) return cond;
+        if (!ts.AcceptSym("?")) 
+            return cond;
+
         var thenExpr = LambdaRule.Parse(ts);
-        if (!ts.AcceptSym(":")) return new Unknown(ts.Source.Trim());
+        if (!ts.AcceptSym(":"))
+            return new Unknown(ts.Source.Trim());
+
         return new Conditional(ts.RawFrom(save), cond, thenExpr, LambdaRule.Parse(ts));
     }
 }

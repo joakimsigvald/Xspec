@@ -45,7 +45,6 @@ internal static class NewExprRule
             if (!ts.TryParse("}", out var initList)) return new Unknown(ts.Source.Trim());
             init = initList;
         }
-
         return new New(ts.RawFrom(save), typeName, args, init);
     }
 }

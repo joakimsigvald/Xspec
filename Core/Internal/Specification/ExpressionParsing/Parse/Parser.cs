@@ -17,7 +17,9 @@ internal static class Parser
 {
     public static Expr Parse(string source)
     {
-        if (string.IsNullOrEmpty(source)) return new Unknown(source ?? string.Empty);
+        if (string.IsNullOrEmpty(source)) 
+            return new Unknown(source ?? string.Empty);
+
         var ts = new TokenStream(source);
         try
         {

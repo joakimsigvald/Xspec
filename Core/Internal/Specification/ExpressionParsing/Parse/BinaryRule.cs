@@ -48,9 +48,13 @@ internal static class BinaryRule
 
     private static (string Op, int Prec, bool RightAssoc)? Match(Token t, int minPrec)
     {
-        if (t.Kind != TokenKind.Symbol) return null;
+        if (t.Kind != TokenKind.Symbol) 
+            return null;
+
         foreach (var op in _ops)
-            if (op.Op == t.Text && op.Prec >= minPrec) return op;
+            if (op.Op == t.Text && op.Prec >= minPrec) 
+                return op;
+
         return null;
     }
 }

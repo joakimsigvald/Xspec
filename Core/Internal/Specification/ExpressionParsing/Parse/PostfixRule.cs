@@ -20,7 +20,9 @@ internal static class PostfixRule
             {
                 bool nullConditional = ts.Peek().Text == "?.";
                 ts.Advance();
-                if (ts.Peek().Kind != TokenKind.Word) break;
+                if (ts.Peek().Kind != TokenKind.Word) 
+                    break;
+
                 string name = ts.Peek().Text;
                 ts.Advance();
                 expr = new Member(ts.RawFrom(save), expr, name, nullConditional);
@@ -36,14 +38,18 @@ internal static class PostfixRule
             {
                 bool closed = ts.TryParse(")", out var args);
                 expr = new Call(ts.RawFrom(save), expr, args);
-                if (!closed) return expr;
+                if (!closed) 
+                    return expr;
+
                 continue;
             }
             if (ts.AcceptSym("["))
             {
                 bool closed = ts.TryParse("]", out var args);
                 expr = new IndexExpr(ts.RawFrom(save), expr, args);
-                if (!closed) return expr;
+                if (!closed) 
+                    return expr;
+
                 continue;
             }
             if (ts.IsWord("with"))
@@ -52,7 +58,9 @@ internal static class PostfixRule
                 if (!ts.AcceptSym("{")) break;
                 bool closed = ts.TryParse("}", out var inits);
                 expr = new With(ts.RawFrom(save), expr, inits);
-                if (!closed) return expr;
+                if (!closed) 
+                    return expr;
+
                 continue;
             }
             if (ts.Peek().Kind == TokenKind.Symbol && ts.Peek().Text is "++" or "--" or "!")

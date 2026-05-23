@@ -18,6 +18,7 @@ internal static class AssignmentRule
         var left = ConditionalRule.Parse(ts);
         if (ts.Peek().Kind != TokenKind.Symbol || !_ops.Contains(ts.Peek().Text))
             return left;
+
         string op = ts.Peek().Text;
         ts.Advance();
         return new Assign(ts.RawFrom(save), op, left, Parse(ts));

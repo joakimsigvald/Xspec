@@ -19,70 +19,32 @@ internal abstract class Describer
     protected string DescribeAll(IEnumerable<Expr> exprs) =>
         string.Join(", ", exprs.Select(Value.Describe));
 
-    /// Recognize Xspec's <c>A&lt;T&gt;</c> / <c>An&lt;T&gt;</c> /
-    /// <c>The&lt;T&gt;</c> factories. Three sub-shapes:
-    /// plain mention, with constraints, or with member-access drilldown.
+    /// Render Xspec's <c>A&lt;T&gt;</c> / <c>An&lt;T&gt;</c> / <c>The&lt;T&gt;</c>
+    /// factory shapes. Three sub-cases: plain mention, with constraints, or
+    /// with member-access drilldown. Detection lives on <see cref="Expr.AsMention"/>;
+    /// this method shapes the result into text.
     protected bool TryDescribeMention(Expr expr, out string description)
     {
         description = string.Empty;
-        if (!TryGetMentionRoot(expr, out var root, out var verb, out var typeArgs, out var constraints))
-            return false;
+        if (expr.AsMention() is not { } m) return false;
 
-        string head = $"{verb.AsWords()} {typeArgs}";
+        string head = $"{m.Verb.AsWords()} {m.TypeArgs}";
 
-        if (constraints is { Count: > 0 })
+        if (m.Constraints is { Count: > 0 })
         {
-            description = $"{head} {{ {DescribeAll(constraints)} }}";
+            description = $"{head} {{ {DescribeAll(m.Constraints)} }}";
             return true;
         }
-        if (!ReferenceEquals(root, expr)
-            && expr.Raw.Length > root.Raw.Length
-            && expr.Raw.StartsWith(root.Raw))
+        if (!ReferenceEquals(m.Root, expr)
+            && expr.Raw.Length > m.Root.Raw.Length
+            && expr.Raw.StartsWith(m.Root.Raw))
         {
-            string suffix = expr.Raw[root.Raw.Length..].TrimStart();
+            string suffix = expr.Raw[m.Root.Raw.Length..].TrimStart();
             if (!suffix.StartsWith('.')) return false;
             description = $"{head}'s {suffix[1..]}";
             return true;
         }
         description = head;
-        return true;
-    }
-
-    private static bool TryGetMentionRoot(
-        Expr expr, out Expr root, out string verb, out string typeArgs,
-        out IReadOnlyList<Expr>? constraints)
-    {
-        root = expr; verb = string.Empty; typeArgs = string.Empty; constraints = null;
-
-        Expr cur = expr;
-        while (cur is Call or Member or Index)
-            cur = cur switch { Call c => c.Target, Member m => m.Target, Index i => i.Target, _ => cur };
-        if (cur is not Generic g || g.Target is not Identifier id || g.TypeArgs.Count == 0)
-            return false;
-
-        verb = id.Name;
-        typeArgs = string.Join(", ", g.TypeArgs.Select(t => t.Raw));
-
-        // If the Generic sits directly inside a Call, that Call is the mention root;
-        // its args (if any) are constraints.
-        Expr cursor = expr;
-        while (!ReferenceEquals(cursor, g))
-        {
-            if (cursor is Call cc && ReferenceEquals(cc.Target, g))
-            {
-                root = cc;
-                if (cc.Args.Count > 0) constraints = cc.Args;
-                return true;
-            }
-            cursor = cursor switch
-            {
-                Call cc2 => cc2.Target,
-                Member mm => mm.Target,
-                Index ii => ii.Target,
-                _ => g,
-            };
-        }
-        root = g;
         return true;
     }
 

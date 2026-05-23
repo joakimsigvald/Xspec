@@ -14,9 +14,8 @@ internal sealed class ValueDescriber : Describer
         if (TryDescribeMention(expr, out var mention)) return mention;
         return expr switch
         {
-            Lambda l when l.Params.Count <= 2
-                && l.IsParamRefAssignment(out var target, out var value, out var op) && op == "="
-                => $"{target.Name} = {Describe(value)}",
+            Lambda l when l.Params.Count <= 2 && l.AsParamRefAssign() is { Op: "=" } pa
+                => $"{pa.Target.Name} = {Describe(pa.Value)}",
             Lambda l when l.Params.Count <= 1 && l.Body is With w => DescribeAll(w.Init),
             Lambda l when l.Params.Count <= 1 => Describe(l.Body),
             Lambda l => l.Raw,

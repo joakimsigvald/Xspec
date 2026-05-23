@@ -28,27 +28,21 @@ internal sealed class CallDescriber : Describer
 
     private string DescribeLambda(Lambda l)
     {
-        if (l.Params.Count == 1 && l.IsParamRefCall(out var mc, out var args))
-            return Prefixed(mc.Target, mc.Name, $"({DescribeAll(args)})");
-
-        if (l.Params.Count == 1 && l.IsParamRefAssignment(out var target, out var value, out var op))
-            return Prefixed(target.Target, target.Name, $" {op} {Value.Describe(value)}");
-
-        // skipSubjectRef rescue: body failed to parse but starts with "param.".
-        if (l.Params.Count == 1 && _skipSubjectRef && l.Body is Unknown u
-            && u.Raw.StartsWith(l.Params[0] + "."))
-            return u.Raw[(l.Params[0].Length + 1)..];
-
-        if (l.Params.Count >= 2
-            && l.IsParamRefAssignment(out var t2, out var v2, out var op2) && op2 == "=")
-            return $"{t2.Name} = {Value.Describe(v2)}";
-
-        return l.Params.Count == 1 ? Value.Describe(l.Body) : l.Raw;
+        if (l.Params.Count == 1)
+        {
+            if (l.AsParamRefCall() is { } pc)
+                return Prefixed(pc.Receiver, pc.Target.Name, $"({DescribeAll(pc.Args)})");
+            if (l.AsParamRefAssign() is { } pa)
+                return Prefixed(pa.Receiver, pa.Target.Name, $" {pa.Op} {Value.Describe(pa.Value)}");
+            if (_skipSubjectRef && l.Body is Unknown u && u.Raw.StartsWith(l.Params[0] + "."))
+                return u.Raw[(l.Params[0].Length + 1)..];
+            return Value.Describe(l.Body);
+        }
+        if (l.AsParamRefAssign() is { Op: "=" } pa2)
+            return $"{pa2.Target.Name} = {Value.Describe(pa2.Value)}";
+        return l.Raw;
     }
 
-    private string Prefixed(Expr receiver, string memberName, string suffix)
-    {
-        var prefix = _skipSubjectRef ? "" : $"{((Identifier)receiver).Name}.";
-        return $"{prefix}{memberName}{suffix}";
-    }
+    private string Prefixed(Identifier receiver, string memberName, string suffix) =>
+        _skipSubjectRef ? $"{memberName}{suffix}" : $"{receiver.Name}.{memberName}{suffix}";
 }

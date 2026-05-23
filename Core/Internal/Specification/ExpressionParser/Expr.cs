@@ -12,6 +12,11 @@ internal abstract record Expr(string Raw)
     public virtual IEnumerable<Expr> Children => [];
     public virtual string AsPath() => Raw;
 
+    /// If this expression (or its outer wrappers) contains a Mention factory
+    /// — <c>A&lt;T&gt;</c> / <c>An&lt;T&gt;</c> / <c>The&lt;T&gt;</c> etc. —
+    /// describe its root, verb, type args, and any constraints. Otherwise null.
+    public virtual Mention? AsMention() => null;
+
     /// Strip a leading <c>$</c>/<c>@</c> prefix and re-emit the quoted contents.
     protected static string Requote(string raw)
     {
@@ -19,6 +24,17 @@ internal abstract record Expr(string Raw)
         return q < 0 || raw.Length < 2 || raw[^1] != '"' ? raw : $"\"{raw[(q + 1)..^1]}\"";
     }
 }
+
+/// A Mention factory occurrence in an expression tree.
+/// <paramref name="Root"/> is the outermost call/generic that bounds it
+/// (used by the describer to check for drilldown).
+internal sealed record Mention(Expr Root, string Verb, string TypeArgs, IReadOnlyList<Expr>? Constraints);
+
+/// <c>p =&gt; p.Prop = value</c> shape (any compound-assignment op).
+internal sealed record ParamRefAssign(Identifier Receiver, Member Target, string Op, Expr Value);
+
+/// <c>p =&gt; p.Method(args)</c> shape.
+internal sealed record ParamRefCall(Identifier Receiver, Member Target, IReadOnlyList<Expr> Args);
 
 internal sealed record Identifier(string Raw, string Name) : Expr(Raw)
     { public override string AsPath() => Name; }
@@ -35,6 +51,7 @@ internal sealed record Member(string Raw, Expr Target, string Name) : Expr(Raw)
 {
     public override IEnumerable<Expr> Children => [Target];
     public override string AsPath() => $"{Target.AsPath()}.{Name}";
+    public override Mention? AsMention() => Target.AsMention();
 }
 
 internal sealed record Generic(string Raw, Expr Target, IReadOnlyList<Expr> TypeArgs) : Expr(Raw)
@@ -42,6 +59,10 @@ internal sealed record Generic(string Raw, Expr Target, IReadOnlyList<Expr> Type
     public override IEnumerable<Expr> Children => TypeArgs.Prepend(Target);
     public override string AsPath() =>
         $"{Target.AsPath()}<{string.Join(", ", TypeArgs.Select(t => t.Raw))}>";
+
+    public override Mention? AsMention() => Target is Identifier id && TypeArgs.Count > 0
+        ? new Mention(this, id.Name, string.Join(", ", TypeArgs.Select(t => t.Raw)), null)
+        : null;
 }
 
 internal sealed record Call(string Raw, Expr Target, IReadOnlyList<Expr> Args) : Expr(Raw)
@@ -57,10 +78,23 @@ internal sealed record Call(string Raw, Expr Target, IReadOnlyList<Expr> Args) :
         Generic { Target: Member gm } => gm.Name,
         _ => null,
     };
+
+    /// If this call directly wraps a Mention factory, its Args become the
+    /// mention's constraints. Otherwise the inner mention is passed through.
+    public override Mention? AsMention() => Target.AsMention() switch
+    {
+        null => null,
+        var inner when Target is Generic && ReferenceEquals(inner.Root, Target)
+            => inner with { Root = this, Constraints = Args.Count > 0 ? Args : null },
+        var inner => inner,
+    };
 }
 
 internal sealed record Index(string Raw, Expr Target, IReadOnlyList<Expr> Args) : Expr(Raw)
-    { public override IEnumerable<Expr> Children => Args.Prepend(Target); }
+{
+    public override IEnumerable<Expr> Children => Args.Prepend(Target);
+    public override Mention? AsMention() => Target.AsMention();
+}
 
 internal sealed record New(string Raw, string? TypeName, IReadOnlyList<Expr> Args, IReadOnlyList<Expr>? Init) : Expr(Raw)
     { public override IEnumerable<Expr> Children => Init is null ? Args : Args.Concat(Init); }
@@ -99,26 +133,19 @@ internal sealed record Lambda(string Raw, IReadOnlyList<string> Params, Expr Bod
 {
     public override IEnumerable<Expr> Children => [Body];
 
-    /// True for <c>p =&gt; p.Prop = value</c> (any number of params, any
-    /// compound-assignment op). The first parameter must match the receiver
-    /// of the member access (with <c>_</c> as a wildcard).
-    public bool IsParamRefAssignment(out Member target, out Expr value, out string op)
-    {
-        target = null!; value = Body; op = string.Empty;
-        if (Body is not Assign a || a.Target is not Member m || !IsParamRef(m.Target)) return false;
-        target = m; value = a.Value; op = a.Op;
-        return true;
-    }
+    /// Match <c>p =&gt; p.Prop = value</c> (any compound-assignment op).
+    /// The first parameter must match the receiver (with <c>_</c> as wildcard).
+    public ParamRefAssign? AsParamRefAssign() =>
+        Body is Assign { Target: Member { Target: Identifier rcv } m } a && IsParamRef(rcv)
+            ? new ParamRefAssign(rcv, m, a.Op, a.Value)
+            : null;
 
-    /// True for <c>p =&gt; p.Method(args)</c>.
-    public bool IsParamRefCall(out Member member, out IReadOnlyList<Expr> args)
-    {
-        member = null!; args = [];
-        if (Body is not Call c || c.Target is not Member m || !IsParamRef(m.Target)) return false;
-        member = m; args = c.Args;
-        return true;
-    }
+    /// Match <c>p =&gt; p.Method(args)</c>.
+    public ParamRefCall? AsParamRefCall() =>
+        Body is Call { Target: Member { Target: Identifier rcv } m } c && IsParamRef(rcv)
+            ? new ParamRefCall(rcv, m, c.Args)
+            : null;
 
-    private bool IsParamRef(Expr e) =>
-        e is Identifier id && Params.Count > 0 && (id.Name == Params[0] || Params[0] == "_");
+    private bool IsParamRef(Identifier id) =>
+        Params.Count > 0 && (id.Name == Params[0] || Params[0] == "_");
 }

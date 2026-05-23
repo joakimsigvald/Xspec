@@ -1,6 +1,6 @@
-using Xspec.Internal.Specification;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
 
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 
 /// <summary>
 /// Base for the three description modes. Subclasses override

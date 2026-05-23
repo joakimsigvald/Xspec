@@ -1,4 +1,4 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+namespace Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 
 /// <summary>
 /// Token cursor over a source string. Holds the parse position and exposes
@@ -58,24 +58,5 @@ internal sealed class TokenStream
         int s = _tokens[startTok].Start;
         int e = Pos > startTok ? _tokens[Pos - 1].End : s;
         return e > s ? Source[s..e] : string.Empty;
-    }
-
-    /// <summary>
-    /// Parses comma-separated expressions (via <see cref="LambdaRule"/>) until
-    /// <paramref name="terminator"/>. Returns true if the terminator was consumed.
-    /// </summary>
-    public bool ParseList(string terminator, out IReadOnlyList<Expr> items)
-    {
-        var list = new List<Expr>();
-        if (!IsSym(terminator))
-        {
-            while (true)
-            {
-                list.Add(LambdaRule.Parse(this));
-                if (!AcceptSym(",")) break;
-            }
-        }
-        items = list;
-        return AcceptSym(terminator);
     }
 }

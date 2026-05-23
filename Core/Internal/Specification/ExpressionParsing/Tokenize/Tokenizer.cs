@@ -1,4 +1,4 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+namespace Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 
 internal static class Tokenizer
 {

@@ -1,4 +1,7 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 /// <summary>
 /// Right-associative assignment level: <c>=</c>, <c>+=</c>, <c>-=</c>,

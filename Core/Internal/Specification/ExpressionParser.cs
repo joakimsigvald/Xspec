@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Describe;
+using Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 namespace Xspec.Internal.Specification;
 

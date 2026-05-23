@@ -1,4 +1,6 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 
 /// <summary>
 /// Actual-mode description (used by <c>ParseActual</c>). Walks the rightmost

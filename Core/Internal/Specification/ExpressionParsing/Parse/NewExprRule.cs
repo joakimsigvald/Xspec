@@ -1,4 +1,7 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 /// <summary>
 /// <c>new TypeName(...args)</c>, <c>new TypeName { ...init }</c>,
@@ -31,15 +34,15 @@ internal static class NewExprRule
 
         if (ts.AcceptSym("("))
         {
-            if (!ts.ParseList(")", out args)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse(")", out args)) return new Unknown(ts.Source.Trim());
         }
         else if (ts.AcceptSym("["))
         {
-            if (!ts.ParseList("]", out args)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse("]", out args)) return new Unknown(ts.Source.Trim());
         }
         if (ts.AcceptSym("{"))
         {
-            if (!ts.ParseList("}", out var initList)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse("}", out var initList)) return new Unknown(ts.Source.Trim());
             init = initList;
         }
 

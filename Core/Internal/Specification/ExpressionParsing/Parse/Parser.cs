@@ -1,4 +1,7 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 /// <summary>
 /// Entry point for parsing a single C# expression into an <see cref="Expr"/>

@@ -1,4 +1,6 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 
 /// <summary>
 /// Call-mode description (used by <c>ParseCall</c>). Recognizes the

@@ -1,6 +1,6 @@
-using Xspec.Internal.Specification;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
 
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 
 /// <summary>
 /// Value-mode description. Mention detection runs first; the switch below
@@ -21,7 +21,7 @@ internal sealed class ValueDescriber : Describer
             Lambda l => l.Raw,
             Assign a => $"{AssignTargetName(a.Target)} {a.Op} {Describe(a.Value)}",
             With w => DescribeAll(w.Init),
-            Tuple t => $"({string.Join(", ", t.Items.Select(Describe))})",
+            TupleExpr t => $"({string.Join(", ", t.Items.Select(Describe))})",
             ArrayLit arr => $"[{string.Join(", ", arr.Items.Select(Describe))}]",
             Binary b => $"{Describe(b.Left)} {b.Op} {Describe(b.Right)}",
             Unary u => $"{u.Op}{Describe(u.Operand)}",

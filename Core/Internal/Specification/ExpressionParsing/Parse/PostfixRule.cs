@@ -1,4 +1,7 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 /// <summary>
 /// Postfix loop: member access (<c>.</c> / <c>?.</c>), generic application,
@@ -31,15 +34,15 @@ internal static class PostfixRule
             }
             if (ts.AcceptSym("("))
             {
-                bool closed = ts.ParseList(")", out var args);
+                bool closed = ts.TryParse(")", out var args);
                 expr = new Call(ts.RawFrom(save), expr, args);
                 if (!closed) return expr;
                 continue;
             }
             if (ts.AcceptSym("["))
             {
-                bool closed = ts.ParseList("]", out var args);
-                expr = new Index(ts.RawFrom(save), expr, args);
+                bool closed = ts.TryParse("]", out var args);
+                expr = new IndexExpr(ts.RawFrom(save), expr, args);
                 if (!closed) return expr;
                 continue;
             }
@@ -47,7 +50,7 @@ internal static class PostfixRule
             {
                 ts.Advance();
                 if (!ts.AcceptSym("{")) break;
-                bool closed = ts.ParseList("}", out var inits);
+                bool closed = ts.TryParse("}", out var inits);
                 expr = new With(ts.RawFrom(save), expr, inits);
                 if (!closed) return expr;
                 continue;

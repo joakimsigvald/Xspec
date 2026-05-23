@@ -1,4 +1,7 @@
-namespace Xspec.Internal.Specification.ExpressionParserInternals;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
+
+namespace Xspec.Internal.Specification.ExpressionParsing.Parse;
 
 /// <summary>
 /// Primary expression: identifiers, literals, parenthesized expressions,
@@ -37,7 +40,7 @@ internal static class PrimaryRule
             if (t.Text == "[")
             {
                 ts.Advance();
-                if (!ts.ParseList("]", out var items)) return new Unknown(ts.Source.Trim());
+                if (!ts.TryParse("]", out var items)) return new Unknown(ts.Source.Trim());
                 return new ArrayLit(ts.RawFrom(save), items);
             }
             if (t.Text is "-" or "+" or "!" or "~") return UnaryRule.Parse(ts);
@@ -49,7 +52,7 @@ internal static class PrimaryRule
     private static Expr ParseParenOrTuple(TokenStream ts, int save)
     {
         ts.Advance();                                       // consume '('
-        if (ts.AcceptSym(")")) return new Tuple(ts.RawFrom(save), []);
+        if (ts.AcceptSym(")")) return new TupleExpr(ts.RawFrom(save), []);
         var first = LambdaRule.Parse(ts);
         if (!ts.AcceptSym(","))
             return ts.AcceptSym(")") ? first : new Unknown(ts.Source.Trim());
@@ -60,6 +63,6 @@ internal static class PrimaryRule
             if (!ts.AcceptSym(",")) break;
         }
         if (!ts.AcceptSym(")")) return new Unknown(ts.Source.Trim());
-        return new Tuple(ts.RawFrom(save), items);
+        return new TupleExpr(ts.RawFrom(save), items);
     }
 }

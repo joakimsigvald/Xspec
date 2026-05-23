@@ -16,13 +16,10 @@ public static partial class ExpressionParser
     /// <returns></returns>
     public static string ParseValue(this string? expr)
     {
-        if (string.IsNullOrWhiteSpace(expr))
-            return string.Empty;
+        if (string.IsNullOrWhiteSpace(expr)) return string.Empty;
         var source = expr.ToSingleLine();
-        if (string.IsNullOrEmpty(source))
-            return string.Empty;
-        var tree = Parser.Parse(source);
-        return Describer.DescribeValue(tree);
+        if (string.IsNullOrEmpty(source)) return string.Empty;
+        return Describer.Value.Describe(Parser.Parse(source));
     }
 
     /// <summary>
@@ -34,10 +31,8 @@ public static partial class ExpressionParser
     public static string ParseCall(this string expr, bool skipSubjectRef = false)
     {
         var source = expr.ToSingleLine();
-        if (string.IsNullOrEmpty(source))
-            return source;
-        var tree = Parser.Parse(source);
-        return Describer.DescribeCall(tree, skipSubjectRef);
+        if (string.IsNullOrEmpty(source)) return source;
+        return new CallDescriber(skipSubjectRef).Describe(Parser.Parse(source));
     }
 
     /// <summary>
@@ -48,10 +43,8 @@ public static partial class ExpressionParser
     public static string ParseActual(this string expr)
     {
         var source = expr.ToSingleLine();
-        if (string.IsNullOrEmpty(source))
-            return string.Empty;
-        var tree = Parser.Parse(source);
-        return Describer.DescribeActual(source, tree);
+        if (string.IsNullOrEmpty(source)) return string.Empty;
+        return new ActualDescriber(source).Describe(Parser.Parse(source));
     }
 
     /// <summary>

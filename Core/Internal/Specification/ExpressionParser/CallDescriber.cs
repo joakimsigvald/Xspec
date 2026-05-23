@@ -1,52 +1,54 @@
 namespace Xspec.Internal.Specification.ExpressionParserInternals;
 
 /// <summary>
-/// Describes an expression in "call" context (used by <c>ParseCall</c>).
-/// Recognizes the call/assignment shapes a lambda body typically takes
-/// (<c>_ =&gt; _.Method(args)</c>, <c>_ =&gt; _.X = value</c>, etc.) and falls
-/// back to <see cref="ValueDescriber"/> for shapes that don't match.
-/// <paramref name="skipSubjectRef"/> drops the leading <c>_.</c> for callers
-/// (e.g. mock setup) that prepend the receiver name themselves.
+/// Call-mode description (used by <c>ParseCall</c>). Recognizes the
+/// lambda-body shapes a mock setup or action expression typically takes
+/// (<c>_ =&gt; _.Method(args)</c>, <c>_ =&gt; _.X = value</c>) and falls
+/// back to value-mode for anything else. <see cref="_skipSubjectRef"/>
+/// drops the leading <c>_.</c> when the caller (e.g. mock setup) prepends
+/// the receiver name itself.
 /// </summary>
-internal static class CallDescriber
+internal sealed class CallDescriber : Describer
 {
-    public static string Describe(Expr expr, bool skipSubjectRef = false)
+    private readonly bool _skipSubjectRef;
+
+    public CallDescriber(bool skipSubjectRef) { _skipSubjectRef = skipSubjectRef; }
+
+    public override string Describe(Expr expr)
     {
-        if (expr is Lambda l) return DescribeLambda(l, skipSubjectRef);
+        if (expr is Lambda l) return DescribeLambda(l);
         return expr switch
         {
-            New n => NewDescriber.Describe(n),
-            _ when MentionDescriber.TryDescribe(expr, out var m) => m,
-            Call c => ShapeRenderer.DescribeCallShape(c),
-            _ => ValueDescriber.Describe(expr),
+            New n => DescribeNew(n),
+            _ when TryDescribeMention(expr, out var m) => m,
+            Call c => $"{c.Target.AsPath()}({DescribeAll(c.Args)})",
+            _ => Value.Describe(expr),
         };
     }
 
-    private static string DescribeLambda(Lambda l, bool skipSubjectRef)
+    private string DescribeLambda(Lambda l)
     {
-        // 1-param `_ => _.X(args)` / `x => x.X(args)`
-        if (l.Params.Count == 1 && l.Body is Call mc && mc.Target is Member mem
-            && DescribeHelpers.IsParamRef(l.Params, mem.Target))
-        {
-            var prefix = skipSubjectRef ? "" : $"{((Identifier)mem.Target).Name}.";
-            return $"{prefix}{mem.Name}({DescribeHelpers.JoinDescribed(mc.Args)})";
-        }
-        // 1-param `_ => _.X = value` (any compound-assignment op)
-        if (l.Params.Count == 1 && l.Body is Assign asgn && asgn.Target is Member assMem
-            && DescribeHelpers.IsParamRef(l.Params, assMem.Target))
-        {
-            var prefix = skipSubjectRef ? "" : $"{((Identifier)assMem.Target).Name}.";
-            return $"{prefix}{assMem.Name} {asgn.Op} {ValueDescriber.Describe(asgn.Value)}";
-        }
-        // 1-param `_ => _.<unparseable>` — strip `_.` from raw
-        if (l.Params.Count == 1 && skipSubjectRef && l.Body is Unknown u
+        if (l.Params.Count == 1 && l.IsParamRefCall(out var mc, out var args))
+            return Prefixed(mc.Target, mc.Name, $"({DescribeAll(args)})");
+
+        if (l.Params.Count == 1 && l.IsParamRefAssignment(out var target, out var value, out var op))
+            return Prefixed(target.Target, target.Name, $" {op} {Value.Describe(value)}");
+
+        // skipSubjectRef rescue: body failed to parse but starts with "param.".
+        if (l.Params.Count == 1 && _skipSubjectRef && l.Body is Unknown u
             && u.Raw.StartsWith(l.Params[0] + "."))
             return u.Raw[(l.Params[0].Length + 1)..];
-        // multi-param `(x, i) => x.X = value` — strip params and subject
+
         if (l.Params.Count >= 2
-            && DescribeHelpers.IsParamRefAssignment(l, out var prop, out var value, out var op)
-            && op == "=")
-            return $"{prop} = {ValueDescriber.Describe(value)}";
-        return l.Params.Count == 1 ? ValueDescriber.Describe(l.Body) : l.Raw;
+            && l.IsParamRefAssignment(out var t2, out var v2, out var op2) && op2 == "=")
+            return $"{t2.Name} = {Value.Describe(v2)}";
+
+        return l.Params.Count == 1 ? Value.Describe(l.Body) : l.Raw;
+    }
+
+    private string Prefixed(Expr receiver, string memberName, string suffix)
+    {
+        var prefix = _skipSubjectRef ? "" : $"{((Identifier)receiver).Name}.";
+        return $"{prefix}{memberName}{suffix}";
     }
 }

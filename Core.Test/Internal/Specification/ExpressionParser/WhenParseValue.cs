@@ -39,6 +39,9 @@ public class WhenParseValue : Spec<string>
                 + ASecond<string>()
         """, "Name = a string + a second string")]
     [InlineData("() => The(delay)", "the delay")]
+    [InlineData("obj?.Name", "obj?.Name")]
+    [InlineData("obj?.Method()", "obj?.Method()")]
+    [InlineData("_ => _.Inner?.Value", "_.Inner?.Value")]
     public void ThenReturnDescription(string valueExpr, string expected)
     {
         When(_ => valueExpr.ParseValue())

@@ -18,12 +18,12 @@ internal static class PostfixRule
         {
             if (ts.Peek().Kind == TokenKind.Symbol && ts.Peek().Text is "." or "?.")
             {
-                string dot = ts.Peek().Text;
+                bool nullConditional = ts.Peek().Text == "?.";
                 ts.Advance();
                 if (ts.Peek().Kind != TokenKind.Word) break;
-                string name = (dot == "?." ? "?." : "") + ts.Peek().Text;
+                string name = ts.Peek().Text;
                 ts.Advance();
-                expr = new Member(ts.RawFrom(save), expr, name);
+                expr = new Member(ts.RawFrom(save), expr, name, nullConditional);
                 continue;
             }
             if (ts.IsSym("<") && TypeRefRule.CanBeGenericApplication(ts, expr)

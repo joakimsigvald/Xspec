@@ -19,11 +19,16 @@ internal sealed class ActualDescriber : Describer
         if (string.IsNullOrEmpty(_source)) return string.Empty;
         if (_source.EndsWith(".That", StringComparison.InvariantCultureIgnoreCase)) return string.Empty;
 
-        var tail = new List<string>();
+        var tail = new List<(string Name, bool NullCond)>();
         Expr cur = expr;
         while (true)
         {
-            if (cur is Member m) { tail.Insert(0, m.Name); cur = m.Target; continue; }
+            if (cur is Member m)
+            {
+                tail.Insert(0, (m.Name, m.NullConditional));
+                cur = m.Target;
+                continue;
+            }
             if (cur is not Call c) break;
 
             if (c.MethodName is "Then" or "And")
@@ -34,7 +39,8 @@ internal sealed class ActualDescriber : Describer
             }
             if (c.Target is Member memCall)
             {
-                tail.Insert(0, $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})");
+                var segment = $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})";
+                tail.Insert(0, (segment, memCall.NullConditional));
                 cur = memCall.Target;
                 continue;
             }
@@ -43,16 +49,29 @@ internal sealed class ActualDescriber : Describer
 
         if (tail.Count == 0) return Value.Describe(expr);
         var baseStr = cur is Identifier ii ? ii.Name : cur.Raw;
-        return string.Join('.', new[] { baseStr }.Concat(tail));
+        return baseStr + Sep(tail[0]) + StitchBare(tail);
     }
 
-    private static string Combine(string prefix, List<string> tail)
+    private static string Combine(string prefix, List<(string Name, bool NullCond)> tail)
     {
         if (tail.Count == 0) return prefix;
-        if (string.IsNullOrEmpty(prefix)) return string.Join('.', tail);
+        if (string.IsNullOrEmpty(prefix)) return StitchBare(tail);
         return IsOneWord(prefix)
-            ? $"{prefix}.{string.Join('.', tail)}"
-            : $"{prefix}'s {string.Join('.', tail)}";
+            ? prefix + Sep(tail[0]) + StitchBare(tail)
+            : $"{prefix}'s {StitchBare(tail)}";
+    }
+
+    private static string Sep((string _, bool NullCond) seg) => seg.NullCond ? "?." : ".";
+
+    private static string StitchBare(List<(string Name, bool NullCond)> tail)
+    {
+        var sb = new System.Text.StringBuilder(tail[0].Name);
+        for (int i = 1; i < tail.Count; i++)
+        {
+            sb.Append(Sep(tail[i]));
+            sb.Append(tail[i].Name);
+        }
+        return sb.ToString();
     }
 
     private static bool IsOneWord(string s)

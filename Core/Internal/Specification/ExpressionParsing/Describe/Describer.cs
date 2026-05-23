@@ -53,18 +53,24 @@ internal abstract class Describer
     /// <c>new T&lt;U&gt;()</c>, etc.); inits are always value-described.
     protected string DescribeNew(New n)
     {
-        var name = n.TypeName ?? string.Empty;
-        if (n.Init is null)
+        string head = NewHead(n);
+        string init = n.Init is null ? "" : $" {{ {DescribeAll(n.Init)} }}";
+        return head + init;
+    }
+
+    /// The <c>new TypeName(args)</c> or <c>new TypeName</c> portion before any
+    /// init block. When an init block is present, the user's literal text up to
+    /// the <c>{</c> is preserved verbatim so <c>new T()</c>, <c>new int[]</c>,
+    /// <c>new T&lt;U&gt;()</c> all render as written.
+    private string NewHead(New n)
+    {
+        if (n.Init is not null)
         {
-            var prefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
-            return $"{prefix}({DescribeAll(n.Args)})";
+            int braceIdx = n.Raw.IndexOf('{');
+            if (braceIdx > 0) return n.Raw[..braceIdx].TrimEnd();
         }
-        var initText = DescribeAll(n.Init);
-        int braceIdx = n.Raw.IndexOf('{');
-        if (braceIdx > 0) return $"{n.Raw[..braceIdx].TrimEnd()} {{ {initText} }}";
-        var initPrefix = string.IsNullOrEmpty(name) ? "new" : $"new {name}";
-        return n.Args.Count == 0
-            ? $"{initPrefix} {{ {initText} }}"
-            : $"{initPrefix}({DescribeAll(n.Args)}) {{ {initText} }}";
+        var prefix = string.IsNullOrEmpty(n.TypeName) ? "new" : $"new {n.TypeName}";
+        bool omitArgs = n.Init is not null && n.Args.Count == 0;
+        return omitArgs ? prefix : $"{prefix}({DescribeAll(n.Args)})";
     }
 }

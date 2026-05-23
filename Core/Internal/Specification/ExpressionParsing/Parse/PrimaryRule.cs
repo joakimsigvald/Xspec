@@ -53,16 +53,22 @@ internal static class PrimaryRule
     {
         ts.Advance();                                       // consume '('
         if (ts.AcceptSym(")")) return new TupleExpr(ts.RawFrom(save), []);
+
         var first = LambdaRule.Parse(ts);
-        if (!ts.AcceptSym(","))
-            return ts.AcceptSym(")") ? first : new Unknown(ts.Source.Trim());
+        if (ts.AcceptSym(")")) return first;                // parenthesised expression
+        if (!ts.AcceptSym(",")) return new Unknown(ts.Source.Trim());
+
+        var items = ParseTupleRest(ts, first);
+        return ts.AcceptSym(")") ? new TupleExpr(ts.RawFrom(save), items) : new Unknown(ts.Source.Trim());
+    }
+
+    /// Reads the remaining items of a tuple after the first item and its
+    /// trailing comma have been consumed. Stops when no further comma follows.
+    private static List<Expr> ParseTupleRest(TokenStream ts, Expr first)
+    {
         var items = new List<Expr> { first };
-        while (true)
-        {
-            items.Add(LambdaRule.Parse(ts));
-            if (!ts.AcceptSym(",")) break;
-        }
-        if (!ts.AcceptSym(")")) return new Unknown(ts.Source.Trim());
-        return new TupleExpr(ts.RawFrom(save), items);
+        do items.Add(LambdaRule.Parse(ts));
+        while (ts.AcceptSym(","));
+        return items;
     }
 }

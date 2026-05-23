@@ -33,9 +33,12 @@ internal sealed class ActualDescriber : Describer
                 break;
 
             if (c.MethodName is _then or _and)
-                return c.MethodName != _and || !c.Args.Any(ContainsMember)
-                    ? Combine(c.Args.Count >= 1 ? Value.Describe(c.Args[0]) : "", tail)
-                    : throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
+            {
+                if (c.MethodName == _and && c.Args.Any(ContainsMember))
+                    throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
+                var prefix = c.Args.Count >= 1 ? Value.Describe(c.Args[0]) : "";
+                return Combine(prefix, tail);
+            }
 
             if (c.Target is not Member memCall)
                 break;

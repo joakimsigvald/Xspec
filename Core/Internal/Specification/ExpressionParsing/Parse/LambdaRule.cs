@@ -41,14 +41,23 @@ internal static class LambdaRule
         => t.Kind == TokenKind.Symbol && t.Text is "," or ")" or "]" or "}";
 
     private static bool TryParams(TokenStream ts, out IReadOnlyList<string> ps)
+        => TrySingleParam(ts, out ps) || TryParenParams(ts, out ps);
+
+    /// Matches <c>x =&gt;</c> — a single bare identifier followed by <c>=&gt;</c>.
+    private static bool TrySingleParam(TokenStream ts, out IReadOnlyList<string> ps)
     {
         ps = [];
-        if (ts.Peek().Kind == TokenKind.Word && ts.Peek(1).Text == "=>")
-        {
-            ps = [ts.Peek().Text];
-            ts.Advance();
-            return true;
-        }
+        if (ts.Peek().Kind != TokenKind.Word || ts.Peek(1).Text != "=>") return false;
+        ps = [ts.Peek().Text];
+        ts.Advance();
+        return true;
+    }
+
+    /// Matches <c>(x, y, ...) =&gt;</c> — a parenthesised parameter list followed
+    /// by <c>=&gt;</c>. Backtracks fully on any mismatch.
+    private static bool TryParenParams(TokenStream ts, out IReadOnlyList<string> ps)
+    {
+        ps = [];
         if (!ts.IsSym("(")) return false;
         int save = ts.Pos;
         ts.Advance();

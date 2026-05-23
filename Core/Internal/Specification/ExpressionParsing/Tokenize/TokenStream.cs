@@ -19,6 +19,16 @@ internal sealed class TokenStream
 
     public Token Peek(int offset = 0) => _tokens[Math.Min(Pos + offset, _tokens.Count - 1)];
     public void Advance() => Pos++;
+
+    /// Runs <paramref name="scan"/> as a speculative read: any position
+    /// changes are rolled back before returning, so the caller sees the same
+    /// state as before the call.
+    public T PeekAhead<T>(Func<TokenStream, T> scan)
+    {
+        int save = Pos;
+        try { return scan(this); }
+        finally { Pos = save; }
+    }
     public bool IsSym(string s) => Peek().Kind == TokenKind.Symbol && Peek().Text == s;
     public bool IsWord(string s) => Peek().Kind == TokenKind.Word && Peek().Text == s;
     public bool AcceptSym(string s) { if (!IsSym(s)) return false; Advance(); return true; }

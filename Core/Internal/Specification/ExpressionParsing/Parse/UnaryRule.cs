@@ -29,20 +29,15 @@ internal static class UnaryRule
         return PostfixRule.Parse(ts);
     }
 
-    private static bool LooksLikeCast(TokenStream ts)
+    private static bool LooksLikeCast(TokenStream ts) => ts.PeekAhead(stream =>
     {
-        int save = ts.Pos;
-        try
-        {
-            ts.Advance();                                   // consume '('
-            if (ts.Peek().Kind != TokenKind.Word) return false;
-            ts.ScanBalanced(t => t.Kind == TokenKind.Symbol && t.Text is ")" or ",");
-            if (!ts.IsSym(")")) return false;
-            ts.Advance();                                   // consume ')'
-            var nxt = ts.Peek();
-            return nxt.Kind is TokenKind.Word or TokenKind.Number
-                || (nxt.Kind == TokenKind.Symbol && nxt.Text is "(" or "-" or "!" or "~");
-        }
-        finally { ts.Pos = save; }
-    }
+        stream.Advance();                                   // consume '('
+        if (stream.Peek().Kind != TokenKind.Word) return false;
+        stream.ScanBalanced(t => t.Kind == TokenKind.Symbol && t.Text is ")" or ",");
+        if (!stream.IsSym(")")) return false;
+        stream.Advance();                                   // consume ')'
+        var nxt = stream.Peek();
+        return nxt.Kind is TokenKind.Word or TokenKind.Number
+            || (nxt.Kind == TokenKind.Symbol && nxt.Text is "(" or "-" or "!" or "~");
+    });
 }

@@ -23,7 +23,9 @@ internal static class UnaryRule
             int castSave = ts.Pos;
             ts.Advance();                                   // consume '('
             string typeName = TypeRefRule.ConsumeTypeRef(ts);
-            if (ts.AcceptSym(")")) return new Cast(ts.RawFrom(castSave), typeName, Parse(ts));
+            if (ts.AcceptSym(")")) 
+                return new Cast(ts.RawFrom(castSave), typeName, Parse(ts));
+
             ts.Pos = castSave;
         }
         return PostfixRule.Parse(ts);
@@ -34,7 +36,9 @@ internal static class UnaryRule
         stream.Advance();                                   // consume '('
         if (stream.Peek().Kind != TokenKind.Word) return false;
         stream.ScanBalanced(t => t.Kind == TokenKind.Symbol && t.Text is ")" or ",");
-        if (!stream.IsSym(")")) return false;
+        if (!stream.IsSym(")")) 
+            return false;
+
         stream.Advance();                                   // consume ')'
         var nxt = stream.Peek();
         return nxt.Kind is TokenKind.Word or TokenKind.Number

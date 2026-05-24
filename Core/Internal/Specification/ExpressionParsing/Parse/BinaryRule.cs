@@ -38,7 +38,9 @@ internal static class BinaryRule
                 continue;
             }
             var matched = Match(ts.Peek(), minPrec);
-            if (matched is null) break;
+            if (matched is null) 
+                break;
+
             ts.Advance();
             int nextMin = matched.Value.RightAssoc ? matched.Value.Prec : matched.Value.Prec + 1;
             left = new Binary(ts.RawFrom(save), matched.Value.Op, left, Parse(ts, nextMin));

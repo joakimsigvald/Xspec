@@ -47,7 +47,9 @@ internal static class LambdaRule
     private static bool TrySingleParam(TokenStream ts, out IReadOnlyList<string> ps)
     {
         ps = [];
-        if (ts.Peek().Kind != TokenKind.Word || ts.Peek(1).Text != "=>") return false;
+        if (ts.Peek().Kind != TokenKind.Word || ts.Peek(1).Text != "=>") 
+            return false;
+
         ps = [ts.Peek().Text];
         ts.Advance();
         return true;
@@ -58,18 +60,28 @@ internal static class LambdaRule
     private static bool TryParenParams(TokenStream ts, out IReadOnlyList<string> ps)
     {
         ps = [];
-        if (!ts.IsSym("(")) return false;
+        if (!ts.IsSym("(")) 
+            return false;
+
         int save = ts.Pos;
         ts.Advance();
         var list = new List<string>();
         while (!ts.IsSym(")"))
         {
-            if (ts.Peek().Kind != TokenKind.Word) { ts.Pos = save; return false; }
+            if (ts.Peek().Kind != TokenKind.Word) 
+            { 
+                ts.Pos = save; 
+                return false; 
+            }
             list.Add(ts.Peek().Text);
             ts.Advance();
             if (!ts.AcceptSym(",")) break;
         }
-        if (!ts.AcceptSym(")") || !ts.IsSym("=>")) { ts.Pos = save; return false; }
+        if (!ts.AcceptSym(")") || !ts.IsSym("=>")) 
+        { 
+            ts.Pos = save; 
+            return false; 
+        }
         ps = list;
         return true;
     }

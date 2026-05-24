@@ -16,12 +16,33 @@ internal static class PostfixRule
         var expr = PrimaryRule.Parse(ts);
         while (true)
         {
-            if (TryParseMember(ts, save, ref expr)) continue;
-            if (TryParseGeneric(ts, save, ref expr)) continue;
-            if (TryParseInvocation(ts, save, ref expr, out bool callClosed)) { if (!callClosed) return expr; continue; }
-            if (TryParseIndexing(ts, save, ref expr, out bool idxClosed)) { if (!idxClosed) return expr; continue; }
-            if (TryParseWith(ts, save, ref expr, out bool withClosed)) { if (!withClosed) return expr; continue; }
-            if (TryParsePostfixOp(ts, save, ref expr)) continue;
+            if (TryParseMember(ts, save, ref expr)) 
+                continue;
+            if (TryParseGeneric(ts, save, ref expr)) 
+                continue;
+            if (TryParseInvocation(ts, save, ref expr, out bool callClosed)) 
+            { 
+                if (!callClosed) 
+                    return expr; 
+
+                continue; 
+            }
+            if (TryParseIndexing(ts, save, ref expr, out bool idxClosed)) 
+            { 
+                if (!idxClosed) 
+                    return expr; 
+
+                continue; 
+            }
+            if (TryParseWith(ts, save, ref expr, out bool withClosed)) 
+            { 
+                if (!withClosed) 
+                    return expr; 
+
+                continue; 
+            }
+            if (TryParsePostfixOp(ts, save, ref expr)) 
+                continue;
             break;
         }
         return expr;
@@ -29,10 +50,14 @@ internal static class PostfixRule
 
     private static bool TryParseMember(TokenStream ts, int save, ref Expr expr)
     {
-        if (ts.Peek().Kind != TokenKind.Symbol || ts.Peek().Text is not ("." or "?.")) return false;
+        if (ts.Peek().Kind != TokenKind.Symbol || ts.Peek().Text is not ("." or "?.")) 
+            return false;
+
         bool nullConditional = ts.Peek().Text == "?.";
         ts.Advance();
-        if (ts.Peek().Kind != TokenKind.Word) return false;
+        if (ts.Peek().Kind != TokenKind.Word) 
+            return false;
+
         string name = ts.Peek().Text;
         ts.Advance();
         expr = new Member(ts.RawFrom(save), expr, name, nullConditional);
@@ -41,8 +66,12 @@ internal static class PostfixRule
 
     private static bool TryParseGeneric(TokenStream ts, int save, ref Expr expr)
     {
-        if (!ts.IsSym("<") || !TypeRefRule.CanBeGenericApplication(ts, expr)) return false;
-        if (!TypeRefRule.TryParseGenericArgs(ts, out var typeArgs)) return false;
+        if (!ts.IsSym("<") || !TypeRefRule.CanBeGenericApplication(ts, expr)) 
+            return false;
+
+        if (!TypeRefRule.TryParseGenericArgs(ts, out var typeArgs)) 
+            return false;
+
         expr = new Generic(ts.RawFrom(save), expr, typeArgs);
         return true;
     }
@@ -56,10 +85,16 @@ internal static class PostfixRule
     private static bool TryParseWith(TokenStream ts, int save, ref Expr expr, out bool closed)
     {
         closed = false;
-        if (!ts.IsWord("with")) return false;
+        if (!ts.IsWord("with")) 
+            return false;
+
         int withSave = ts.Pos;
         ts.Advance();
-        if (!ts.AcceptSym("{")) { ts.Pos = withSave; return false; }
+        if (!ts.AcceptSym("{")) 
+        { 
+            ts.Pos = withSave; 
+            return false; 
+        }
         closed = ts.TryParse("}", out var inits);
         expr = new With(ts.RawFrom(save), expr, inits);
         return true;
@@ -67,7 +102,9 @@ internal static class PostfixRule
 
     private static bool TryParsePostfixOp(TokenStream ts, int save, ref Expr expr)
     {
-        if (ts.Peek().Kind != TokenKind.Symbol || ts.Peek().Text is not ("++" or "--" or "!")) return false;
+        if (ts.Peek().Kind != TokenKind.Symbol || ts.Peek().Text is not ("++" or "--" or "!")) 
+            return false;
+
         string op = ts.Peek().Text;
         ts.Advance();
         expr = new Postfix(ts.RawFrom(save), op, expr);
@@ -78,7 +115,9 @@ internal static class PostfixRule
         Func<string, Expr, IReadOnlyList<Expr>, Expr> build, ref Expr expr, out bool closed)
     {
         closed = false;
-        if (!ts.AcceptSym(open)) return false;
+        if (!ts.AcceptSym(open)) 
+            return false;
+
         closed = ts.TryParse(close, out var args);
         expr = build(ts.RawFrom(save), expr, args);
         return true;

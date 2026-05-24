@@ -16,7 +16,7 @@ internal abstract class Describer
 
     public abstract string Describe(Expr expr);
 
-    protected string DescribeAll(IEnumerable<Expr> exprs) =>
+    protected static string DescribeAll(IEnumerable<Expr> exprs) =>
         string.Join(", ", exprs.Select(Value.Describe));
 
     /// Render Xspec's <c>A&lt;T&gt;</c> / <c>An&lt;T&gt;</c> / <c>The&lt;T&gt;</c>

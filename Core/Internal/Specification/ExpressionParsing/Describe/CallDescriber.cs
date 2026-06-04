@@ -29,7 +29,7 @@ internal sealed class CallDescriber(bool skipSubjectRef) : Describer
         {
             0 => l.Raw,
             1 => DescribeOneArgLambda(l),
-            _ when l.AsParamRefAssign() is { Op: "=" } pa2 => $"{pa2.Target.Name} = {Value.Describe(pa2.Value)}",
+            _ when l.AsParamRefAssign() is { } pa2 => $"{pa2.Target.Name} {pa2.Op} {Value.Describe(pa2.Value)}",
             _ => l.Raw
         };
 

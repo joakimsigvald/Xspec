@@ -17,7 +17,7 @@ internal static class ConditionalRule
 
         var thenExpr = LambdaRule.Parse(ts);
         if (!ts.AcceptSym(":"))
-            return new Unknown(ts.Source.Trim());
+            return new Unknown(ts.RawFrom(save));
 
         return new Conditional(ts.RawFrom(save), cond, thenExpr, LambdaRule.Parse(ts));
     }

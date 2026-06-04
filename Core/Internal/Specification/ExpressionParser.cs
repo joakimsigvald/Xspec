@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Xspec.Internal.Specification.ExpressionParsing.Describe;
 using Xspec.Internal.Specification.ExpressionParsing.Parse;
+using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 
 namespace Xspec.Internal.Specification;
 
@@ -60,57 +61,11 @@ public static partial class ExpressionParser
     /// there's no literal here, advances one character.
     private static int Advance(string line, int i)
     {
-        if (line[i] == '\'')
-            return SkipEscapedLiteral(line, i + 1, close: '\'');
-
-        var (openQuote, verbatim) = FindStringOpen(line, i);
-        if (openQuote < 0) return i + 1;
-        return verbatim
-            ? SkipVerbatimString(line, openQuote + 1)
-            : SkipEscapedLiteral(line, openQuote + 1, close: '"');
-    }
-
-    /// Locates the opening <c>"</c> of a string at position <paramref name="i"/>,
-    /// optionally preceded by <c>@</c>/<c>$</c> prefix characters. Returns
-    /// (-1, false) if there's no string here.
-    private static (int OpenQuote, bool Verbatim) FindStringOpen(string line, int i)
-    {
-        int p = i;
-        bool verbatim = false;
-        while (p < line.Length && line[p] is '@' or '$')
-        {
-            if (line[p] == '@') verbatim = true;
-            p++;
-        }
-        return p < line.Length && line[p] == '"' ? (p, verbatim) : (-1, false);
-    }
-
-    /// Returns the position past the closing <paramref name="close"/>,
-    /// treating <c>\</c> as a two-char escape (regular strings, char literals).
-    private static int SkipEscapedLiteral(string line, int from, char close)
-    {
-        int i = from;
-        while (i < line.Length)
-        {
-            if (line[i] == '\\') { i = Math.Min(i + 2, line.Length); continue; }
-            if (line[i] == close) return i + 1;
-            i++;
-        }
-        return line.Length;
-    }
-
-    /// Returns the position past the closing <c>"</c>, treating <c>""</c> as
-    /// the in-string escape (verbatim string rule).
-    private static int SkipVerbatimString(string line, int from)
-    {
-        int i = from;
-        while (i < line.Length)
-        {
-            if (line[i] != '"') { i++; continue; }
-            if (i + 1 < line.Length && line[i + 1] == '"') { i += 2; continue; }
-            return i + 1;
-        }
-        return line.Length;
+        int charEnd = LiteralScanner.TryFindCharEnd(line, i);
+        if (charEnd >= 0) return charEnd;
+        int strEnd = LiteralScanner.TryFindStringEnd(line, i);
+        if (strEnd >= 0) return strEnd;
+        return i + 1;
     }
 
     [GeneratedRegex(@"(\r|\n)+")]

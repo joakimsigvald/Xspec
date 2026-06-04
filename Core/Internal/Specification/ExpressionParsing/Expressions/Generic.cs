@@ -7,6 +7,6 @@ internal sealed record Generic(string Raw, Expr Target, IReadOnlyList<Expr> Type
         $"{Target.AsPath()}<{string.Join(", ", TypeArgs.Select(t => t.Raw))}>";
 
     public override Mention? AsMention() => Target is Identifier id && TypeArgs.Count > 0
-        ? new Mention(this, id.Name, string.Join(", ", TypeArgs.Select(t => t.Raw)), null)
+        ? new Mention(Raw, id.Name, string.Join(", ", TypeArgs.Select(t => t.Raw)), null)
         : null;
 }

@@ -34,15 +34,15 @@ internal static class NewExprRule
 
         if (ts.AcceptSym("("))
         {
-            if (!ts.TryParse(")", out args)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse(")", out args)) return new Unknown(ts.RawFrom(save));
         }
         else if (ts.AcceptSym("["))
         {
-            if (!ts.TryParse("]", out args)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse("]", out args)) return new Unknown(ts.RawFrom(save));
         }
         if (ts.AcceptSym("{"))
         {
-            if (!ts.TryParse("}", out var initList)) return new Unknown(ts.Source.Trim());
+            if (!ts.TryParse("}", out var initList)) return new Unknown(ts.RawFrom(save));
             init = initList;
         }
         return new New(ts.RawFrom(save), typeName, args, init);

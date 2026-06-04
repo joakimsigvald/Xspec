@@ -35,11 +35,9 @@ internal abstract class Describer
             description = $"{head} {{ {DescribeAll(m.Constraints)} }}";
             return true;
         }
-        if (!ReferenceEquals(m.Root, expr)
-            && expr.Raw.Length > m.Root.Raw.Length
-            && expr.Raw.StartsWith(m.Root.Raw))
+        if (expr.Raw.Length > m.Boundary.Length && expr.Raw.StartsWith(m.Boundary))
         {
-            string suffix = expr.Raw[m.Root.Raw.Length..].TrimStart();
+            string suffix = expr.Raw[m.Boundary.Length..].TrimStart();
             if (!suffix.StartsWith('.')) return false;
             description = $"{head}'s {suffix[1..]}";
             return true;

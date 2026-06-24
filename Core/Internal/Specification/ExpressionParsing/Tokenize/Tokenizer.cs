@@ -69,41 +69,6 @@ internal static class Tokenizer
         return new Token(TokenKind.String, input[start..end], start, end);
     }
 
-    private static Token? ReadChar(char c, string input, int start)
-    {
-        if (c != '\'') 
-            return null;
-
-        int i = start + 1;
-        while (i < input.Length && input[i] != '\'')
-        {
-            if (input[i] == '\\' && i + 1 < input.Length) i++;
-            i++;
-        }
-        if (i < input.Length) i++;
-        return new Token(TokenKind.Char, input[start..i], start, i);
-    }
-
-    private static Token ReadSymbolToken(string input, int start)
-    {
-        string sym = ReadSymbol(input, start);
-        return new Token(TokenKind.Symbol, sym, start, start + sym.Length);
-    }
-
-    /// Reads any <c>$</c>/<c>@</c> prefix followed by the opening <c>"</c>.
-    /// Returns the position just after the opening quote (or -1 if no string).
-    private static (int ContentStart, bool Verbatim, bool Interpolated) ReadStringOpen(string input, int start)
-    {
-        int p = start;
-        bool verbatim = false, interpolated = false;
-        while (p < input.Length && input[p] is '$' or '@')
-        {
-            if (input[p] == '$') interpolated = true; else verbatim = true;
-            p++;
-        }
-        return p < input.Length && input[p] == '"' ? (p + 1, verbatim, interpolated) : (-1, false, false);
-    }
-
     /// Scans string body from <paramref name="from"/> to the closing <c>"</c>,
     /// respecting escape rules: <c>\</c> for non-verbatim, <c>""</c> for verbatim,
     /// and (if interpolated) skipping past balanced <c>{...}</c> holes.
@@ -144,6 +109,41 @@ internal static class Tokenizer
 
     private static bool IsDoubled(string input, int p, char ch)
         => p + 1 < input.Length && input[p + 1] == ch;
+
+    private static Token? ReadChar(char c, string input, int start)
+    {
+        if (c != '\'') 
+            return null;
+
+        int i = start + 1;
+        while (i < input.Length && input[i] != '\'')
+        {
+            if (input[i] == '\\' && i + 1 < input.Length) i++;
+            i++;
+        }
+        if (i < input.Length) i++;
+        return new Token(TokenKind.Char, input[start..i], start, i);
+    }
+
+    private static Token ReadSymbolToken(string input, int start)
+    {
+        string sym = ReadSymbol(input, start);
+        return new Token(TokenKind.Symbol, sym, start, start + sym.Length);
+    }
+
+    /// Reads any <c>$</c>/<c>@</c> prefix followed by the opening <c>"</c>.
+    /// Returns the position just after the opening quote (or -1 if no string).
+    private static (int ContentStart, bool Verbatim, bool Interpolated) ReadStringOpen(string input, int start)
+    {
+        int p = start;
+        bool verbatim = false, interpolated = false;
+        while (p < input.Length && input[p] is '$' or '@')
+        {
+            if (input[p] == '$') interpolated = true; else verbatim = true;
+            p++;
+        }
+        return p < input.Length && input[p] == '"' ? (p + 1, verbatim, interpolated) : (-1, false, false);
+    }
 
     private static string ReadSymbol(string input, int i)
     {

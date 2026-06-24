@@ -14,15 +14,15 @@ internal sealed class ValueDescriber : Describer
         if (TryDescribeMention(expr, out var mention)) return mention;
         return expr switch
         {
-            Lambda l when l.Params.Count <= 2 && l.AsParamRefAssign() is { Op: "=" } pa
-                => $"{pa.Target.Name} = {Describe(pa.Value)}",
+            Lambda l when l.Params.Count <= 2 && l.AsParamRefAssign() is { } pa
+                => $"{pa.Target.Name} {pa.Op} {Describe(pa.Value)}",
             Lambda l when l.Params.Count <= 1 && l.Body is With w => DescribeAll(w.Init),
             Lambda l when l.Params.Count <= 1 => Describe(l.Body),
             Lambda l => l.Raw,
             Assign a => $"{AssignTargetName(a.Target)} {a.Op} {Describe(a.Value)}",
             With w => DescribeAll(w.Init),
-            TupleExpr t => $"({string.Join(", ", t.Items.Select(Describe))})",
-            ArrayLit arr => $"[{string.Join(", ", arr.Items.Select(Describe))}]",
+            TupleExpr t => $"({DescribeAll(t.Items)})",
+            ArrayLit arr => $"[{DescribeAll(arr.Items)}]",
             Binary b => $"{Describe(b.Left)} {b.Op} {Describe(b.Right)}",
             Unary u => $"{u.Op}{Describe(u.Operand)}",
             Postfix p => $"{Describe(p.Operand)}{p.Op}",
@@ -32,18 +32,14 @@ internal sealed class ValueDescriber : Describer
             InterpolatedString s => s.Quoted,
             Literal lit => lit.Quoted,
             New n => DescribeNew(n),
-            Call c when IsDefaultOf(c) => $"default {Describe(c.Args[0])}",
-            Call c when c.Target is Identifier id && c.Args.Count >= 1
-                => $"{id.Name.AsWords()} {string.Join(", ", c.Args.Select(Describe))}",
-            Call c => $"{c.Target.AsPath()}({string.Join(", ", c.Args.Select(Describe))})",
+            Call c when c.IsDefaultOf() => $"default {Describe(c.Args[0])}",
+            Call c when c.AsNaturalLanguageCall() is { } verb => $"{verb.AsWords()} {DescribeAll(c.Args)}",
+            Call c => $"{c.Target.AsPath()}({DescribeAll(c.Args)})",
             Identifier id => id.Name,
             Unknown u => u.Raw,
             _ => expr.AsPath(),
         };
     }
-
-    private static bool IsDefaultOf(Call c)
-        => c.Target is Literal lit && lit.Raw == "default" && c.Args.Count == 1;
 
     private static string AssignTargetName(Expr target) => target switch
     {

@@ -20,7 +20,7 @@ internal static class PrimaryRule
             if (t.Text == "new") return NewExprRule.Parse(ts);
             ts.Advance();
             if (t.Text is "true" or "false" or "null" or "default") return new Literal(t.Text);
-            return new Identifier(t.Text, t.Text);
+            return new Identifier(t.Text);
         }
         if (t.Kind is TokenKind.Number or TokenKind.Char)
         {
@@ -40,7 +40,7 @@ internal static class PrimaryRule
             if (t.Text == "[")
             {
                 ts.Advance();
-                if (!ts.TryParse("]", out var items)) return new Unknown(ts.Source.Trim());
+                if (!ts.TryParse("]", out var items)) return new Unknown(ts.RawFrom(save));
                 return new ArrayLit(ts.RawFrom(save), items);
             }
             if (t.Text is "-" or "+" or "!" or "~") return UnaryRule.Parse(ts);
@@ -49,26 +49,12 @@ internal static class PrimaryRule
         return new Unknown(t.Text);
     }
 
+    /// Empty <c>()</c> is the unit tuple; a single item in parens unwraps to
+    /// the inner expression; two or more becomes a <see cref="TupleExpr"/>.
     private static Expr ParseParenOrTuple(TokenStream ts, int save)
     {
         ts.Advance();                                       // consume '('
-        if (ts.AcceptSym(")")) return new TupleExpr(ts.RawFrom(save), []);
-
-        var first = LambdaRule.Parse(ts);
-        if (ts.AcceptSym(")")) return first;                // parenthesised expression
-        if (!ts.AcceptSym(",")) return new Unknown(ts.Source.Trim());
-
-        var items = ParseTupleRest(ts, first);
-        return ts.AcceptSym(")") ? new TupleExpr(ts.RawFrom(save), items) : new Unknown(ts.Source.Trim());
-    }
-
-    /// Reads the remaining items of a tuple after the first item and its
-    /// trailing comma have been consumed. Stops when no further comma follows.
-    private static List<Expr> ParseTupleRest(TokenStream ts, Expr first)
-    {
-        var items = new List<Expr> { first };
-        do items.Add(LambdaRule.Parse(ts));
-        while (ts.AcceptSym(","));
-        return items;
+        if (!ts.TryParse(")", out var items)) return new Unknown(ts.RawFrom(save));
+        return items.Count == 1 ? items[0] : new TupleExpr(ts.RawFrom(save), items);
     }
 }

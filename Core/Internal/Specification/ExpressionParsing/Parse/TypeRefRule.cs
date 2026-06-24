@@ -37,7 +37,7 @@ internal static class TypeRefRule
             while (true)
             {
                 var typeText = ConsumeTypeRef(ts);
-                list.Add(new Identifier(typeText, typeText));
+                list.Add(new Identifier(typeText));
                 if (!ts.AcceptSym(",")) break;
             }
         }

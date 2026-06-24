@@ -32,30 +32,48 @@ internal static class Tokenizer
     private static Token ReadNext(string input, int start)
     {
         char c = input[start];
-        if (char.IsLetter(c) || c == '_') return ReadWord(input, start);
-        if (char.IsDigit(c)) return ReadNumber(input, start);
-        if (TryReadString(input, start, out int strEnd))
-            return new Token(TokenKind.String, input[start..strEnd], start, strEnd);
-        if (c == '\'') return ReadChar(input, start);
-        return ReadSymbolToken(input, start);
+        return ReadWord(c, input, start)
+            ?? ReadNumber(c, input, start)
+            ?? ReadString(c, input, start)
+            ?? ReadChar(c, input, start)
+            ?? ReadSymbolToken(input, start);
     }
 
-    private static Token ReadWord(string input, int start)
+    private static Token? ReadWord(char c, string input, int start)
     {
+        if (!char.IsLetter(c) && c != '_') 
+            return null;
+
         int i = start;
         while (i < input.Length && (char.IsLetterOrDigit(input[i]) || input[i] == '_')) i++;
         return new Token(TokenKind.Word, input[start..i], start, i);
     }
 
-    private static Token ReadNumber(string input, int start)
+    private static Token? ReadNumber(char c, string input, int start)
     {
+        if (!char.IsDigit(c)) 
+            return null;
+
         int i = start;
         while (i < input.Length && (char.IsLetterOrDigit(input[i]) || input[i] is '.' or '_')) i++;
         return new Token(TokenKind.Number, input[start..i], start, i);
     }
 
-    private static Token ReadChar(string input, int start)
+    private static Token? ReadString(char c, string input, int start)
     {
+        var (ContentStart, Verbatim, Interpolated) = ReadStringOpen(input, start);
+        if (ContentStart < 0) 
+            return null;
+
+        int end = SkipStringContent(input, ContentStart, Verbatim, Interpolated);
+        return new Token(TokenKind.String, input[start..end], start, end);
+    }
+
+    private static Token? ReadChar(char c, string input, int start)
+    {
+        if (c != '\'') 
+            return null;
+
         int i = start + 1;
         while (i < input.Length && input[i] != '\'')
         {
@@ -70,14 +88,6 @@ internal static class Tokenizer
     {
         string sym = ReadSymbol(input, start);
         return new Token(TokenKind.Symbol, sym, start, start + sym.Length);
-    }
-
-    private static bool TryReadString(string input, int start, out int end)
-    {
-        var open = ReadStringOpen(input, start);
-        if (open.ContentStart < 0) { end = start; return false; }
-        end = SkipStringContent(input, open.ContentStart, open.Verbatim, open.Interpolated);
-        return true;
     }
 
     /// Reads any <c>$</c>/<c>@</c> prefix followed by the opening <c>"</c>.

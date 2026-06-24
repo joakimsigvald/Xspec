@@ -208,38 +208,6 @@ public interface ITestPipeline<TSUT, TResult>
         [CallerArgumentExpression(nameof(delayBeforeNextMs))] string? delayExpr = null);
 
     /// <summary>
-    /// Provide a Setup method that will be called before the method-under-test,
-    /// Setup methods are executed in the opposite order that they are provided
-    /// </summary>
-    /// <param name="setUp">the method to call as setup before executing the method-under-test</param>
-    /// <param name="delayBeforeNextMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="setUpExpr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns>A continuation to provide further arrangement to the test-pipeline</returns>
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    ITestPipeline<TSUT, TResult> After(
-        Action<TSUT> setUp,
-        Func<int>? delayBeforeNextMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? setUpExpr = null,
-        [CallerArgumentExpression(nameof(delayBeforeNextMs))] string? delayExpr = null);
-
-    /// <summary>
-    /// Provide a Setup method that will be called before the method-under-test.
-    /// Setup methods are executed in the opposite order that they are provided
-    /// </summary>
-    /// <param name="setUp">the method to call as setup before executing the method-under-test</param>
-    /// <param name="delayBeforeNextMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="setUpExpr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns>A continuation to provide further arrangement to the test-pipeline</returns>
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    ITestPipeline<TSUT, TResult> After(
-        Func<TSUT, Task> setUp,
-        Func<int>? delayBeforeNextMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? setUpExpr = null,
-        [CallerArgumentExpression(nameof(delayBeforeNextMs))] string? delayExpr = null);
-
-    /// <summary>
     /// Provide a Teardown method that will be called on Dispose of the test class/fixture.
     /// Teardown methods are executed in the order that they are provided.
     /// </summary>
@@ -257,28 +225,6 @@ public interface ITestPipeline<TSUT, TResult>
     /// <param name="tearDownExpr"></param>
     /// <returns>A continuation to provide further arrangement to the test-pipeline</returns>
     ITestPipeline<TSUT, TResult> Until(Func<TSUT, Task> tearDown,
-        [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null);
-
-    /// <summary>
-    /// Provide a Teardown method that will be called on Dispose of the test class/fixture,
-    /// Teardown methods are executed in the order that they are provided
-    /// </summary>
-    /// <param name="tearDown">the method to call as teardown after executing the method-under-test</param>
-    /// <param name="tearDownExpr"></param>
-    /// <returns>A continuation to provide further arrangement to the test-pipeline</returns>
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    ITestPipeline<TSUT, TResult> Before(Action<TSUT> tearDown,
-        [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null);
-
-    /// <summary>
-    /// Provide a Teardown method that will be called on Dispose of the test class/fixture,
-    /// Teardown methods are executed in the order that they are provided
-    /// </summary>
-    /// <param name="tearDown">the method to call as teardown after executing the method-under-test</param>
-    /// <param name="tearDownExpr"></param>
-    /// <returns>A continuation to provide further arrangement to the test-pipeline</returns>
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    ITestPipeline<TSUT, TResult> Before(Func<TSUT, Task> tearDown,
         [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null);
 
     /// <summary>

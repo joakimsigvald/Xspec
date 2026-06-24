@@ -143,59 +143,6 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         return PrependSetUp(setUp, expr!);
     }
 
-    /// <summary>
-    /// Provide the tearDown to the test-pipeline
-    /// </summary>
-    /// <param name="tearDown"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> Before(
-        Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
-        => Until(tearDown, expr);
-
-    /// <summary>
-    /// Provide the tearDown to the test-pipeline
-    /// </summary>
-    /// <param name="tearDown"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> Before(
-        Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
-        => Until(tearDown, expr);
-
-    /// <summary>
-    /// Provide the setUp to the test-pipeline
-    /// </summary>
-    /// <param name="setUp"></param>
-    /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="expr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns></returns>
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> After(
-        Action<TSUT> setUp,
-        Func<int>? delayMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? expr = null,
-        [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
-        => Having(setUp, delayMs, expr, delayExpr);
-
-    /// <summary>
-    /// Provide the setUp to the test-pipeline
-    /// </summary>
-    /// <param name="setUp"></param>
-    /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="expr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns></returns>
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> After(
-        Func<TSUT, Task> setUp, Func<int>? delayMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? expr = null,
-        [CallerArgumentExpression(nameof(delayMs))] string? delayExpr = null)
-        => Having(setUp, delayMs, expr, delayExpr);
-
     private void AddDelay(Func<int>? delayMs, string delayExpr)
     {
         if (delayMs is null)

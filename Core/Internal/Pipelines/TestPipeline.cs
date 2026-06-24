@@ -71,32 +71,6 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null)
         => Parent.Until(tearDown, tearDownExpr!);
 
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> After(
-        Action<TSUT> setUp,
-        Func<int>? delayBeforeNextMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? setUpExpr = null,
-        [CallerArgumentExpression(nameof(delayBeforeNextMs))] string? delayExpr = null)
-        => Parent.Having(setUp, delayBeforeNextMs, setUpExpr!, delayExpr!);
-
-    [Obsolete("Use Having instead. After will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> After(
-        Func<TSUT, Task> setUp,
-        Func<int>? delayBeforeNextMs = null,
-        [CallerArgumentExpression(nameof(setUp))] string? setUpExpr = null,
-        [CallerArgumentExpression(nameof(delayBeforeNextMs))] string? delayExpr = null)
-        => Parent.Having(setUp, delayBeforeNextMs, setUpExpr!, delayExpr!);
-
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> Before(
-        Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null)
-        => Parent.Until(tearDown, tearDownExpr!);
-
-    [Obsolete("Use Until instead. Before will be removed in a future release.")]
-    public ITestPipeline<TSUT, TResult> Before(
-        Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? tearDownExpr = null)
-        => Parent.Until(tearDown, tearDownExpr!);
-
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         Action<TValue> setup,
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null) where TValue : class

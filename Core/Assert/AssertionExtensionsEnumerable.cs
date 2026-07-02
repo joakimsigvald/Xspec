@@ -19,7 +19,7 @@ public static class AssertionExtensionsEnumerable
     /// <param name="expectedExpr"></param>
     /// <returns></returns>
     public static ContinueWith<IsEnumerableContinuation<TItem>> Is<TItem>(
-        this IEnumerable<TItem> actual,
+        this IEnumerable<TItem>? actual,
         IEnumerable<TItem> expected,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)

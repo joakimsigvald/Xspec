@@ -17,8 +17,8 @@ public static class AssertionExtensionsObject
     /// <param name="expectedExpr"></param>
     /// <returns>Continuation for further assertions of the object</returns>
     public static ContinueWith<IsObject> Is(
-        this object actual,
-        object expected,
+        this object? actual,
+        object? expected,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
@@ -48,7 +48,7 @@ public static class AssertionExtensionsObject
     /// <param name="actualExpr"></param>
     /// <returns></returns>
     public static IsObject Is(
-        this object actual,
+        this object? actual,
         Ignore _ = default,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         => IsObject.Create(actual, actualExpr!);
@@ -61,7 +61,7 @@ public static class AssertionExtensionsObject
     /// <param name="actualExpr"></param>
     /// <returns></returns>
     public static HasObject Has(
-        this object actual,
+        this object? actual,
         Ignore _ = default,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         => HasObject.Create(actual, actualExpr!);

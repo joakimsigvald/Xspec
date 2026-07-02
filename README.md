@@ -1,4 +1,4 @@
-﻿# Xspec — Fluent, specification-style unit testing for .NET
+# Xspec — Fluent, specification-style unit testing for .NET
 
 Xspec is a fluent, specification-oriented testing framework for .NET that builds on xUnit.
 It follows the Given–When–Then pattern and integrates seamlessly with Moq.

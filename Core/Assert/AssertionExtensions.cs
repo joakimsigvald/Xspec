@@ -77,7 +77,7 @@ public static class AssertionExtensions
     /// <param name="conditionExpr">Provided by runtime</param>
     /// <returns></returns>
     public static ContinueWithActual<TActual> Has<TActual>(
-        this TActual actual, Func<TActual?, bool> condition,
+        this TActual actual, Func<TActual, bool> condition,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
         [CallerArgumentExpression(nameof(condition))] string? conditionExpr = null)
     {

@@ -1,6 +1,5 @@
 ﻿using Xspec.Continuations;
 using Xspec.Internal.Pipelines;
-using Xspec.Internal.Specification;
 
 namespace Xspec;
 

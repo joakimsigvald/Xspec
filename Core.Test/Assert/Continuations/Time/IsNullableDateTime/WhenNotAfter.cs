@@ -8,14 +8,14 @@ public class WhenNotAfter : Spec
     [InlineData(0)]
     [InlineData(1)]
     public void GivenNotAfter_ThenDoesNotThrow(int days)
-        => A<DateTime?>().Is().not.After(The<DateTime?>().Value.AddDays(days))
-        .and.CloseTo(The<DateTime?>().Value, TimeSpan.Zero);
+        => A<DateTime?>().Is().not.After(The<DateTime?>()!.Value.AddDays(days))
+        .and.CloseTo(The<DateTime?>()!.Value, TimeSpan.Zero);
 
     [Fact]
     public void GivenFail_ThenGetException()
     {
         var a = A<DateTime?>();
-        var b = a.Value.AddDays(-1);
+        var b = a!.Value.AddDays(-1);
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => a.Is().not.After(b));
         ex.HasMessage($"Expected a to not occur after {b} but found {a}", "A is not after b");
     }

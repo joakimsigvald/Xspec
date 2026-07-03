@@ -37,8 +37,14 @@ internal abstract class Describer
         }
         if (expr.Raw.Length > m.Boundary.Length && expr.Raw.StartsWith(m.Boundary))
         {
-            string suffix = expr.Raw[m.Boundary.Length..].TrimStart();
-            if (!suffix.StartsWith('.')) return false;
+            string suffix = expr.Raw[m.Boundary.Length..].TrimStart().TrimStart('!');
+            if (suffix.Length == 0)
+            {
+                description = head;
+                return true;
+            }
+            if (!suffix.StartsWith('.')) 
+                return false;
             description = $"{head}'s {suffix[1..]}";
             return true;
         }

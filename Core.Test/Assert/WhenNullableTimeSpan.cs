@@ -20,8 +20,8 @@ public class WhenNullableTimeSpan : Spec<TimeSpan?>
     [Fact]
     public void IsSameNotNullable()
     {
-        When(_ => A(_)).Then().Result.Is(The<TimeSpan?>().Value)
-            .and.CloseTo(The<TimeSpan?>().Value, TimeSpan.Zero);
+        When(_ => A(_)).Then().Result.Is(The<TimeSpan?>()!.Value)
+            .and.CloseTo(The<TimeSpan?>()!.Value, TimeSpan.Zero);
         Specification.Is(
             """
             When a _

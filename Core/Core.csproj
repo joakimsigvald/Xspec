@@ -7,6 +7,7 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<AssemblyName>Xspec</AssemblyName>
 		<RootNamespace>Xspec</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

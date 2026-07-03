@@ -4,18 +4,12 @@ namespace Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 /// Token cursor over a source string. Holds the parse position and exposes
 /// low-level primitives used by every grammar rule.
 /// </summary>
-internal sealed class TokenStream
+internal sealed class TokenStream(string source)
 {
-    public string Source { get; }
-    private readonly List<Token> _tokens;
+    public string Source { get; } = source;
+    private readonly List<Token> _tokens = Tokenizer.Tokenize(source);
     public int Pos { get; set; }
     public int Count => _tokens.Count;
-
-    public TokenStream(string source)
-    {
-        Source = source;
-        _tokens = Tokenizer.Tokenize(source);
-    }
 
     public Token Peek(int offset = 0) => _tokens[Math.Min(Pos + offset, _tokens.Count - 1)];
     public void Advance() => Pos++;

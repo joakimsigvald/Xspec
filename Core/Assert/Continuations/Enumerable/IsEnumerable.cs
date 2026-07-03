@@ -46,7 +46,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
         return Assert(expectedStr, NotNullAnd(list => Xunit.Assert.Distinct(list.Select(selector))), expectedStr).And();
     }
 
-    private string ExpressExpectation(string selectorStr) => $"by {selectorStr}";
+    private static string ExpressExpectation(string selectorStr) => $"by {selectorStr}";
 
     /// <summary>
     /// Assert that the enumerable is null

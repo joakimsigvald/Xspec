@@ -34,7 +34,7 @@ internal static class Tokenizer
         char c = input[start];
         return ReadWord(c, input, start)
             ?? ReadNumber(c, input, start)
-            ?? ReadString(c, input, start)
+            ?? ReadString(input, start)
             ?? ReadChar(c, input, start)
             ?? ReadSymbolToken(input, start);
     }
@@ -59,7 +59,7 @@ internal static class Tokenizer
         return new Token(TokenKind.Number, input[start..i], start, i);
     }
 
-    private static Token? ReadString(char c, string input, int start)
+    private static Token? ReadString(string input, int start)
     {
         var (ContentStart, Verbatim, Interpolated) = ReadStringOpen(input, start);
         if (ContentStart < 0) 

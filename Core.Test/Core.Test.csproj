@@ -4,6 +4,7 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<AssemblyName>Xspec.Test</AssemblyName>
 		<RootNamespace>Xspec.Test</RootNamespace>
 		<OutputType>Exe</OutputType>
@@ -11,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MongoDB.Driver" Version="3.8.0" />
+		<PackageReference Include="MongoDB.Driver" Version="3.9.0" />
 		<PackageReference Include="xunit.v3" Version="3.2.2" />
 	</ItemGroup>
 

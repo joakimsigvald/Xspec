@@ -23,7 +23,7 @@ internal abstract class Describer
     /// factory shapes. Three sub-cases: plain mention, with constraints, or
     /// with member-access drilldown. Detection lives on <see cref="Expr.AsMention"/>;
     /// this method shapes the result into text.
-    protected bool TryDescribeMention(Expr expr, out string description)
+    protected static bool TryDescribeMention(Expr expr, out string description)
     {
         description = string.Empty;
         if (expr.AsMention() is not { } m) return false;
@@ -55,7 +55,7 @@ internal abstract class Describer
     /// Render a <c>new</c> expression. With an init block, the user-written
     /// prefix is preserved verbatim (covers <c>new T()</c>, <c>new int[]</c>,
     /// <c>new T&lt;U&gt;()</c>, etc.); inits are always value-described.
-    protected string DescribeNew(New n)
+    protected static string DescribeNew(New n)
     {
         string head = NewHead(n);
         string init = n.Init is null ? "" : $" {{ {DescribeAll(n.Init)} }}";
@@ -66,7 +66,7 @@ internal abstract class Describer
     /// init block. When an init block is present, the user's literal text up to
     /// the <c>{</c> is preserved verbatim so <c>new T()</c>, <c>new int[]</c>,
     /// <c>new T&lt;U&gt;()</c> all render as written.
-    private string NewHead(New n)
+    private static string NewHead(New n)
     {
         if (n.Init is not null)
         {

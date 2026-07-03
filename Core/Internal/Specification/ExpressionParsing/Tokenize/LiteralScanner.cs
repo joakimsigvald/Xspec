@@ -13,9 +13,9 @@ internal static class LiteralScanner
     /// quote. Returns -1 if there is no string literal here.
     public static int TryFindStringEnd(string input, int start)
     {
-        var open = ReadStringOpen(input, start);
-        if (open.ContentStart < 0) return -1;
-        return SkipStringContent(input, open.ContentStart, open.Verbatim, open.Interpolated);
+        var (ContentStart, Verbatim, Interpolated) = ReadStringOpen(input, start);
+        if (ContentStart < 0) return -1;
+        return SkipStringContent(input, ContentStart, Verbatim, Interpolated);
     }
 
     /// If a char literal opens at <paramref name="start"/>, returns the

@@ -60,7 +60,7 @@ public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
     {
         var fitInLine = text[..(maxLineLength - _currentLineLength)];
         var nextChar = ' ';
-        var first = new string(fitInLine
+        char[] chars = [..fitInLine
             .Reverse()
             .SkipWhile(c =>
             {
@@ -68,9 +68,8 @@ public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
                 nextChar = c;
                 return !possibleLineBreak;
             })
-            .Reverse()
-            .ToArray())
-            .TrimEnd();
+            .Reverse()];
+        var first = new string(chars).TrimEnd();
         if (string.IsNullOrEmpty(first))
             first = fitInLine.Length < maxLineLength / 2 ? string.Empty : fitInLine;
         var rest = text[first.Length..].Trim();

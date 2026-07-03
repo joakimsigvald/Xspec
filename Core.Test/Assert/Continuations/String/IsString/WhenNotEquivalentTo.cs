@@ -9,7 +9,7 @@ public class WhenNotEquivalentTo : StringSpec
     [InlineData("", null)]
     [InlineData("", "abc")]
     [InlineData("abc", "abcd")]
-    public void GivenNotEquivalentToString_ThenDoesNotThrow(string actual, string expected)
+    public void GivenNotEquivalentToString_ThenDoesNotThrow(string? actual, string? expected)
         => actual.Is().not.EquivalentTo(expected).and.not.EquivalentTo(expected);
 
     [Theory]
@@ -17,7 +17,7 @@ public class WhenNotEquivalentTo : StringSpec
     [InlineData("", "")]
     [InlineData("abc", "abc")]
     [InlineData("abc", "ABC")]
-    public void GivenEquivalentToString_ThenGetException(string actual, string expected)
+    public void GivenEquivalentToString_ThenGetException(string? actual, string? expected)
     {
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => actual.Is().not.EquivalentTo(expected));
         ex.HasMessage($"Expected actual to not be equivalent to {Describe(expected)} but found {Describe(actual)}",

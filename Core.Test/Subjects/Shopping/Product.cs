@@ -2,7 +2,7 @@
 
 public class Product
 {
-    public string PartNo { get; set; }
-    public string Name { get; set; }
-    public string EanCode { get; set; }
+    public string PartNo { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string EanCode { get; set; } = null!;
 }

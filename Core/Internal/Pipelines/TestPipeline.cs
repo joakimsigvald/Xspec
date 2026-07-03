@@ -20,12 +20,12 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
         => Parent.When(act, actExpr!);
 
     public ITestPipeline<TSUT, TResult> When(
-        Func<TSUT, TResult> act,
+        Func<TSUT, TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? actExpr = null)
         => Parent.When(act, actExpr!);
 
     public ITestPipeline<TSUT, TResult> When(
-        Func<TResult> act,
+        Func<TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? actExpr = null)
         => Parent.When(act, actExpr!);
 

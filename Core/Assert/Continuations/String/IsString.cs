@@ -13,7 +13,7 @@ public record IsString : StringConstraint<IsStringContinuation>
     /// actual.Should().BeEquivalentTo(expected)
     /// </summary>
     public ContinueWith<IsStringContinuation> Like(
-        string expected,
+        string? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(
             Describe(expected),
@@ -26,7 +26,7 @@ public record IsString : StringConstraint<IsStringContinuation>
     /// actual.Should().BeEquivalentTo(expected)
     /// </summary>
     public ContinueWith<IsStringContinuation> EquivalentTo(
-        string expected,
+        string? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(
             Describe(expected),
@@ -74,7 +74,7 @@ public record IsString : StringConstraint<IsStringContinuation>
     /// <param name="expectedExpr"></param>
     /// <returns></returns>
     public ContinueWith<IsStringContinuation> Not(
-        string expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        string? expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(
             Describe(expected),
             actual => NotEqual(actual, expected), 

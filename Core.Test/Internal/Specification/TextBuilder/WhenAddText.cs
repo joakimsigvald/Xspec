@@ -69,7 +69,7 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
         ABC<567890
            1>
         """)]
-    public void ThenReturnDescription(string text, string expected)
+    public void ThenReturnDescription(string? text, string expected)
         => Using(text).Then().Result.Is(expected);
 
     [Theory]
@@ -80,6 +80,6 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
            901
         """)]
     public void GivenHasTextAndNextWordDoesNotFit_ThenBreakBeforeWord(
-        string existingText, string newText, string expected)
+        string? existingText, string? newText, string expected)
         => Having(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected);
 }

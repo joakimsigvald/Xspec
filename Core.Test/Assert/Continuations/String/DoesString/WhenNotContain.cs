@@ -11,7 +11,7 @@ public class WhenNotContain : StringSpec
     [InlineData("", "abc")]
     [InlineData("abc", "abcd")]
     [InlineData("Abc", "abc")]
-    public void GivenNotContainString_ThenDoesNotThrow(string actual, string expected) 
+    public void GivenNotContainString_ThenDoesNotThrow(string? actual, string? expected)
         => actual.Does().not.Contain(expected).and.not.Contain(expected);
 
     [Theory]

@@ -53,25 +53,25 @@ public class ModelLevel4
 
 public class ModelLevel3
 {
-    public ModelLevel4 Sub3 { get; set; }
+    public ModelLevel4 Sub3 { get; set; } = null!;
 }
 
 public class ModelLevel2
 {
-    public ModelLevel3 Sub2 { get; set; }
+    public ModelLevel3 Sub2 { get; set; } = null!;
 }
 
 public class ModelLevel1
 {
-    public ModelLevel2 Sub1 { get; set; }
+    public ModelLevel2 Sub1 { get; set; } = null!;
 }
 
 public class WrappedModel
 {
-    public Lazy<ModelLevel2> LazySub { get; set; }
+    public Lazy<ModelLevel2> LazySub { get; set; } = null!;
 }
 
 public class SelfReferencingModel
 {
-    public SelfReferencingModel Self { get; set; }
+    public SelfReferencingModel Self { get; set; } = null!;
 }

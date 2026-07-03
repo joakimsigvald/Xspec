@@ -5,7 +5,7 @@ namespace Xspec.Test.Tests.ShoppingServiceAsync;
 
 public abstract class WhenPlaceOrder : Spec<Subjects.ShoppingServiceAsync, object>
 {
-    protected ShoppingCart Cart;
+    protected ShoppingCart Cart = null!;
 
     protected WhenPlaceOrder() => When(_ => _.PlaceOrder(Cart!));
 

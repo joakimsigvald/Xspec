@@ -20,7 +20,7 @@ public record IsStringContinuation : IsString
     /// <param name="expectedExpr"></param>
     /// <returns>Continuation for further assertions of the string</returns>
     public ContinueWith<IsStringContinuation> Is(
-        string expected,
+        string? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
-        => Actual.Is(actualExpr: ActualExpr).Value(expected, expectedExpr!);
+        => Actual.Is(actualExpr: ActualExpr).Value(expected!, expectedExpr!);
 }

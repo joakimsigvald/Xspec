@@ -29,6 +29,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 
     internal Pipeline<TSUT, TResult> Pipeline { get; } = new();
 
+    /// <summary>
+    /// Initialize the test pipeline and specification generation
+    /// </summary>
     protected Spec() => _lazySpecification = new(Pipeline.Specification.ToString);
 
     /// <summary>

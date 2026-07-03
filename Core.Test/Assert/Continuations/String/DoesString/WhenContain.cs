@@ -18,7 +18,7 @@ public class WhenContain : StringSpec
     [InlineData("", "abc")]
     [InlineData("abc", "abcd")]
     [InlineData("abc", "Abc")]
-    public void GivenNotContainString_ThenGetException(string actual, string expected)
+    public void GivenNotContainString_ThenGetException(string? actual, string? expected)
     {
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => actual.Does().Contain(expected));
         ex.HasMessage($"Expected actual to contain {Describe(expected)} but found {Describe(actual)}", "Actual contains expected");

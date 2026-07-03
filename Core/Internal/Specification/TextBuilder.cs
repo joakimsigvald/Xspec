@@ -43,7 +43,7 @@ public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
         return _sb;
     }
 
-    internal StringBuilder AddText(string text)
+    internal StringBuilder AddText(string? text)
     {
         if (text is null)
             return _sb;

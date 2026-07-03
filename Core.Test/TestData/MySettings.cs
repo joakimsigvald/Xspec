@@ -2,5 +2,5 @@
 
 public class MySettings : IMySettings
 {
-    public string ConnectionString { get; set; }
+    public string ConnectionString { get; set; } = null!;
 }

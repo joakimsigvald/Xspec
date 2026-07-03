@@ -18,7 +18,7 @@ public class WhenStartWith : StringSpec
     [InlineData("", "abc")]
     [InlineData("abc", "bc")]
     [InlineData("abc", "Ab")]
-    public void GivenNotStartWithString_ThenGetException(string actual, string expected)
+    public void GivenNotStartWithString_ThenGetException(string? actual, string? expected)
     {
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => actual.Does().StartWith(expected));
         ex.HasMessage($"Expected actual to start with {Describe(expected)} but found {Describe(actual)}",

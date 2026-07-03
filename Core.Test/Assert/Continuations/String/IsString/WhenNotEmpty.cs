@@ -7,7 +7,7 @@ public class WhenNotEmpty : StringSpec
     [Theory]
     [InlineData(null)]
     [InlineData("abc")]
-    public void GivenNotEmpty_ThenDoesNotThrow(string actual)
+    public void GivenNotEmpty_ThenDoesNotThrow(string? actual)
         => actual.Is().not.Empty().and.not.Empty();
 
     [Theory]

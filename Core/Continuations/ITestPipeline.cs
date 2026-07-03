@@ -128,7 +128,7 @@ public interface ITestPipeline<TSUT, TResult>
     /// <param name="act"></param>
     /// <param name="actExpr"></param>
     /// <returns>A continuation for providing further arrangement, or executing the test</returns>
-    ITestPipeline<TSUT, TResult> When(Func<TSUT, TResult> act,
+    ITestPipeline<TSUT, TResult> When(Func<TSUT, TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? actExpr = null);
 
     /// <summary>
@@ -137,7 +137,7 @@ public interface ITestPipeline<TSUT, TResult>
     /// <param name="act"></param>
     /// <param name="actExpr"></param>
     /// <returns>A continuation for providing further arrangement, or executing the test</returns>
-    ITestPipeline<TSUT, TResult> When(Func<TResult> act,
+    ITestPipeline<TSUT, TResult> When(Func<TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? actExpr = null);
 
     /// <summary>

@@ -26,7 +26,7 @@ public class WhenMockNTuple : Spec<StaticNTupleService, (int, string, int, float
         [InlineData(0, null, 1, 2)]
         [InlineData(1, "", 2, 3)]
         [InlineData(2, "hej", 3, 4)]
-        public void Then_It_Has_ProvidedValue(int v1, string v2, int v3, float v4)
+        public void Then_It_Has_ProvidedValue(int v1, string? v2, int v3, float v4)
         {
             Using((v1, v2, v3, v4)).Then().Result.Is((v1, v2, v3, v4));
             Specification.Is(

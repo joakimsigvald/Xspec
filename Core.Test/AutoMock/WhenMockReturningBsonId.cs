@@ -34,5 +34,5 @@ public interface IBsonIdRepository
 public class RecordMongoDb
 {
     [BsonId] public ObjectId Id { get; set; }
-    public string Value { get; set; }
+    public string Value { get; set; } = null!;
 }

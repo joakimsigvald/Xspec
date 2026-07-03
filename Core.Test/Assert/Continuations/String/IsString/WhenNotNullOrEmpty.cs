@@ -11,7 +11,7 @@ public class WhenNotNullOrEmpty : StringSpec
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void GivenNullOrEmpty_ThenGetException(string actual)
+    public void GivenNullOrEmpty_ThenGetException(string? actual)
     {
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => actual.Is().not.NullOrEmpty());
         ex.HasMessage($"Expected actual to not be null or empty but found {Describe(actual)}",

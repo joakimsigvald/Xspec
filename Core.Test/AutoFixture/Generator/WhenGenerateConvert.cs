@@ -66,12 +66,12 @@ public class WhenRelayIncompatibleTypes : Spec<byte>
 public record MyEmailConstr(string Value);
 public record MyEmailStatic
 {
-    public string Value { get; private set; }
+    public string Value { get; private set; } = null!;
     public static MyEmailStatic Make(string value) => new() { Value = value };
 }
 
 public record MyEmailCast
 {
-    public string Value { get; private set; }
+    public string Value { get; private set; } = null!;
     public static implicit operator MyEmailCast(string value) => new() { Value = value };
 }

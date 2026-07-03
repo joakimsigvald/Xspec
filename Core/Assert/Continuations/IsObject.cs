@@ -13,7 +13,7 @@ public record IsObject : Constraint<object, IsObject>
     /// </summary>
     /// <returns>A continuation for making additional asserts on the object</returns>
     public ContinueWith<IsObject> Not(
-        object expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
+        object? expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(Describe(expected), actual => NotSame(expected, actual), expectedExpr!).And();
 
     /// <summary>

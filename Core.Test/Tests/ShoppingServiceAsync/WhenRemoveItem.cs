@@ -6,9 +6,9 @@ namespace Xspec.Test.Tests.ShoppingServiceAsync;
 public abstract class WhenRemoveItem : Spec<Subjects.ShoppingServiceAsync, ShoppingCart>
 {
     protected int CartId = 123;
-    protected ShoppingCartItem[] CartItems;
+    protected ShoppingCartItem[] CartItems = null!;
     protected readonly ShoppingCartItem Item = new("X");
-    private ShoppingCart _cart;
+    private ShoppingCart _cart = null!;
 
     protected WhenRemoveItem()
         => When(_ => _.RemoveFromCart(CartId, Cart.Items[0]))

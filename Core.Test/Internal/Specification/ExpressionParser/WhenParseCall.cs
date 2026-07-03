@@ -19,7 +19,7 @@ public class WhenParseCall : Spec<string>
 
         y
         """, "x y")]
-    public void ThenReturnDescription(string callExpr, string expected)
+    public void ThenReturnDescription(string? callExpr, string? expected)
         => When(_ => callExpr.ParseCall())
         .Then().Result.Is(expected);
 }

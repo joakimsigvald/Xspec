@@ -1,5 +1,6 @@
 #pragma warning disable CS1591 // Public surface used internally; no XML docs required.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 using Xspec.Internal.Specification.ExpressionParsing.Describe;
@@ -16,16 +17,17 @@ public static partial class ExpressionParser
         => string.IsNullOrWhiteSpace(expr) ? string.Empty
         : Describer.Value.Describe(Parser.Parse(expr.ToSingleLine()));
 
-    public static string? ParseCall(this string expr, bool skipSubjectRef = false)
+    public static string? ParseCall(this string? expr, bool skipSubjectRef = false)
         => expr is null ? null
         : string.IsNullOrWhiteSpace(expr) ? string.Empty
         : new CallDescriber(skipSubjectRef).Describe(Parser.Parse(expr.ToSingleLine()));
 
-    public static string ParseActual(this string expr)
+    public static string ParseActual(this string? expr)
         => string.IsNullOrWhiteSpace(expr) ? string.Empty
         : new ActualDescriber().Describe(Parser.Parse(expr.ToSingleLine()));
 
-    public static string ToSingleLine(this string str)
+    [return: NotNullIfNotNull(nameof(str))]
+    public static string? ToSingleLine(this string? str)
         => string.IsNullOrEmpty(str) ? str : MergeLines([.. ToLines(str)]);
 
     private static IEnumerable<string> ToLines(string str)

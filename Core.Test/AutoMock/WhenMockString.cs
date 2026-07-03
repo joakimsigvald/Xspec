@@ -26,7 +26,7 @@ public class WhenMockString : Spec<StaticStringService, string>
         [InlineData(null)]
         [InlineData("")]
         [InlineData("hej")]
-        public void Then_It_Has_ProvidedValue(string value)
+        public void Then_It_Has_ProvidedValue(string? value)
         {
             Using(value).Then().Result.Is(value);
             Specification.Is(

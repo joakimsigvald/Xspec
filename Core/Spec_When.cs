@@ -34,7 +34,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="expr"></param>
     /// <returns></returns>
     public ITestPipeline<TSUT, TResult> When(
-    Func<TSUT, TResult> act,
+    Func<TSUT, TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
@@ -45,7 +45,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="expr"></param>
     /// <returns></returns>
     public ITestPipeline<TSUT, TResult> When(
-    Func<TResult> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
+    Func<TResult?> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
     /// <summary>

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Xspec.Continuations;
 
@@ -28,7 +27,7 @@ public interface IGivenThatCommonContinuation<TSUT, TResult, TService, TReturns>
     /// <param name="returnsExpr">Provided by the compiler to generate specification output</param>
     /// <returns></returns>
     IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Returns(
-        [NotNull] Func<TReturns?> returns, [CallerArgumentExpression(nameof(returns))] string? returnsExpr = null);
+        Func<TReturns?> returns, [CallerArgumentExpression(nameof(returns))] string? returnsExpr = null);
 
     /// <summary>
     /// Mock the return-value of a method invocation
@@ -37,7 +36,7 @@ public interface IGivenThatCommonContinuation<TSUT, TResult, TService, TReturns>
     /// <param name="tagExpr">Provided by the compiler to generate specification output</param>
     /// <returns></returns>
     IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Returns(
-        [NotNull] Tag<TReturns?> tag, [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
+        Tag<TReturns?> tag, [CallerArgumentExpression(nameof(tag))] string? tagExpr = null);
 
     /// <summary>
     /// Mock the return-value as default

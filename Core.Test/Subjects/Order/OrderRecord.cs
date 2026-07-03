@@ -3,5 +3,5 @@
 public class OrderRecord
 {
     public int QuotationId { get; set; }
-    public string OrderNo { get; set; }
+    public string OrderNo { get; set; } = null!;
 }

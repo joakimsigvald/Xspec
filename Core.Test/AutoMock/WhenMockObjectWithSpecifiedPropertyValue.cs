@@ -43,6 +43,6 @@ public class StaticObjectService(MyObject value)
 
 public class MyObject
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     public int Age { get; set; }
 }

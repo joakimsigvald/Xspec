@@ -21,7 +21,7 @@ public static class AssertionExtensionsObject
         object? expected,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
-        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+        => actual.Is(actualExpr: actualExpr!).Value(expected!, expectedExpr!);
 
     /// <summary>
     /// Verify that actual struct is same as expected

@@ -11,7 +11,7 @@ public class WhenNotEndWith : StringSpec
     [InlineData("", "abc")]
     [InlineData("abc", "ab")]
     [InlineData("abc", "Bc")]
-    public void GivenNotEndWithString_ThenDoesNotThrow(string actual, string expected) 
+    public void GivenNotEndWithString_ThenDoesNotThrow(string? actual, string? expected)
         => actual.Does().not.EndWith(expected).and.not.EndWith(expected);
 
     [Theory]

@@ -11,7 +11,7 @@ public class WhenNotStartWith : StringSpec
     [InlineData("", "abc")]
     [InlineData("abc", "bc")]
     [InlineData("abc", "Ab")]
-    public void GivenStartWithString_ThenDoesNotThrow(string actual, string expected) 
+    public void GivenStartWithString_ThenDoesNotThrow(string? actual, string? expected)
         => actual.Does().not.StartWith(expected).and.not.StartWith(expected);
 
     [Theory]

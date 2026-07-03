@@ -65,7 +65,7 @@ internal class TypeConversionStrategy() : IGenerationStrategy
     }
 
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
-        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s));
+        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!));
 }
 
 internal record TypeRelay(Type Type, Func<object?, object?>? Convert = null);

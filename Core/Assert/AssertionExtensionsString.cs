@@ -18,11 +18,11 @@ public static class AssertionExtensionsString
     /// <param name="expectedExpr"></param>
     /// <returns>Continuation for further assertions of the string</returns>
     public static ContinueWith<IsStringContinuation> Is(
-        this string actual,
-        string expected,
+        this string? actual,
+        string? expected,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
-        => actual.Is(actualExpr: actualExpr!).Value(expected, expectedExpr!);
+        => actual.Is(actualExpr: actualExpr!).Value(expected!, expectedExpr!);
 
     /// <summary>
     /// Get available assertions for the given string

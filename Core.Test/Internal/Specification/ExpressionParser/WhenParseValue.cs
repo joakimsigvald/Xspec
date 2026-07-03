@@ -42,7 +42,7 @@ public class WhenParseValue : Spec<string>
     [InlineData("obj?.Name", "obj?.Name")]
     [InlineData("obj?.Method()", "obj?.Method()")]
     [InlineData("_ => _.Inner?.Value", "_.Inner?.Value")]
-    public void ThenReturnDescription(string valueExpr, string expected)
+    public void ThenReturnDescription(string? valueExpr, string expected)
     {
         When(_ => valueExpr.ParseValue())
             .Then().Result.Is(expected);

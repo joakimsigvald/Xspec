@@ -2,5 +2,5 @@
 
 public class NewBasketItem
 {
-    public string PartNo { get; set; }
+    public string PartNo { get; set; } = null!;
 }

@@ -32,7 +32,7 @@ internal class ObjectStrategy : IGenerationStrategy
                 args[i] = request.Next.Create(compiled.ParameterTypes[i]);
             try
             {
-                return compiled.Instantiate(args);
+                return compiled.Instantiate(args!);
             }
             catch (Exception ex)
             {

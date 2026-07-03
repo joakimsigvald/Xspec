@@ -67,7 +67,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="defaultValuesExpr"></param>
     /// <returns></returns>
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
-        TValue[] defaultValues,
+        TValue[]? defaultValues,
         [CallerArgumentExpression(nameof(defaultValues))] string? defaultValuesExpr = null)
     {
         Pipeline.SetDefault(defaultValues, For.All, defaultValuesExpr!);

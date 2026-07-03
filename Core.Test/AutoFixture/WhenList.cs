@@ -10,7 +10,7 @@ public abstract class WhenList : Spec<MyRetriever, MyModel[]>
 
     public class GivenListIsNull : WhenList 
     {
-        public GivenListIsNull() => Given((MyModel[])null);
+        public GivenListIsNull() => Given((MyModel[]?)null);
         [Fact] public void ThenReturnNull() => Result.Is().Null();
     }
 }

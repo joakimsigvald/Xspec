@@ -23,7 +23,7 @@ public class WhenNot : Spec
     [Fact]
     public void GivenNull_ThenGetException()
     {
-        object actual = null;
+        object? actual = null;
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => actual.Is().Not(actual));
         ex.HasMessage($"Expected actual to be not null but found null", "Actual is not actual");
     }

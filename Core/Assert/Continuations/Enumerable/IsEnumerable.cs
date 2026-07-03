@@ -62,7 +62,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// <param name="expectedExpr">Provided by the compiler for building the specification description</param>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Not(
-        IEnumerable<TItem> expected,
+        IEnumerable<TItem>? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => not.SameAs(expected, expectedExpr);
 
@@ -106,7 +106,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// <param name="expectedExpr"></param>
     /// <returns></returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> SameAs(
-        IEnumerable<TItem> expected,
+        IEnumerable<TItem>? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(Describe(expected), actual => Xunit.Assert.Same(expected, actual), expectedExpr!, methodName: string.Empty).And();
 

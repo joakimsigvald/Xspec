@@ -6,7 +6,7 @@ public class WhenNull : Spec
 {
     [Fact]
     public void GivenNull_ThenDoesNotThrow()
-        => ((object)null).Is().Null();
+        => ((object?)null).Is().Null();
 
     [Fact]
     public void GivenNotNull_ThenGetException()

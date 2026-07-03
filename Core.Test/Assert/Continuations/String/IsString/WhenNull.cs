@@ -6,7 +6,7 @@ public class WhenNull : StringSpec
 {
     [Fact]
     public void GivenNull_ThenDoesNotThrow()
-        => ((string)null).Is().Null().and.Null();
+        => ((string?)null).Is().Null().and.Null();
 
     [Fact]
     public void GivenNotNull_ThenGetException()

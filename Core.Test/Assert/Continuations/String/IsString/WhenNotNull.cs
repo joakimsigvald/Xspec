@@ -11,7 +11,7 @@ public class WhenNotNull : StringSpec
     [Fact]
     public void GivenNull_ThenGetException()
     {
-        string str = null;
+        string? str = null;
         var ex = Xunit.Assert.Throws<Xunit.Sdk.XunitException>(() => str.Is().not.Null());
         ex.HasMessage($"Expected str to not be null but found {Describe(str)}", "Str is not null");
     }

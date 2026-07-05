@@ -4,16 +4,16 @@ using Xspec.Internal.Specification;
 namespace Xspec.Assert.Continuations.Enumerable;
 
 /// <summary>
-/// Continuation that allows an assertions to be made on the provided enumerable
+/// Continuation that allows assertions to be made on the provided enumerable
 /// </summary>
-/// <typeparam name="TItem"></typeparam>
+/// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
 public record DoesEnumerable<TItem> : EnumerableConstraint<TItem, DoesEnumerableContinuation<TItem>>
 {
     /// <summary>
     /// Assert that the enumerable contains the given item
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<DoesEnumerableContinuation<TItem>> Contain(
         TItem expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)

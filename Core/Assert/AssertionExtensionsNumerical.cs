@@ -12,10 +12,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsInt> Is(
         this int actual,
@@ -27,10 +27,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsByte> Is(
         this byte actual,
@@ -42,10 +42,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsSByte> Is(
         this sbyte actual,
@@ -57,10 +57,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsShort> Is(
         this short actual,
@@ -72,10 +72,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsUShort> Is(
         this ushort actual,
@@ -87,10 +87,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsLong> Is(
         this long actual,
@@ -102,10 +102,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Verify that the value is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr">Ignore, provided by runtime</param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsULong> Is(
         this ulong actual,
@@ -117,10 +117,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsByte Is(
         this byte actual,
         Ignore _ = default,
@@ -130,10 +130,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsSByte Is(
         this sbyte actual,
         Ignore _ = default,
@@ -143,10 +143,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsShort Is(
         this short actual,
         Ignore _ = default,
@@ -156,10 +156,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsUShort Is(
         this ushort actual,
         Ignore _ = default,
@@ -169,10 +169,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsInt Is(
         this int actual,
         Ignore _ = default,
@@ -182,10 +182,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsUInt Is(
         this uint actual,
         Ignore _ = default,
@@ -195,10 +195,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsLong Is(
         this long actual,
         Ignore _ = default,
@@ -208,10 +208,10 @@ public static class AssertionExtensionsNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsULong Is(
         this ulong actual,
         Ignore _ = default,

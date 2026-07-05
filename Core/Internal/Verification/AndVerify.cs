@@ -15,7 +15,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// </summary>
     /// <typeparam name="TObject"></typeparam>
     /// <param name="expression"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject>(
         Expression<Action<TObject>> expression,
@@ -32,7 +32,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// <typeparam name="TObject"></typeparam>
     /// <param name="expression"></param>
     /// <param name="times"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject>(
         Expression<Action<TObject>> expression, Times times,
@@ -49,7 +49,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// <typeparam name="TObject"></typeparam>
     /// <param name="expression"></param>
     /// <param name="times"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject>(
         Expression<Action<TObject>> expression, Func<Times> times,
@@ -66,7 +66,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// <typeparam name="TObject"></typeparam>
     /// <typeparam name="TReturns"></typeparam>
     /// <param name="expression"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject, TReturns>(
         Expression<Func<TObject, TReturns>> expression,
@@ -84,7 +84,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// <typeparam name="TReturns"></typeparam>
     /// <param name="expression"></param>
     /// <param name="times"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject, TReturns>(
         Expression<Func<TObject, TReturns>> expression, Times times,
@@ -102,7 +102,7 @@ internal class AndVerify<TSUT, TResult> : AndThen<TSUT, TResult>, IAndVerify<TRe
     /// <typeparam name="TReturns"></typeparam>
     /// <param name="expression"></param>
     /// <param name="times"></param>
-    /// <param name="expressionExpr"></param>
+    /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndVerify<TResult> And<TObject, TReturns>(
         Expression<Func<TObject, TReturns>> expression, Func<Times> times,

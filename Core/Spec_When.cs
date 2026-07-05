@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using Xspec.Continuations;
 
 namespace Xspec;
@@ -8,9 +8,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide the method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the method-under-test, without subject under test or return value</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
         Action act,
         [CallerArgumentExpression(nameof(act))] string? expr = null)
@@ -19,9 +19,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide the method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the method-under-test on the subject under test, without return value</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
         Action<TSUT> act,
         [CallerArgumentExpression(nameof(act))] string? expr = null)
@@ -30,9 +30,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide the method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the method-under-test on the subject under test and returning the result</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
     Func<TSUT, TResult?> act,
         [CallerArgumentExpression(nameof(act))] string? expr = null)
@@ -41,49 +41,49 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide the method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the method-under-test, without subject under test, returning the result</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
     Func<TResult?> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
     /// <summary>
-    /// Provide the method-under-test to the test-pipeline
+    /// Provide the async method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the async method-under-test on the subject under test, without return value</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
         Func<TSUT, Task> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
     /// <summary>
-    /// Provide the method-under-test to the test-pipeline
+    /// Provide the async method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the async method-under-test, without subject under test or return value</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
-        Func<Task> act, [CallerArgumentExpression(nameof(act))] string? expr = null) 
+        Func<Task> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
     /// <summary>
-    /// Provide the method-under-test to the test-pipeline
+    /// Provide the async method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the async method-under-test on the subject under test and returning the result</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
-        Func<TSUT, Task<TResult>> act, [CallerArgumentExpression(nameof(act))] string? expr = null) 
+        Func<TSUT, Task<TResult>> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
 
     /// <summary>
-    /// Provide the method-under-test to the test-pipeline
+    /// Provide the async method-under-test to the test-pipeline
     /// </summary>
-    /// <param name="act"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="act">A lambda expression invoking the async method-under-test, without subject under test, returning the result</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> When(
         Func<Task<TResult>> act, [CallerArgumentExpression(nameof(act))] string? expr = null)
         => SetAction(act, expr!);
@@ -91,19 +91,19 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide a teardown to the test-pipeline. Teardowns run in declaration order, after the method-under-test.
     /// </summary>
-    /// <param name="tearDown"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="tearDown">A lambda expression performing the teardown, given the subject under test</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> Until(
         Action<TSUT> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
 
     /// <summary>
-    /// Provide a teardown to the test-pipeline. Teardowns run in declaration order, after the method-under-test.
+    /// Provide an async teardown to the test-pipeline. Teardowns run in declaration order, after the method-under-test.
     /// </summary>
-    /// <param name="tearDown"></param>
-    /// <param name="expr"></param>
-    /// <returns></returns>
+    /// <param name="tearDown">A lambda expression performing the async teardown, given the subject under test</param>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> Until(
         Func<TSUT, Task> tearDown, [CallerArgumentExpression(nameof(tearDown))] string? expr = null)
         => SetTearDown(tearDown, expr!);
@@ -111,11 +111,11 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide a setup to the test-pipeline. Setups run in reverse declaration order, before the method-under-test.
     /// </summary>
-    /// <param name="setUp"></param>
+    /// <param name="setUp">A lambda expression performing the setup, given the subject under test</param>
     /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="expr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns></returns>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="delayExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> Having(
         Action<TSUT> setUp,
         Func<int>? delayMs = null,
@@ -127,13 +127,13 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     }
 
     /// <summary>
-    /// Provide a setup to the test-pipeline. Setups run in reverse declaration order, before the method-under-test.
+    /// Provide an async setup to the test-pipeline. Setups run in reverse declaration order, before the method-under-test.
     /// </summary>
-    /// <param name="setUp"></param>
+    /// <param name="setUp">A lambda expression performing the async setup, given the subject under test</param>
     /// <param name="delayMs">Delay between this method invocation and the next in the pipeline</param>
-    /// <param name="expr">Provided by the compiler</param>
-    /// <param name="delayExpr">Provided by the compiler</param>
-    /// <returns></returns>
+    /// <param name="expr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="delayExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement, or executing the test</returns>
     public ITestPipeline<TSUT, TResult> Having(
         Func<TSUT, Task> setUp, Func<int>? delayMs = null,
         [CallerArgumentExpression(nameof(setUp))] string? expr = null,

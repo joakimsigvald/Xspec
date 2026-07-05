@@ -12,10 +12,10 @@ public static class AssertionExtensionsString
     /// <summary>
     /// Verify that the string is same as expected
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the string</returns>
     public static ContinueWith<IsStringContinuation> Is(
         this string? actual,
@@ -27,10 +27,10 @@ public static class AssertionExtensionsString
     /// <summary>
     /// Get available assertions for the given string
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsString Is(
         this string? actual,
         Ignore _ = default,
@@ -40,10 +40,10 @@ public static class AssertionExtensionsString
     /// <summary>
     /// Get available assertions for the characteristics of the given string
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static DoesString Does(
         this string? actual,
         Ignore _ = default,

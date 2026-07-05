@@ -1,6 +1,6 @@
 ﻿namespace Xspec.Assert.Continuations.Numerical.Nullable;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided nullable short
+/// Object that allows assertions to be made on the provided nullable short
 /// </summary>
-public record IsNullableShort : IsNullableNumerical<short, IsNullableShort, IsShort>;
+public record IsNullableShort : IsNullableNumerical<short, IsNullableShort, IsShort>;

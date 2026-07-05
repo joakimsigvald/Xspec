@@ -1,11 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 namespace Xspec.Continuations;
 
 /// <summary>
 /// An object containing the result of a test-run
 /// </summary>
-/// <typeparam name="TResult"></typeparam>
+/// <typeparam name="TResult">The return type of the method-under-test</typeparam>
 public interface ITestResult<TResult>
 {
     /// <summary>
@@ -16,56 +16,56 @@ public interface ITestResult<TResult>
     /// <summary>
     /// Asserts that the test-run threw an error of the given type
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TError">The type of the expected error</typeparam>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> Throws<TError>();
 
     /// <summary>
     /// Asserts that the test-run threw an error that is equal to the return value of the given function
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TError">The type of the expected error</typeparam>
+    /// <param name="expected">A function providing the expected error</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> Throws<TError>(
-        Func<TError> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null) 
+        Func<TError> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         where TError : Exception;
 
     /// <summary>
-    /// Asserts that the test-run threw an error of the given type, and satisfy the given assertions
+    /// Asserts that the test-run threw an error of the given type, and satisfies the given assertions
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
-    /// <param name="assert"></param>
-    /// <returns></returns>
+    /// <typeparam name="TError">The type of the expected error</typeparam>
+    /// <param name="assert">An action applying assertions to the thrown error</param>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> Throws<TError>(Action<TError> assert);
 
     /// <summary>
     /// Asserts that the test-run threw an error that satisfies the given predicate
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
-    /// <param name="condition"></param>
-    /// <param name="conditionExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TError">The type of the expected error</typeparam>
+    /// <param name="condition">A predicate that the thrown error is expected to satisfy</param>
+    /// <param name="conditionExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> Throws<TError>(
-        Func<TError, bool> condition, 
+        Func<TError, bool> condition,
         [CallerArgumentExpression(nameof(condition))] string? conditionExpr = null);
 
     /// <summary>
     /// Asserts that the test-run threw an error
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> Throws();
 
     /// <summary>
     /// Asserts that the test-run did not throw an error of the given type
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TError">The type of error that is not expected</typeparam>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> DoesNotThrow<TError>();
 
     /// <summary>
     /// Asserts that the test-run did not throw an error
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A continuation to apply additional assertions on the test result</returns>
     IAndThen<TResult> DoesNotThrow();
 }

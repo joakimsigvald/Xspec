@@ -1,11 +1,11 @@
 ﻿namespace Xspec.Continuations;
 
 /// <summary>
-/// 
+/// The result of a test-run that, in addition to the outcome, exposes the subject under test for further assertions
 /// </summary>
-/// <typeparam name="TSUT"></typeparam>
-/// <typeparam name="TResult"></typeparam>
-public interface ITestResultWithSUT<TSUT, TResult> : ITestResult<TResult> 
+/// <typeparam name="TSUT">The type of the subject under test</typeparam>
+/// <typeparam name="TResult">The return type of the method-under-test</typeparam>
+public interface ITestResultWithSUT<TSUT, TResult> : ITestResult<TResult>
 {
     /// <summary>
     /// Provide the subject under test for non-static test methods.

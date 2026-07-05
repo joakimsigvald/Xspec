@@ -12,10 +12,10 @@ public static class AssertionExtensions
     /// <summary>
     /// Verify that actual object is same reference as expected and return continuation for further assertions of the object
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the object</returns>
     public static ContinueWith<IsNullableStruct<TValue>> Is<TValue>(
         this TValue? actual,
@@ -28,10 +28,10 @@ public static class AssertionExtensions
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsBool Is(
         this bool actual,
         Ignore _ = default,
@@ -41,10 +41,10 @@ public static class AssertionExtensions
     /// <summary>
     /// Get available assertions for the given object
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableStruct<TValue> Is<TValue>
         (this TValue? actual,
         Ignore _ = default,
@@ -55,11 +55,11 @@ public static class AssertionExtensions
     /// <summary>
     /// Get available assertions for the given comparable
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TValue">The type of the value to assert on</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsComparable<TValue> Is<TValue>(
         this TValue actual,
         Ignore _ = default,
@@ -70,12 +70,12 @@ public static class AssertionExtensions
     /// <summary>
     /// Verify that the value satisfies a given condition
     /// </summary>
-    /// <typeparam name="TActual"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="condition"></param>
-    /// <param name="actualExpr">Provided by runtime</param>
-    /// <param name="conditionExpr">Provided by runtime</param>
-    /// <returns></returns>
+    /// <typeparam name="TActual">The type of the value to assert on</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="conditionExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWithActual<TActual> Has<TActual>(
         this TActual actual, Func<TActual, bool> condition,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
@@ -88,11 +88,11 @@ public static class AssertionExtensions
     /// <summary>
     /// Provide actual of any type to continue the chain of assertions on the new value
     /// </summary>
-    /// <typeparam name="TActual"></typeparam>
-    /// <typeparam name="TContinuation"></typeparam>
-    /// <param name="_"></param>
-    /// <param name="actual"></param>
-    /// <returns></returns>
+    /// <typeparam name="TActual">The type of the value to assert on</typeparam>
+    /// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actual">The value to assert on</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static TActual And<TActual, TContinuation>(
         this ContinueWith<TContinuation> _,
         TActual actual)
@@ -115,10 +115,10 @@ public static class AssertionExtensions
         => SplitInnerExceptionMessage(ex)[0].Is($"{Environment.NewLine}{expected}{Environment.NewLine}");
 
     /// <summary>
-    /// 
+    /// Assert that the exception message contains the expected assignments section
     /// </summary>
-    /// <param name="ex"></param>
-    /// <param name="expected"></param>
+    /// <param name="ex">The exception to assert on</param>
+    /// <param name="expected">The expected value</param>
     internal static void HasAssignments(this Xunit.Sdk.XunitException ex, string expected)
     {
         SplitInnerExceptionMessage(ex).Has().TwoItems().that.second

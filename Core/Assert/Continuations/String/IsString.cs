@@ -4,7 +4,7 @@ using static Xunit.Assert;
 namespace Xspec.Assert.Continuations.String;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided string
+/// Object that allows assertions to be made on the provided string
 /// </summary>
 public record IsString : StringConstraint<IsStringContinuation>
 {
@@ -70,9 +70,9 @@ public record IsString : StringConstraint<IsStringContinuation>
     /// <summary>
     /// Asserts that the string is not the given value
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<IsStringContinuation> Not(
         string? expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(

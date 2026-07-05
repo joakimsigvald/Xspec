@@ -3,7 +3,7 @@
 namespace Xspec.Assert.Continuations.Enumerable;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided enumerable
+/// Object that allows assertions to be made on the provided enumerable
 /// </summary>
 public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableContinuation<TItem>>
 {
@@ -110,8 +110,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable contains a single item satisfying the given condition
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable or accessing the single item</returns>
     public ContinueWithThat<HasEnumerableContinuation<TItem>, TItem> OneItem(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -128,8 +128,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable contains exactly two items satisfying the given condition
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable or accessing the two items</returns>
     public ContinueWithThat<HasEnumerableContinuation<TItem>, (TItem first, TItem second)> TwoItems(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -153,8 +153,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable contains exactly three items satisfying the given condition
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable or accessing the three items</returns>
     public ContinueWithThat<HasEnumerableContinuation<TItem>, (TItem first, TItem second, TItem third)> ThreeItems(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -180,8 +180,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable contains exactly four items satisfying the given condition
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable or accessing the four items</returns>
     public ContinueWithThat<HasEnumerableContinuation<TItem>, (TItem first, TItem second, TItem third, TItem fourth)> FourItems(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -209,8 +209,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable contains exactly five items satisfying the given condition
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable or accessing the five items</returns>
     public ContinueWithThat<HasEnumerableContinuation<TItem>, (TItem first, TItem second, TItem third, TItem fourth, TItem fifth)> FiveItems(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -241,8 +241,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// Continuations to make count-related assertions on the collection
     /// </summary>
     /// <param name="condition">condition that items have to meet to be counted</param>
-    /// <param name="conditionExpr">Ignore, provided by runtime</param>
-    /// <returns></returns>
+    /// <param name="conditionExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public CountContinuation<TItem> Count(
         Func<TItem, bool>? condition = null,
         [CallerArgumentExpression(nameof(condition))] string? conditionExpr = null) => new(this, condition, conditionExpr)
@@ -257,8 +257,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// Continuations to make order-related assertions on the collection
     /// </summary>
     /// <param name="by">function that collection should be ordered by</param>
-    /// <param name="byExpr">Ignore, provided by runtime</param>
-    /// <returns></returns>
+    /// <param name="byExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public OrderContinuation<TItemComp> Order<TItemComp>(
         Func<TItemComp, int>? by = null,
         [CallerArgumentExpression(nameof(by))] string? byExpr = null)
@@ -274,8 +274,8 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     /// <summary>
     /// Assert that the enumerable has the given count
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> Count(
         int expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
@@ -285,11 +285,11 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
     }
 
     /// <summary>
-    /// Assert that the all the items of the enumerable satisfy the given indexed condition.
+    /// Assert that all the items of the enumerable satisfy the given indexed condition.
     /// Pass if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> All(
         Func<TItem, int, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -300,11 +300,11 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
         .And();
 
     /// <summary>
-    /// Assert that the all the items of the enumerable satisfy the given condition.
+    /// Assert that all the items of the enumerable satisfy the given condition.
     /// Pass if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> All(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -315,11 +315,11 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
             "have").And();
 
     /// <summary>
-    /// Assert that the all the items of the enumerable satisfy the given index assertion.
+    /// Assert that all the items of the enumerable satisfy the given index assertion.
     /// Pass if empty.
     /// </summary>
-    /// <param name="assert"></param>
-    /// <param name="assertExpr">Ignore, provided by runtime</param>
+    /// <param name="assert">An action applying assertions to the value</param>
+    /// <param name="assertExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> All(
         Action<TItem, int> assert, [CallerArgumentExpression(nameof(assert))] string? assertExpr = null)
@@ -330,10 +330,10 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
             "have").And();
 
     /// <summary>
-    /// Assert that the all the items of the enumerable satisfy the given assertion.
+    /// Assert that all the items of the enumerable satisfy the given assertion.
     /// </summary>
-    /// <param name="assert"></param>
-    /// <param name="assertExpr">Ignore, provided by runtime</param>
+    /// <param name="assert">An action applying assertions to the value</param>
+    /// <param name="assertExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> All(
         Action<TItem> assert, [CallerArgumentExpression(nameof(assert))] string? assertExpr = null)
@@ -343,11 +343,11 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
             "have").And();
 
     /// <summary>
-    /// Assert that some item of the enumerable satisfy the given condition.
+    /// Assert that some item of the enumerable satisfies the given condition.
     /// Fail if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> Some(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -358,11 +358,11 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
             "have").And();
 
     /// <summary>
-    /// Assert that some item of the enumerable satisfy the given indexed condition.
+    /// Assert that some item of the enumerable satisfies the given indexed condition.
     /// Fail if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> Some(
         Func<TItem, int, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
@@ -373,22 +373,22 @@ public record HasEnumerable<TItem> : EnumerableConstraint<TItem, HasEnumerableCo
         .And();
 
     /// <summary>
-    /// Assert that no item of the enumerable satisfy the given condition.
+    /// Assert that no item of the enumerable satisfies the given condition.
     /// Pass if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> None(
         Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)
         => not.Some(condition, expectedExpr);
 
     /// <summary>
-    /// Assert that some item of the enumerable satisfy the given indexed condition.
+    /// Assert that some item of the enumerable satisfies the given indexed condition.
     /// Fail if empty.
     /// </summary>
-    /// <param name="condition"></param>
-    /// <param name="expectedExpr">Ignore, provided by runtime</param>
+    /// <param name="condition">The condition that the value is expected to satisfy</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> None(
         Func<TItem, int, bool> condition, [CallerArgumentExpression(nameof(condition))] string? expectedExpr = null)

@@ -1,7 +1,7 @@
 ﻿namespace Xspec.Assert.Continuations.Numerical.Fractional;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided double
+/// Object that allows assertions to be made on the provided double
 /// </summary>
 public record IsDouble : IsFractional<double, IsDouble>
 {

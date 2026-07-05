@@ -61,7 +61,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TError"></typeparam>
     /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndThen<TResult> Throws<TError>(
         Func<TError> expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
@@ -91,7 +91,7 @@ internal class TestResult<TSUT, TResult> : ITestResultWithSUT<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TError"></typeparam>
     /// <param name="condition"></param>
-    /// <param name="conditionExpr"></param>
+    /// <param name="conditionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
     public IAndThen<TResult> Throws<TError>(
         Func<TError, bool> condition, [CallerArgumentExpression(nameof(condition))] string? conditionExpr = null)

@@ -79,7 +79,7 @@ public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
     /// <summary>
     /// Only made public for unit testing
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The built text</returns>
     public override string ToString() => _sb.ToString().Trim().Capitalize();
 
     private static readonly char[] _lineBreakCues = ['.', '(', '[', '{'];

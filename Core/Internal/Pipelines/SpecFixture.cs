@@ -82,7 +82,7 @@ internal class SpecFixture<TSUT>(ISpecificationProvider specificationProvider) :
     }
 
     /// <summary>
-    /// 
+    /// Runs the teardown of the fixture
     /// </summary>
     public void Dispose()
     {
@@ -94,7 +94,7 @@ internal class SpecFixture<TSUT>(ISpecificationProvider specificationProvider) :
     /// Calls any teardown methods provided in the test pipeline with the method `Before`.
     /// Override this method to perform custom teardown in your test class.
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="disposing">True when called from Dispose, false when called from a finalizer</param>
     protected void Dispose(bool disposing)
     {
         if (_disposed)

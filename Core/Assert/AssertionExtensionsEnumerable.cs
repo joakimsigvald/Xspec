@@ -12,12 +12,12 @@ public static class AssertionExtensionsEnumerable
     /// <summary>
     /// Assert that both enumerables are the same instance
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static ContinueWith<IsEnumerableContinuation<TItem>> Is<TItem>(
         this IEnumerable<TItem>? actual,
         IEnumerable<TItem> expected,
@@ -28,11 +28,11 @@ public static class AssertionExtensionsEnumerable
     /// <summary>
     /// Get available assertions for the given enumerable
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsEnumerable<TItem> Is<TItem>(
         this IEnumerable<TItem>? actual,
         Ignore _ = default,
@@ -42,10 +42,10 @@ public static class AssertionExtensionsEnumerable
     /// <summary>
     /// Get available assertions for the given enumerable
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static DoesEnumerable<TItem> Does<TItem>(
         this IEnumerable<TItem>? actual,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
@@ -54,11 +54,11 @@ public static class AssertionExtensionsEnumerable
     /// <summary>
     /// Get available assertions for enumerable
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static HasEnumerable<TItem> Has<TItem>(
         this IEnumerable<TItem>? actual,
         Ignore _ = default,

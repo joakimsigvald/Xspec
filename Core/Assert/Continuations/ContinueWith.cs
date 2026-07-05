@@ -7,7 +7,7 @@ namespace Xspec.Assert.Continuations;
 /// <summary>
 /// Return-value from an assertion, that allows another assertion to be chained to the previous (if it succeeded)
 /// </summary>
-/// <typeparam name="TContinuation"></typeparam>
+/// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
 public class ContinueWith<TContinuation> where TContinuation : Constraint
 {
     private readonly TContinuation _continuation;
@@ -16,16 +16,16 @@ public class ContinueWith<TContinuation> where TContinuation : Constraint
     /// <summary>
     /// Get a continuation to make the next assertion
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TContinuation and => Continue();
 
     /// <summary>
     /// Get a continuation to make the next assertion
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TContinuation but => Continue();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     internal TContinuation or => Continue();
 
     private TContinuation Continue([CallerMemberName] string? conjunction = null) 

@@ -4,10 +4,11 @@ using Xspec.Internal.Specification;
 namespace Xspec.Assert.Continuations;
 
 /// <summary>
-/// 
+/// Return-value from an assertion on the elements of a collection, that allows another assertion to be chained
+/// to the previous, or applied to the matched element(s) through the property 'that'
 /// </summary>
-/// <typeparam name="TContinuation"></typeparam>
-/// <typeparam name="TThat"></typeparam>
+/// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
+/// <typeparam name="TThat">The type of the matched element(s), exposed through the property 'that'</typeparam>
 public class ContinueWithThat<TContinuation, TThat> : ContinueWith<TContinuation> 
     where TContinuation : Constraint
 {
@@ -19,7 +20,7 @@ public class ContinueWithThat<TContinuation, TThat> : ContinueWith<TContinuation
     /// <summary>
     /// Continuation to apply assertions on the element
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TThat that
     {
         get

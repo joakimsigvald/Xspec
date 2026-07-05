@@ -1,7 +1,7 @@
 ﻿namespace Xspec.Assert.Continuations;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided bool
+/// Object that allows assertions to be made on the provided bool
 /// </summary>
 public record IsBool : Constraint<bool, IsBool>
 {

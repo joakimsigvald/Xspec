@@ -20,7 +20,7 @@ internal enum ConstraintState
 };
 
 /// <summary>
-/// 
+/// Base record holding the state of an assertion, such as the description of the asserted value and the evaluation state
 /// </summary>
 public record Constraint
 {
@@ -42,8 +42,8 @@ public abstract record Constraint<TActual, TContinuation>
     /// <summary>
     /// Invert the following assertion
     /// </summary>
-    /// <returns></returns>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    /// <returns>A continuation for further assertions of the value</returns>
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TContinuation not
         => new()
         {
@@ -54,9 +54,11 @@ public abstract record Constraint<TActual, TContinuation>
         };
 
     /// <summary>
-    /// Asserts that the string is equivalent to expected, ignoring casing and leading or trailing whitespace
-    /// actual.Should().BeEquivalentTo(expected)
+    /// Asserts that the value is one of the given values
     /// </summary>
+    /// <param name="values">The values that the asserted value is expected to be one of</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<TContinuation> OneOf(
         TActual[] values,
         [CallerArgumentExpression(nameof(values))] string? expectedExpr = null)
@@ -68,7 +70,7 @@ public abstract record Constraint<TActual, TContinuation>
     /// <summary>
     /// Used to provide two assertions, separated by 'or', one of which has to pass for the test to pass
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convension of binding words")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TContinuation either
     {
         get

@@ -12,10 +12,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected timeSpan and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the TimeSpan?</returns>
     public static ContinueWith<IsNullableTimeSpan> Is(
         this TimeSpan? actual, TimeSpan? expected,
@@ -26,10 +26,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected timeSpan and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the TimeSpan?</returns>
     public static ContinueWith<IsTimeSpan> Is(
         this TimeSpan? actual, TimeSpan expected,
@@ -40,10 +40,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected dateTime and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateTime?</returns>
     public static ContinueWith<IsNullableDateTime> Is(
         this DateTime? actual, DateTime? expected,
@@ -54,10 +54,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected dateTime and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateTime?</returns>
     public static ContinueWith<IsDateTime> Is(
         this DateTime? actual, DateTime expected,
@@ -68,10 +68,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsDateTime Is(
         this DateTime actual,
         Ignore _ = default,
@@ -81,10 +81,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableDateTime Is(
         this DateTime? actual,
         Ignore _ = default,
@@ -94,10 +94,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected DateOnly and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateOnly?</returns>
     public static ContinueWith<IsNullableDateOnly> Is(
         this DateOnly? actual, DateOnly? expected,
@@ -108,10 +108,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected DateOnly and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateOnly?</returns>
     public static ContinueWith<IsDateOnly> Is(
         this DateOnly? actual, DateOnly expected,
@@ -122,10 +122,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsDateOnly Is(
         this DateOnly actual,
         Ignore _ = default,
@@ -135,10 +135,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableDateOnly Is(
         this DateOnly? actual,
         Ignore _ = default,
@@ -148,10 +148,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected DateTimeOffset and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateTimeOffset?</returns>
     public static ContinueWith<IsNullableDateTimeOffset> Is(
         this DateTimeOffset? actual, DateTimeOffset? expected,
@@ -162,10 +162,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Verify that actual is expected DateTimeOffset and return continuation for further assertions of the value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the DateTimeOffset?</returns>
     public static ContinueWith<IsDateTimeOffset> Is(
         this DateTimeOffset? actual, DateTimeOffset expected,
@@ -176,10 +176,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsDateTimeOffset Is(
         this DateTimeOffset actual,
         Ignore _ = default,
@@ -189,10 +189,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableDateTimeOffset Is(
         this DateTimeOffset? actual,
         Ignore _ = default,
@@ -202,10 +202,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableTimeSpan Is(
         this TimeSpan? actual,
         Ignore _ = default,
@@ -215,10 +215,10 @@ public static class AssertionExtensionsTime
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsTimeSpan Is(
         this TimeSpan actual,
         Ignore _ = default,

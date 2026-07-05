@@ -11,10 +11,10 @@ public static class AssertionExtensionsObject
     /// <summary>
     /// Verify that actual object is same reference as expected and return continuation for further assertions of the object
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the object</returns>
     public static ContinueWith<IsObject> Is(
         this object? actual,
@@ -26,11 +26,11 @@ public static class AssertionExtensionsObject
     /// <summary>
     /// Verify that actual struct is same as expected
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="actual"></param>
-    /// <param name="expected"></param>
-    /// <param name="actualExpr"></param>
-    /// <param name="expectedExpr"></param>
+    /// <typeparam name="TValue">The type of the value to assert on</typeparam>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>Continuation for further assertions of the struct</returns>
     public static ContinueWith<IsObject> Is<TValue>(
         this TValue actual,
@@ -43,10 +43,10 @@ public static class AssertionExtensionsObject
     /// <summary>
     /// Get available assertions for the given object
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsObject Is(
         this object? actual,
         Ignore _ = default,
@@ -56,10 +56,10 @@ public static class AssertionExtensionsObject
     /// <summary>
     /// Get available assertions for the given object
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static HasObject Has(
         this object? actual,
         Ignore _ = default,

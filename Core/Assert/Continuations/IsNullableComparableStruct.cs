@@ -3,11 +3,11 @@
 namespace Xspec.Assert.Continuations;
 
 /// <summary>
-/// base class that allows an assertions to be made on the provided nullable numerical
+/// base class that allows assertions to be made on the provided nullable numerical
 /// </summary>
-/// <typeparam name="TActual"></typeparam>
-/// <typeparam name="TContinuation"></typeparam>
-/// <typeparam name="TValueContinuation"></typeparam>
+/// <typeparam name="TActual">The type of the value to assert on</typeparam>
+/// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
+/// <typeparam name="TValueContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
 public abstract record IsNullableComparableStruct<TActual, TContinuation, TValueContinuation>
     : Constraint<TActual?, TContinuation>
     where TActual : struct, IComparable<TActual>

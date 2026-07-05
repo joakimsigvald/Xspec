@@ -7,7 +7,7 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Xspec</AssemblyName>
 		<RootNamespace>Xspec</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,12 +19,12 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.0.2</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Improved nullable handling
+			Completed documentation
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

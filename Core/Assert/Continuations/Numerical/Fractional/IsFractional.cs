@@ -3,10 +3,10 @@
 namespace Xspec.Assert.Continuations.Numerical.Fractional;
 
 /// <summary>
-/// 
+/// Base class that allows assertions to be made on the provided fractional number
 /// </summary>
-/// <typeparam name="TActual"></typeparam>
-/// <typeparam name="TIsFractional"></typeparam>
+/// <typeparam name="TActual">The type of the value to assert on</typeparam>
+/// <typeparam name="TIsFractional">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
 public abstract record IsFractional<TActual, TIsFractional> : IsNumerical<TActual, TIsFractional>
     where TActual : struct, IComparable<TActual>
     where TIsFractional : IsFractional<TActual, TIsFractional>, new()
@@ -16,8 +16,8 @@ public abstract record IsFractional<TActual, TIsFractional> : IsNumerical<TActua
     /// </summary>
     /// <param name="expected">Expected value</param>
     /// <param name="tolerance">Allowed difference +/- expected value</param>
-    /// <param name="expectedExpr">Ignore, provided by the compiler</param>
-    /// <returns></returns>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<TIsFractional> Around(
         TActual expected, TActual tolerance, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(expected, actual => AssertEqual(expected, actual, tolerance), expectedExpr!).And();

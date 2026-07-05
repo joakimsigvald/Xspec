@@ -10,14 +10,14 @@
 /// </summary>
 /// <typeparam name="TValue">The type of the value associated to the tag</typeparam>
 /// <remarks>
-/// Please, provide the name of the tag, using nameOf([variable name]),
-/// otherwise a unique name will be auto-generated on the form Tag_[number]
+/// Please, provide the name of the tag, using nameof([variable name]),
+/// otherwise a unique name will be auto-generated of the form Tag_[number]
 /// </remarks>
-/// <param name="name"></param>
+/// <param name="name">The name of the tag, used in diagnostic output. If omitted, a unique name is auto-generated</param>
 public class Tag<TValue>(string? name = null)
 {
     /// <summary>
-    /// The name of the tag is used when printing the tag value on test failed
+    /// The name of the tag is used when printing the tag value when a test fails
     /// </summary>
     public string Name { get; init; } = name ?? $"Tag_{Next()}";
 

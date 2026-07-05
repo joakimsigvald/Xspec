@@ -4,7 +4,7 @@ using Xspec.Internal.Specification;
 namespace Xspec.Assert.Continuations.String;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided string
+/// Object that allows assertions to be made on the provided string
 /// </summary>
 public record DoesString : StringConstraint<DoesStringContinuation>
 {
@@ -22,9 +22,9 @@ public record DoesString : StringConstraint<DoesStringContinuation>
     /// <summary>
     /// Asserts that the string starts with a prefix
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<DoesStringContinuation> StartWith(
         string? expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(
@@ -36,9 +36,9 @@ public record DoesString : StringConstraint<DoesStringContinuation>
     /// <summary>
     /// Asserts that the string ends with a suffix
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<DoesStringContinuation> EndWith(
         string? expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(

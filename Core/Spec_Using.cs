@@ -9,8 +9,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Use a concrete class for auto-mocking of subject
     /// </summary>
-    /// <typeparam name="TConcrete"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TConcrete">The concrete class to instantiate when the subject under test requires an abstraction it implements</typeparam>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TConcrete>()
     {
         Pipeline.Using(Pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
@@ -48,7 +48,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue">The type of the value being provided.</typeparam>
     /// <param name="value">The specific instance to use.</param>
     /// <param name="scope">Determines whether the value is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
-    /// <param name="valueExpr">Automatically populated by the compiler to capture the argument expression.</param>
+    /// <param name="valueExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
         TValue value,
@@ -65,7 +65,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue">The type of the value being provided.</typeparam>
     /// <param name="factory">A function that creates the value.</param>
     /// <param name="scope">Determines whether the factory is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
-    /// <param name="factoryExpr">Automatically populated by the compiler.</param>
+    /// <param name="factoryExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
         Func<TValue> factory,
@@ -82,7 +82,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TValue">The type of the value associated with the tag.</typeparam>
     /// <param name="tag">The tag used to identify the specific value instance.</param>
     /// <param name="scope">Determines whether the tag's value is used for Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
-    /// <param name="tagExpr">Automatically populated by the compiler to capture the argument expression.</param>
+    /// <param name="tagExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
     public IUsingTestPipeline<TSUT, TResult> Using<TValue>(
         Tag<TValue> tag,

@@ -14,10 +14,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsFloat Is(
         this float actual,
         Ignore _ = default,
@@ -27,10 +27,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsDouble Is(
         this double actual,
         Ignore _ = default,
@@ -40,10 +40,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsDecimal Is(
         this decimal actual,
         Ignore _ = default,
@@ -83,10 +83,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableFloat Is(
         this float? actual,
         Ignore _ = default,
@@ -96,10 +96,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableDouble Is(
         this double? actual,
         Ignore _ = default,
@@ -109,10 +109,10 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableDecimal Is(
         this decimal? actual,
         Ignore _ = default,

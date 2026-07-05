@@ -1,7 +1,7 @@
 ﻿namespace Xspec.Assert.Continuations.Numerical.Fractional;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided decimal
+/// Object that allows assertions to be made on the provided decimal
 /// </summary>
 public record IsDecimal : IsFractional<decimal, IsDecimal>
 {

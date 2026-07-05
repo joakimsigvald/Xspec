@@ -4,7 +4,7 @@ using static Xunit.Assert;
 namespace Xspec.Assert.Continuations;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided object
+/// Object that allows assertions to be made on the provided object
 /// </summary>
 public record IsObject : Constraint<object, IsObject>
 {

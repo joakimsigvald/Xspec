@@ -93,10 +93,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableByte Is(
         this byte? actual,
         Ignore _ = default,
@@ -106,10 +106,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableSByte Is(
         this sbyte? actual,
         Ignore _ = default,
@@ -119,10 +119,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableShort Is(
         this short? actual,
         Ignore _ = default,
@@ -132,10 +132,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableUShort Is(
         this ushort? actual,
         Ignore _ = default,
@@ -145,10 +145,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableInt Is(
         this int? actual,
         Ignore _ = default,
@@ -158,10 +158,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableUInt Is(
         this uint? actual,
         Ignore _ = default,
@@ -171,10 +171,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableLong Is(
         this long? actual,
         Ignore _ = default,
@@ -184,10 +184,10 @@ public static class AssertionExtensionsNullableNumerical
     /// <summary>
     /// Get available assertions for the given value
     /// </summary>
-    /// <param name="actual"></param>
-    /// <param name="_"></param>
-    /// <param name="actualExpr"></param>
-    /// <returns></returns>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public static IsNullableULong Is(
         this ulong? actual,
         Ignore _ = default,

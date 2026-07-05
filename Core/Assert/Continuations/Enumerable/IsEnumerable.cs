@@ -3,9 +3,9 @@
 namespace Xspec.Assert.Continuations.Enumerable;
 
 /// <summary>
-/// Continuation that allows an assertions to be made on the provided enumerable
+/// Continuation that allows assertions to be made on the provided enumerable
 /// </summary>
-/// <typeparam name="TItem"></typeparam>
+/// <typeparam name="TItem">The type of the elements in the enumerable</typeparam>
 public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableContinuation<TItem>>
 {
     /// <summary>
@@ -58,8 +58,8 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// <summary>
     /// Assert that the two enumerables do not refer to the same object
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr">Provided by the compiler for building the specification description</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Not(
         IEnumerable<TItem>? expected,
@@ -70,7 +70,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// Assert that both enumerables has the same number of elements and that elements at same position are equal to each other
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
-    /// <param name="expectedExpr">Provided by the compiler for building the specification description</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> EqualTo(
         IEnumerable<TItem> expected,
@@ -81,7 +81,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// Assert that both enumerables has equal elements in any order
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
-    /// <param name="expectedExpr">Provided by the compiler for building the specification description</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Like(
         IEnumerable<TItem> expected,
@@ -92,7 +92,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// Assert that both enumerables has equal elements in any order
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
-    /// <param name="expectedExpr">Provided by the compiler for building the specification description</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> EquivalentTo(
         IEnumerable<TItem> expected,
@@ -102,9 +102,9 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     /// <summary>
     /// Assert that both enumerables are the same instance
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
-    /// <returns></returns>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for further assertions of the value</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> SameAs(
         IEnumerable<TItem>? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)

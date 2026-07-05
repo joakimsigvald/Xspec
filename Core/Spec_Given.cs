@@ -11,10 +11,10 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Provide any arrangement to the test, which will be applied during test execution in reverse order of where in the test-pipeline it was provided
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="setup"></param>
-    /// <param name="setupExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TValue">The type of the value to arrange</typeparam>
+    /// <param name="setup">An action applied to each generated value of the given type</param>
+    /// <param name="setupExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         Action<TValue> setup,
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null)
@@ -34,10 +34,10 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Transform any value and use the transformed value as default
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="transform"></param>
-    /// <param name="transformExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TValue">The type of the value to arrange</typeparam>
+    /// <param name="transform">A function transforming the default value of the given type</param>
+    /// <param name="transformExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null)
@@ -51,8 +51,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TValue">The type of value the tag is associated with</typeparam>
     /// <param name="tag">The tag</param>
-    /// <param name="tagExpr">Leave empty. Provided by the compiler</param>
-    /// <returns></returns>
+    /// <param name="tagExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for setting up an expectation on the tag</returns>
     public IGivenTag<TSUT, TResult, TValue> Given<TValue>(
         Tag<TValue> tag,
         [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
@@ -62,10 +62,10 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// Provide an array of default values, that will be applied in all mocks and auto-generated test-data, where no specific value or setup is given.
     /// It is also mentioned by position so the values can be retrieved by A, ASecond, AThird etc.
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="defaultValues"></param>
-    /// <param name="defaultValuesExpr"></param>
-    /// <returns></returns>
+    /// <typeparam name="TValue">The type of the default values</typeparam>
+    /// <param name="defaultValues">The values to use as defaults for the given type</param>
+    /// <param name="defaultValuesExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     public IGivenTestPipeline<TSUT, TResult> Given<TValue>(
         TValue[]? defaultValues,
         [CallerArgumentExpression(nameof(defaultValues))] string? defaultValuesExpr = null)
@@ -76,19 +76,19 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     }
 
     /// <summary>
-    /// A continuation for providing mock-setup for the given type
+    /// Access the mock of the given type to provide mock-setup
     /// </summary>
-    /// <typeparam name="TService"></typeparam>
-    /// <returns></returns>
-    /// <exception cref="SetupFailed"></exception>
+    /// <typeparam name="TService">The type to mock</typeparam>
+    /// <returns>A continuation for providing mock-setup for the given type</returns>
+    /// <exception cref="SetupFailed">Thrown when providing arrangement after the test pipeline has been set up</exception>
     public IGivenServiceContinuation<TSUT, TResult, TService> Given<TService>() where TService : class
         => new GivenServiceContinuation<TSUT, TResult, TService>(this);
 
     /// <summary>
     /// Return continuation for providing any setup as an action
     /// </summary>
-    /// <returns></returns>
-    /// <exception cref="SetupFailed"></exception>
+    /// <returns>A continuation for providing test data and other arrangement</returns>
+    /// <exception cref="SetupFailed">Thrown when providing arrangement after the test pipeline has been set up</exception>
     public IGivenContinuation<TSUT, TResult> Given()
         => new GivenContinuation<TSUT, TResult>(this);
 

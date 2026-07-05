@@ -3,10 +3,10 @@
 namespace Xspec.Assert.Continuations;
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided comparable
+/// Object that allows assertions to be made on the provided comparable
 /// </summary>
-/// <typeparam name="TActual"></typeparam>
-/// <typeparam name="TContinuation"></typeparam>
+/// <typeparam name="TActual">The type of the value to assert on</typeparam>
+/// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
 public abstract record IsComparable<TActual, TContinuation> : Constraint<TActual, TContinuation>
     where TContinuation : IsComparable<TActual, TContinuation>, new()
     where TActual : IComparable<TActual>
@@ -14,8 +14,8 @@ public abstract record IsComparable<TActual, TContinuation> : Constraint<TActual
     /// <summary>
     /// Assert that the value is not same as the given value
     /// </summary>
-    /// <param name="expected"></param>
-    /// <param name="expectedExpr"></param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for making additional asserts on the value</returns>
     public ContinueWith<TContinuation> Not(
         TActual expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
@@ -48,9 +48,9 @@ public abstract record IsComparable<TActual, TContinuation> : Constraint<TActual
 }
 
 /// <summary>
-/// Object that allows an assertions to be made on the provided comparable
+/// Object that allows assertions to be made on the provided comparable
 /// </summary>
-/// <typeparam name="TActual"></typeparam>
+/// <typeparam name="TActual">The type of the value to assert on</typeparam>
 public record IsComparable<TActual> : IsComparable<TActual, IsComparable<TActual>>
     where TActual : IComparable<TActual>
 {

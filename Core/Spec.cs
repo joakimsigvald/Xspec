@@ -41,8 +41,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     public string Specification => _lazySpecification.Value;
 
     /// <summary>
-    /// Teardown
+    /// Runs the teardown of the test pipeline (the steps provided with Until)
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     public void Dispose() => Pipeline.TearDown();
 }

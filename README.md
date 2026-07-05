@@ -6,6 +6,11 @@ Tests run on the standard xUnit runner and can live side by side with existing x
 
 Whether you are new to unit testing or an experienced practitioner, Xspec helps you express test intent clearly by removing boilerplate, enforcing structure, and generating readable failure descriptions.
 
+Install the package in your test project:
+```shell
+dotnet add package Xspec
+```
+
 Example: testing the `PlaceOrder` method on `ShoppingService`:
 ```csharp
 public class WhenPlaceOrder : Spec<ShoppingService>
@@ -34,7 +39,7 @@ In real-world usage, this typically leads to substantially smaller tests compare
 4. [Mocking & Auto-Mocking](#4-mocking--auto-mocking)  
 5. [Asserting Results](#5-asserting-results)  
 6. [Guidelines](#6-guidelines) 
-7. [Beyond TDD: Specification-Driven Agentic Development](#7-beyond-tdd:-specification--driven-agentic-development)
+7. [Beyond TDD: Specification-Driven Agentic Development](#7-beyond-tdd-specification-driven-agentic-development)
 
 ## 1. Introduction
 
@@ -69,7 +74,7 @@ The following methods are used to arrange a test:
 * `Having` — setup that runs *before* the action.
 * `Until`  — teardown or verification that runs *after* the action.
 
-`Having` and `Until` compose fluently in chain form, with the action at the centre and each clause extending outward in time.
+`Having` and `Until` compose fluently in chain form, with the action at the center and each clause extending outward in time.
 
 ```csharp
 public class WhenSendReport : Spec<EmailService, SendResult>
@@ -125,7 +130,6 @@ Example:
    .That(_ => _.List()).Returns(A<MyModel[]>)
    .Given().Three<MyModel>()
    .Then().Result.Has().Count(4)
-
 ```
 
 **Output:**
@@ -140,7 +144,7 @@ Then Result has count 4
 
 In addition to verifying return values, exceptions can also be asserted using `Then().Throws`.
 
-Given some prior familiarity with NuGet, unit tests and mocking, you should now be ready to start writing your own tests using Spec. 
+Given some prior familiarity with NuGet, unit tests and mocking, you should now be ready to start writing your own tests using Xspec. 
 For professional use, the remainder of this README serves as a complete, practical guide to structuring specifications, managing test data, and verifying behavior with Xspec.
 
 ## 2. The Test Pipeline
@@ -165,14 +169,14 @@ When preparing the pipeline, values are provided either for the **Subject** or f
 
 Arrangements are categorized into three types, using specific verbs to dictate their scope:
 * **Values**: Configured using the verb **`Given`** and apply *only* to the **Input**.
-* **Types**: Configured using the verb **`Using`**. A scope must be provided to indicate whether they apply to the **Input**, the **Subject**, or both.
+* **Types**: Configured using the verb **`Using`**. An optional scope indicates whether they apply to the **Input**, the **Subject**, or both (the default).
 * **Mocks**: Configured using the verb **`Given`** and apply to *both* **Input** and **Subject**.
 
 #### 2.1.3 Preparing the Pipeline
 The preparation steps are recorded and later applied in the following order:
 
 1. Default, constraints, and test data are applied *in reverse order of declaration*.
-1. Mocked behaviour *in the order of declaration*.
+1. Mocked behavior *in the order of declaration*.
 
 #### 2.1.4 Creating the Subject Under Test
 After preparation, the pipeline will use AutoMock to create a new instance of your subject under test (unless you provided a value of that type explicitly).
@@ -232,7 +236,7 @@ Two complementary mechanisms are provided:
 - Mentions, for quickly referring to generated values by position or quantity
 - Tags, for assigning stable, meaningful identities to values of the same type
 
-### 3.1. Mentions
+### 3.1 Mentions
 
 Mentions are helper methods for generating and referring to up to five numbered values of a given type, as well as collections of up to five elements.
 Mentions are resolved per type and per test and always refer to the same value within a specification.
@@ -264,7 +268,7 @@ All values of the same or equivalent types are guaranteed to be unique within a 
 Tags complement mentions by allowing values to be referred to by name rather than position.
 They are primarily useful when working with multiple values of the same type.
 
-A tag is an instance of Tag<TValue>.
+A tag is an instance of `Tag<TValue>`.
 Each tag represents exactly one value of the given type.
 
 Example:
@@ -287,20 +291,20 @@ protected static Tag<string> surname = new(), lastname = new();
 .Then().Result.FullName.Is("Ada Lovelace");
 ```
 
-### 3.2.2 Use tagged values as default or for auto-generation
+#### 3.2.2 Use tagged values as default or for auto-generation
 Tagged values may also be used as:
 
-- the default value for a given type
-- input when auto-generating the subject under test
+- the default value when generating test data (`For.Input`)
+- input when auto-generating the subject under test (`For.Subject`)
 
 Example:
 ```csharp
-Given().Default(name).and.Using(age);
+Using(name, For.Input).And(age, For.Subject);
 ```
 
 ### 3.3 Data Generation and Pipeline
 
-Xspec utilizes an internal `DataGenerator` orchestrator to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (last first):
+Xspec utilizes an internal data-generation pipeline to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (last first):
 
 **1. Value**
 * **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
@@ -327,23 +331,23 @@ If generation is required, Xspec evaluates types using a fallback strategy chain
 
 If a specific custom mapping is required during data creation, you can override default generation by using the fluent type conversion pipeline.
 
-* **Fluent Registration:** Configure the generator pipeline via `Register<TTarget>().As<TSource>()`.
+* **Fluent Registration:** Configure the generator pipeline via `Using<TTarget, TSource>()`.
 * **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It securely attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
-* **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Register<int>().As<byte>(b => b + 1)`.
+* **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Using<int, byte>(b => b + 1)`.
 * **Safe Failures:** If incompatible types are relayed and no logical conversion path exists, generation strictly throws an `InvalidTypeConversion`.
 
 ```csharp
 // Generates an Email instance automatically by creating a primitive source and looking for constructors or static factories
 public class WhenConvertByConstructor : Spec<MyEmailConstr>
 {
-    public WhenConvertByConstructor() => Register<MyEmailConstr>().As<Email>();
+    public WhenConvertByConstructor() => Using<MyEmailConstr, Email>();
 }
 
 // Employs a specific conversion lambda to translate generated data
 public class WhenRelayIntToByteWithConverter : Spec<int>
 {
-    public WhenRelayIntToByteWithConverter() => Register<int>().As<byte>(b => b + 1);
-    
+    public WhenRelayIntToByteWithConverter() => Using<int, byte>(b => b + 1);
+
     [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([2, 3, 4]);
 }
 ```
@@ -367,7 +371,7 @@ You can even provide the subject under test by using any of those two methods:
 
 To mock the behavior of a dependency, call `Given<[TheService]>().That(_ => _.[TheMethod](...)).Returns/Throws(...)`. 
 `That` accepts any lambda you would normally supply to the constructor when creating a mock using `Moq`. 
-You do not need to create and manage mocks manually, but can supply mocked behaviour directly to the pipeline.
+You do not need to create and manage mocks manually, but can supply mocked behavior directly to the pipeline.
 This allows most mocking scenarios to be expressed inline, close to the behavior under test.
 
 ### 4.3 Mocking with arguments
@@ -422,7 +426,7 @@ namespace MyProject.Spec.ShoppingService;
 
 public class WhenPlaceOrder : Spec<MyProject.ShoppingService>
 {
-    protected WhenPlaceOrder() 
+    public WhenPlaceOrder() 
         => When(_ => _.PlaceOrder(An<int>()))
         .Given<ICartRepository>().That(_ => _.GetCart(The<int>()))
         .Returns(() => A<Cart>(_ => _.Id = The<int>()));
@@ -488,7 +492,7 @@ Values of any type can be verified with any of the two extension methods `Is` an
   `3.Is().GreaterThan(2)`  
 - Less than:  
   `3.Is().LessThan(2)`  
-- Aproximately equal with tolerance:  
+- Approximately equal with tolerance:  
   `Result.Is().Around(3, 0.1)`  
 - Even: (true if number is divisible by 2)  
   `Result.Is().Even()`  
@@ -587,7 +591,7 @@ Values of any type can be verified with any of the two extension methods `Is` an
   `list.Has().Order(it => it.Age).Descending()` // with condition  
 - [One/Two/Three/Four/Five]Items  
   verify that the collection has the given number of items and return them as a n-tuple  
-  `number.Has().OneItem().that.Is(3)` // numbers have one item, and that item is 3  
+  `numbers.Has().OneItem().that.Is(3)` // numbers have one item, and that item is 3  
   `patients.Has().OneItem().that.Age.Is(3)` // patients have one item, and its age is 3  
   `patients.Has().OneItem(it => it.Age == 3).that.Gender.Is('F')` // patients have one item aged 3, and its gender is female  
 - All  
@@ -609,7 +613,7 @@ The goal of these conventions is to keep specifications readable, navigable, and
 1. Mimic the folder structure of your production code to be tested
    - Create one project per production project called *[ProductionFolder].Test* or *[ProductionFolder].Spec*
    - Create a leaf-folder per subject under test called *[NameOfClass]*
-1. Create one test-class per method under test, called *WHEN[NameOfMethod]*
+1. Create one test-class per method under test, called *When[NameOfMethod]*
 1. Let the class for each method under test be abstract and nest concrete classes inside it for each different setup, called *Given[SomePrecondition]*
 1. Place setup in the constructor and assertions in the test methods
 1. Feel free to nest given classes in more than one layer (but avoid more than four levels of nesting)
@@ -627,8 +631,8 @@ public abstract class WhenPlaceOrder : Spec<ShoppingService>
 
     public abstract class GivenCartExists : WhenPlaceOrder 
     { 
-        protected GivenCartExists
-        => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(A<Cart>());
+        protected GivenCartExists()
+            => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(A<Cart>());
 
         public class WithItems : GivenCartExists 
         {
@@ -643,8 +647,8 @@ public abstract class WhenPlaceOrder : Spec<ShoppingService>
 
     public class GivenCartNotExists : WhenPlaceOrder 
     {
-        public GivenCartNotExists
-        => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(() => Cart.NoCart);
+        public GivenCartNotExists()
+            => Given<ICartRepository>().That(_ => _.GetCart(The(cartId))).Returns(() => Cart.NoCart);
 
         ...
     }
@@ -662,7 +666,7 @@ When using a class fixture and having more than one test method, no setup should
 since the constructor is run once for each test method and provides the setup to the shared class fixture 
 (i.e. would add the same setup multiple times, including after the test pipeline was executed, which Xspec does not allow).
 
-### 6.3. Some final advice
+### 6.3 Some final advice
 
 Unit tests work best when they run *fast*. Write modular production code in line with best practices, 
 so that each unit can be tested in isolation while mocking or ignoring the rest.

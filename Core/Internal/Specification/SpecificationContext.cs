@@ -30,6 +30,16 @@ internal class SpecificationContext : IAssertSpecificationContext
 
     internal void AddUsing(string valueExpr, For scope) => _builder.Add(() => _builder.AddUsing(valueExpr, scope));
 
+    internal void AddUsing(Func<bool> shouldRender, string valueExpr, For scope)
+        => _builder.Add(() =>
+        {
+            if (shouldRender())
+                _builder.AddUsing(valueExpr, scope);
+        });
+
+    internal void AddUsingConversion<TTarget, TSource>()
+        => _builder.Add(_builder.AddUsingConversion<TTarget, TSource>);
+
     internal void AddGiven<TValue>(string setupExpr, bool isCustomExpression, string? article = null)
         => _builder.Add(() => _builder.AddGiven<TValue>(setupExpr, isCustomExpression, article));
 

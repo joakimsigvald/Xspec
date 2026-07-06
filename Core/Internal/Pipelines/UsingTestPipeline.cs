@@ -16,12 +16,16 @@ internal class UsingTestPipeline<TSUT, TResult> :
     }
 
     /// <inheritdoc />
+    public IUsingContinuation<TSUT, TResult, TTarget> And<TTarget>()
+        => Parent.Using<TTarget>();
+
+    /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>()
-        => Parent.Using<TTarget, TSource>();
+        => Parent.Using<TTarget>().From<TSource>();
 
     /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>(Func<TSource, TTarget> convert)
-        => Parent.Using(convert);
+        => Parent.Using<TTarget>().From(convert);
 
     /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TValue>(

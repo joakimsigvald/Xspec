@@ -7,14 +7,17 @@ namespace Xspec;
 public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {
     /// <summary>
-    /// Use a concrete class for auto-mocking of subject
+    /// Use values of the target type from the set described by another type, specified with From.
+    /// If From is not called, the target type is instead registered as a concrete class to instantiate when the subject under test requires an abstraction it implements.
     /// </summary>
-    /// <typeparam name="TConcrete">The concrete class to instantiate when the subject under test requires an abstraction it implements</typeparam>
-    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
-    public IUsingTestPipeline<TSUT, TResult> Using<TConcrete>()
+    /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>
+    /// <returns>A continuation to specify the source of the target type's values with From, or provide further arrangement.</returns>
+    public IUsingContinuation<TSUT, TResult, TTarget> Using<TTarget>()
     {
-        Pipeline.Using(Pipeline.Instantiate<TConcrete>, For.Subject, typeof(TConcrete).Name);
-        return new UsingTestPipeline<TSUT, TResult>(this);
+        var continuation = new UsingContinuation<TSUT, TResult, TTarget>(this);
+        Pipeline.Specification.AddUsing(() => !continuation.IsConverted, typeof(TTarget).Name, For.Subject);
+        Pipeline.AppendUsing(continuation.ResolveDefault);
+        return continuation;
     }
 
     /// <summary>
@@ -23,11 +26,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>
     /// <typeparam name="TSource">The underlying primitive or source type to generate first.</typeparam>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    [Obsolete("Use Using<TTarget>().From<TSource>() instead.")]
     public IUsingTestPipeline<TSUT, TResult> Using<TTarget, TSource>()
-    {
-        Pipeline.Register<TTarget, TSource>();
-        return new UsingTestPipeline<TSUT, TResult>(this);
-    }
+        => Using<TTarget>().From<TSource>();
 
     /// <summary>
     /// Registers a type conversion strategy with a specific conversion function. Whenever the target type is requested, the generator will generate the source type and apply the conversion.
@@ -36,11 +37,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <typeparam name="TSource">The underlying primitive or source type to generate first.</typeparam>
     /// <param name="convert">The function used to convert the source type into the target type.</param>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    [Obsolete("Use Using<TTarget>().From<TSource>(convert) instead.")]
     public IUsingTestPipeline<TSUT, TResult> Using<TTarget, TSource>(Func<TSource, TTarget> convert)
-    {
-        Pipeline.Register(convert);
-        return new UsingTestPipeline<TSUT, TResult>(this);
-    }
+        => Using<TTarget>().From(convert);
 
     /// <summary>
     /// Instructs the test pipeline to use the specified instance when resolving dependencies or generating test data.

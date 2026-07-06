@@ -331,22 +331,24 @@ If generation is required, Xspec evaluates types using a fallback strategy chain
 
 If a specific custom mapping is required during data creation, you can override default generation by using the fluent type conversion pipeline.
 
-* **Fluent Registration:** Configure the generator pipeline via `Using<TTarget, TSource>()`.
+* **Fluent Registration:** Configure the generator pipeline via `Using<TTarget>().From<TSource>()` — use values of the target type from the set described by the source type.
 * **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It securely attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
-* **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Using<int, byte>(b => b + 1)`.
+* **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Using<int>().From((byte b) => b + 1)` — the source type is inferred from the lambda parameter.
+* **Chaining:** Register several conversions fluently with `And`, e.g. `Using<int>().From<byte>().And<long>().From<short>()`.
 * **Safe Failures:** If incompatible types are relayed and no logical conversion path exists, generation strictly throws an `InvalidTypeConversion`.
+* **Deprecated:** The two-type-param form `Using<TTarget, TSource>()` is obsolete; it delegates to `Using<TTarget>().From<TSource>()`.
 
 ```csharp
 // Generates an Email instance automatically by creating a primitive source and looking for constructors or static factories
 public class WhenConvertByConstructor : Spec<MyEmailConstr>
 {
-    public WhenConvertByConstructor() => Using<MyEmailConstr, Email>();
+    public WhenConvertByConstructor() => Using<MyEmailConstr>().From<Email>();
 }
 
 // Employs a specific conversion lambda to translate generated data
 public class WhenRelayIntToByteWithConverter : Spec<int>
 {
-    public WhenRelayIntToByteWithConverter() => Using<int, byte>(b => b + 1);
+    public WhenRelayIntToByteWithConverter() => Using<int>().From((byte b) => b + 1);
 
     [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([2, 3, 4]);
 }

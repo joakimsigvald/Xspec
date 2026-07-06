@@ -8,11 +8,20 @@ namespace Xspec.Continuations;
 public interface IUsingTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {
     /// <summary>
+    /// Use values of the target type from the set described by another type, specified with From.
+    /// If From is not called, the target type is instead registered as a concrete class to instantiate when the subject under test requires an abstraction it implements.
+    /// </summary>
+    /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>
+    /// <returns>A continuation to specify the source of the target type's values with From, or provide further arrangement.</returns>
+    IUsingContinuation<TSUT, TResult, TTarget> And<TTarget>();
+
+    /// <summary>
     /// Registers a type conversion strategy. Whenever the target type is requested, the generator will first generate the source type and cast it.
     /// </summary>
     /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>
     /// <typeparam name="TSource">The underlying primitive or source type to generate first.</typeparam>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    [Obsolete("Use And<TTarget>().From<TSource>() instead.")]
     IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>();
 
     /// <summary>
@@ -22,6 +31,7 @@ public interface IUsingTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult
     /// <typeparam name="TSource">The underlying primitive or source type to generate first.</typeparam>
     /// <param name="convert">The function used to convert the source type into the target type.</param>
     /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    [Obsolete("Use And<TTarget>().From<TSource>(convert) instead.")]
     IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>(Func<TSource, TTarget> convert);
 
     /// <summary>

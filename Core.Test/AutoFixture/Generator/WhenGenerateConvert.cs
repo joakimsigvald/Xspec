@@ -14,49 +14,49 @@ public abstract class WhenGenerateDerivedValueType<TValueType>(int maxDistinct) 
 
 public class WhenConvertByConstructor : WhenGenerateDerivedValueType<MyEmailConstr>
 {
-    public WhenConvertByConstructor() : base(100) => Using<MyEmailConstr, Email>();
+    public WhenConvertByConstructor() : base(100) => Using<MyEmailConstr>().From<Email>();
     [Fact] public void ThenHasValidEmailFormat() => An<MyEmailConstr>().Value.Has(ValidEmail.Verify);
 }
 
 public class WhenConvertByStaticCreate : WhenGenerateDerivedValueType<MyEmailConstr>
 {
-    public WhenConvertByStaticCreate() : base(100) => Using<MyEmailStatic, Email>();
+    public WhenConvertByStaticCreate() : base(100) => Using<MyEmailStatic>().From<Email>();
     [Fact] public void ThenHasValidEmailFormat() => An<MyEmailStatic>().Value.Has(ValidEmail.Verify);
 }
 
 public class WhenConvertByExplicitCast : WhenGenerateDerivedValueType<MyEmailConstr>
 {
-    public WhenConvertByExplicitCast() : base(100) => Using<MyEmailCast, Email>();
+    public WhenConvertByExplicitCast() : base(100) => Using<MyEmailCast>().From<Email>();
     [Fact] public void ThenHasValidEmailFormat() => An<MyEmailCast>().Value.Has(ValidEmail.Verify);
 }
 
 public class WhenRelayIntToByte : Spec<int>
 {
-    public WhenRelayIntToByte() => Using<int, byte>();
+    public WhenRelayIntToByte() => Using<int>().From<byte>();
     [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([1, 2, 3]);
 }
 
 public class WhenRelayIntToByteWithConverter : Spec<int>
 {
-    public WhenRelayIntToByteWithConverter() => Using<int, byte>(b => b + 1);
+    public WhenRelayIntToByteWithConverter() => Using<int>().From((byte b) => b + 1);
     [Fact] public void ThenGenerateByteAsInt() => Three<int>().Is().EqualTo([2, 3, 4]);
 }
 
 public class WhenRelayByteToInt : Spec<byte>
 {
-    public WhenRelayByteToInt() => Using<byte, int>();
+    public WhenRelayByteToInt() => Using<byte>().From<int>();
     [Fact] public void ThenGenerateIntAsByte() => Three<byte>().Is().EqualTo([1, 2, 3]);
 }
 
 public class WhenRelayStringToByte : Spec<string>
 {
-    public WhenRelayStringToByte() => Using<string, byte>();
+    public WhenRelayStringToByte() => Using<string>().From<byte>();
     [Fact] public void ThenGenerateByteAsString() => Three<string>().Is().EqualTo(["1", "2", "3"]);
 }
 
 public class WhenRelayIncompatibleTypes : Spec<byte>
 {
-    public WhenRelayIncompatibleTypes() => Using<byte, DateTime>();
+    public WhenRelayIncompatibleTypes() => Using<byte>().From<DateTime>();
 
     [Fact]
     public void ThenThrowsInvalidTypeConversion()

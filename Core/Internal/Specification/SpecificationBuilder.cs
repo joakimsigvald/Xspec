@@ -117,6 +117,12 @@ internal class SpecificationBuilder
         }
     }
 
+    internal void AddUsingConversion<TTarget, TSource>()
+    {
+        _currentMockSetup = null;
+        _textBuilder.AddPhraseOrSentence($"{Using} {NameOf<TTarget>()} from {NameOf<TSource>()}");
+    }
+
     internal void AddGiven<TValue>(string setupExpr, bool isCustomExpression, string? article)
     {
         _currentMockSetup = null;

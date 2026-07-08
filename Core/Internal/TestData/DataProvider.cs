@@ -20,13 +20,17 @@ internal class DataProvider
 
     internal void UseFactory<TValue>(Func<TValue> factory, For scope)
     {
+        var type = typeof(TValue);
         var defaults = GetDefaults(scope);
-        defaults[typeof(TValue)] = ArrangeFactory(defaults, factory);
+        var sharedInstance = new Lazy<TValue>(factory);
+        defaults[type] = ArrangeFactory(defaults, type, () => sharedInstance.Value);
+        foreach (var iface in type.GetInterfaces())
+            defaults[iface] = ArrangeFactory(defaults, iface, () => sharedInstance.Value);
     }
 
-    private static Arrangement ArrangeFactory<TValue>(Dictionary<Type, Arrangement> defaults, Func<TValue> factory)
+    private static Arrangement ArrangeFactory<TValue>(Dictionary<Type, Arrangement> defaults, Type key, Func<TValue> factory)
     {
-        if (!defaults.TryGetValue(typeof(TValue), out var current))
+        if (!defaults.TryGetValue(key, out var current))
             return new(false, null, () => factory());
 
         if (current.Factory is null)

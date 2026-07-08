@@ -32,6 +32,15 @@ public class MarkerRepository : IMyRepository
     public MyModel SetModel(MyModel model) => model;
 }
 
+public class WhenUsingConcreteClassForInterface : Spec<MyService, int>
+{
+    public WhenUsingConcreteClassForInterface() => When(_ => _.GetNextId());
+
+    [Fact]
+    public void ThenSubjectGetsConcreteInstanceInsteadOfMock()
+        => Using<MarkerRepository>().Then().Result.Is(42);
+}
+
 public class WhenUsingFromForInput : Spec<int>
 {
     public WhenUsingFromForInput() => Using<int>(For.Input).From((byte b) => b + 100);

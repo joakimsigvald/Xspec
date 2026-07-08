@@ -11,6 +11,9 @@ internal class Context(ISpecificationProvider specificationProvider)
     internal TClass Instantiate<TClass>()
         => (TClass)(_repository.Instantiate<TClass>() ?? Create<TClass>())!;
 
+    internal TClass InstantiateNew<TClass>()
+        => (TClass)_repository.InstantiateNew<TClass>()!;
+
     internal TValue Apply<TValue>(Mutation<TValue>? mutation, int? index) => Produce(index, mutation);
 
     internal TValue Produce<TValue>(int? index, Mutation<TValue>? mutation = null)

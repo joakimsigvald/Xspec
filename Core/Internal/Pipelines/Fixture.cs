@@ -92,6 +92,8 @@ internal abstract class Fixture<TSUT> : ISpecificationProvider
 
     internal TClass Instantiate<TClass>() => _context.Instantiate<TClass>();
 
+    internal TClass InstantiateNew<TClass>() => _context.InstantiateNew<TClass>();
+
     internal Mock<TObject> GetMock<TObject>() where TObject : class
         => _context.GetMock<TObject>();
 

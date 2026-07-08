@@ -44,6 +44,13 @@ internal class Repository : IRepository
         return _mutator.Mutate(type, instance);
     }
 
+    internal object? InstantiateNew<TValue>()
+    {
+        var type = typeof(TValue);
+        var instance = _generator.CreateNew(type, For.Subject);
+        return _mutator.Mutate(type, instance);
+    }
+
     public bool TryGetDefault(Type type, For scope, out object? val)
     {
         var found = _dataProvider.TryGetValue(type, scope, out val);

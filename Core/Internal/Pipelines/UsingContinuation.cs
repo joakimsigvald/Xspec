@@ -22,7 +22,7 @@ internal class UsingContinuation<TSUT, TResult, TTarget> :
     internal void ResolveDefault()
     {
         if (!_isConverted)
-            Parent.Pipeline.Using(Parent.Pipeline.Instantiate<TTarget>, _scope, string.Empty);
+            Parent.Pipeline.Using(Parent.Pipeline.InstantiateNew<TTarget>, _scope, string.Empty);
     }
 
     /// <inheritdoc />

@@ -9,7 +9,10 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         if (!_typeRelays.TryGetValue(request.Type, out var source) || (source.Scope & request.Scope) == For.None)
             return false;
 
-        result = request.Create(source.Type);
+        result = source.Sequence.Next is { } next ? next()
+            : source.Type == request.Type ? throw new SetupFailed(
+                $"Using<{request.Type.Name}>().From<{request.Type.Name}>() with the same type requires a sequence, e.g. StartingAt or Spaced")
+            : request.Create(source.Type);
 
         if (source.Convert != null)
         {
@@ -64,8 +67,16 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         }
     }
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
-        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!), scope);
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope, SequenceHolder sequence)
+        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!), scope, sequence);
 }
 
-internal record TypeRelay(Type Type, Func<object?, object?>? Convert, For Scope);
+internal record TypeRelay(Type Type, Func<object?, object?>? Convert, For Scope, SequenceHolder Sequence);
+
+/// <summary>
+/// Holds the optional value sequence of a type relay, installed after registration by StartingAt or Spaced.
+/// </summary>
+internal class SequenceHolder
+{
+    internal Func<object?>? Next;
+}

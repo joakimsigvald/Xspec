@@ -1,4 +1,5 @@
 using Xspec.Continuations;
+using Xspec.Internal.TestData.Generation.Strategies;
 
 namespace Xspec.Internal.Pipelines;
 
@@ -26,20 +27,22 @@ internal class UsingContinuation<TSUT, TResult, TTarget> :
     }
 
     /// <inheritdoc />
-    public IUsingTestPipeline<TSUT, TResult> From<TSource>()
+    public IUsingFromContinuation<TSUT, TResult, TSource> From<TSource>()
         => RegisterConversion<TSource>(null);
 
     /// <inheritdoc />
-    public IUsingTestPipeline<TSUT, TResult> From<TSource>(Func<TSource, TTarget> convert)
+    public IUsingFromContinuation<TSUT, TResult, TSource> From<TSource>(Func<TSource, TTarget> convert)
         => RegisterConversion(convert ?? throw new SetupFailed("Convert cannot be null"));
 
-    private IUsingTestPipeline<TSUT, TResult> RegisterConversion<TSource>(Func<TSource, TTarget>? convert)
+    private IUsingFromContinuation<TSUT, TResult, TSource> RegisterConversion<TSource>(Func<TSource, TTarget>? convert)
     {
         if (_isConverted)
             throw new SetupFailed("From can only be applied once per Using");
-        Parent.Pipeline.Register(convert, _scope);
+        var holder = new SequenceHolder();
+        var from = new FromContinuation<TSUT, TResult, TSource>(Parent, holder);
+        Parent.Pipeline.Register(convert, _scope, holder);
         _isConverted = true;
-        Parent.Pipeline.Specification.AddUsingConversion<TTarget, TSource>(_scope);
-        return this;
+        Parent.Pipeline.Specification.AddUsingConversion<TTarget, TSource>(_scope, from.DescribeSequence);
+        return from;
     }
 }

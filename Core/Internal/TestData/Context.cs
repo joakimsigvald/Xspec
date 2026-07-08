@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Xspec.Internal.Pipelines;
+using Xspec.Internal.TestData.Generation.Strategies;
 
 namespace Xspec.Internal.TestData;
 
@@ -104,8 +105,8 @@ internal class Context(ISpecificationProvider specificationProvider)
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _repository.SetDefaultException(typeof(TService), ex);
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
-        => _repository.Register(convert, scope);
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope, SequenceHolder sequence)
+        => _repository.Register(convert, scope, sequence);
 
     private int GetTagIndex<TValue>(Tag<TValue> tag, string tagName)
     {

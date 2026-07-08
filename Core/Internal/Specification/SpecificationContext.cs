@@ -37,8 +37,8 @@ internal class SpecificationContext : IAssertSpecificationContext
                 _builder.AddUsing(valueExpr, scope);
         });
 
-    internal void AddUsingConversion<TTarget, TSource>(For scope)
-        => _builder.Add(() => _builder.AddUsingConversion<TTarget, TSource>(scope));
+    internal void AddUsingConversion<TTarget, TSource>(For scope, Func<string> describeSequence)
+        => _builder.Add(() => _builder.AddUsingConversion<TTarget, TSource>(scope, describeSequence));
 
     internal void AddGiven<TValue>(string setupExpr, bool isCustomExpression, string? article = null)
         => _builder.Add(() => _builder.AddGiven<TValue>(setupExpr, isCustomExpression, article));

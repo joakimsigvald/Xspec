@@ -19,12 +19,14 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>1.1.1</PackageVersion>
+		<PackageVersion>1.2.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Added Scope for Using/TTarget/ (test data generation) and registration of interfaces of concrete types with Using/TTarget/
+			Added optional For-scope to Using/TTarget/, and registration of interfaces of concrete types registered with Using/TTarget/
+			Added numeric value sequences for Using/TTarget/.From/TSource/, defined with StartingAt and Spaced (fixed spacing, step function, or indexed step function)
+			Sequence values are guaranteed unique: generation throws ValuesExhausted rather than repeating a value
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

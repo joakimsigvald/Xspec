@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Xspec.Internal.Specification;
 using Xspec.Internal.TestData;
+using Xspec.Internal.TestData.Generation.Strategies;
 
 namespace Xspec.Internal.Pipelines;
 
@@ -121,10 +122,16 @@ internal abstract class Fixture<TSUT> : ISpecificationProvider
         _context.SetupThrows<TService>(expected);
     }
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope, SequenceHolder sequence)
     {
         AssertIsNotSetUp();
-        _context.Register(convert, scope);
+        _context.Register(convert, scope, sequence);
+    }
+
+    internal void SetSequence(SequenceHolder sequence, Func<object?> next)
+    {
+        AssertIsNotSetUp();
+        sequence.Next = next;
     }
 
     private void AssertIsNotSetUp()

@@ -16,8 +16,8 @@ internal class UsingTestPipeline<TSUT, TResult> :
     }
 
     /// <inheritdoc />
-    public IUsingContinuation<TSUT, TResult, TTarget> And<TTarget>()
-        => Parent.Using<TTarget>();
+    public IUsingContinuation<TSUT, TResult, TTarget> And<TTarget>(For scope = For.All)
+        => Parent.Using<TTarget>(scope);
 
     /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>()

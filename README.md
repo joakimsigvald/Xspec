@@ -335,6 +335,7 @@ If a specific custom mapping is required during data creation, you can override 
 * **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It securely attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
 * **Custom Lambdas:** For explicit control, inject a conversion delegate directly, such as `Using<int>().From((byte b) => b + 1)` — the source type is inferred from the lambda parameter.
 * **Chaining:** Register several conversions fluently with `And`, e.g. `Using<int>().From<byte>().And<long>().From<short>()`.
+* **Scoping:** Like the value-level overloads, `Using<TTarget>()` accepts an optional `For` scope, e.g. `Using<int>(For.Input).From<byte>()` applies the conversion only when generating ambient test data, leaving subject construction unaffected. The default is `For.All`.
 * **Safe Failures:** If incompatible types are relayed and no logical conversion path exists, generation strictly throws an `InvalidTypeConversion`.
 * **Deprecated:** The two-type-param form `Using<TTarget, TSource>()` is obsolete; it delegates to `Using<TTarget>().From<TSource>()`.
 

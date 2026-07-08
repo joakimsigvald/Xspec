@@ -19,12 +19,12 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>1.1.0</PackageVersion>
+		<PackageVersion>1.1.1</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Using-From: new more intuitive construct for defining test data
+			Added Scope for Using TTarget (test data generation)
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

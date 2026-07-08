@@ -76,8 +76,8 @@ internal class Repository : IRepository
         => (TValue)_mutator.Mutate(typeof(TValue), _generator.Create<TValue>(scope))!;
 
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
-        => _typeConversionStrategy.Register(convert);
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
+        => _typeConversionStrategy.Register(convert, scope);
 
     internal Mock GetMock(Type type) => _mockingStrategy.GetMock(type);
 

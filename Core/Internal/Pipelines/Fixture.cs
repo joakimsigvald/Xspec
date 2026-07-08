@@ -119,10 +119,10 @@ internal abstract class Fixture<TSUT> : ISpecificationProvider
         _context.SetupThrows<TService>(expected);
     }
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
     {
         AssertIsNotSetUp();
-        _context.Register(convert);
+        _context.Register(convert, scope);
     }
 
     private void AssertIsNotSetUp()

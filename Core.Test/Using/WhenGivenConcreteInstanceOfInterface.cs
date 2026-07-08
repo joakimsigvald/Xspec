@@ -34,6 +34,20 @@ public class WhenUsingConcreteInstanceOfInterface : Spec<MyService, int>
         Using<FakeRepository>().And(123, For.Subject).Then().Result.Is(123);
         Specification.Is(
             """
+            Using FakeRepository
+              and 123 for Subject
+            When _.GetNextId()
+            Then Result is 123
+            """
+            );
+    }
+
+    [Fact]
+    public void GivenConcreteTypeArgWithScope_ThenMentionScope()
+    {
+        Using<FakeRepository>(For.Subject).And(123, For.Subject).Then().Result.Is(123);
+        Specification.Is(
+            """
             Using FakeRepository for Subject
               and 123 for Subject
             When _.GetNextId()

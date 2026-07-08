@@ -11,18 +11,18 @@ internal class UsingContinuation<TSUT, TResult, TTarget> :
     UsingTestPipeline<TSUT, TResult>,
     IUsingContinuation<TSUT, TResult, TTarget>
 {
+    private readonly For _scope;
     private bool _isConverted;
 
-    internal UsingContinuation(Spec<TSUT, TResult> parent) : base(parent)
-    {
-    }
+    internal UsingContinuation(Spec<TSUT, TResult> parent, For scope) : base(parent)
+        => _scope = scope;
 
     internal bool IsConverted => _isConverted;
 
     internal void ResolveDefault()
     {
         if (!_isConverted)
-            Parent.Pipeline.Using(Parent.Pipeline.Instantiate<TTarget>, For.Subject, string.Empty);
+            Parent.Pipeline.Using(Parent.Pipeline.Instantiate<TTarget>, _scope, string.Empty);
     }
 
     /// <inheritdoc />
@@ -37,9 +37,9 @@ internal class UsingContinuation<TSUT, TResult, TTarget> :
     {
         if (_isConverted)
             throw new SetupFailed("From can only be applied once per Using");
-        Parent.Pipeline.Register(convert);
+        Parent.Pipeline.Register(convert, _scope);
         _isConverted = true;
-        Parent.Pipeline.Specification.AddUsingConversion<TTarget, TSource>();
+        Parent.Pipeline.Specification.AddUsingConversion<TTarget, TSource>(_scope);
         return this;
     }
 }

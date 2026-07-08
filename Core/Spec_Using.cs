@@ -11,11 +11,12 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// If From is not called, the target type is instead registered as a concrete class to instantiate when the subject under test requires an abstraction it implements.
     /// </summary>
     /// <typeparam name="TTarget">The type being requested by the pipeline.</typeparam>
+    /// <param name="scope">Determines whether the registration applies to Subject Under Test construction (Subject), ambient test data (Input), or both (All). Defaults to All.</param>
     /// <returns>A continuation to specify the source of the target type's values with From, or provide further arrangement.</returns>
-    public IUsingContinuation<TSUT, TResult, TTarget> Using<TTarget>()
+    public IUsingContinuation<TSUT, TResult, TTarget> Using<TTarget>(For scope = For.All)
     {
-        var continuation = new UsingContinuation<TSUT, TResult, TTarget>(this);
-        Pipeline.Specification.AddUsing(() => !continuation.IsConverted, typeof(TTarget).Name, For.Subject);
+        var continuation = new UsingContinuation<TSUT, TResult, TTarget>(this, scope);
+        Pipeline.Specification.AddUsing(() => !continuation.IsConverted, typeof(TTarget).Name, scope);
         Pipeline.AppendUsing(continuation.ResolveDefault);
         return continuation;
     }

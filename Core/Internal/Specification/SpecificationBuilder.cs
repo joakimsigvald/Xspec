@@ -117,10 +117,11 @@ internal class SpecificationBuilder
         }
     }
 
-    internal void AddUsingConversion<TTarget, TSource>()
+    internal void AddUsingConversion<TTarget, TSource>(For scope)
     {
         _currentMockSetup = null;
-        _textBuilder.AddPhraseOrSentence($"{Using} {NameOf<TTarget>()} from {NameOf<TSource>()}");
+        var scopeSuffix = scope == For.All ? string.Empty : $" for {scope}";
+        _textBuilder.AddPhraseOrSentence($"{Using} {NameOf<TTarget>()} from {NameOf<TSource>()}{scopeSuffix}");
     }
 
     internal void AddGiven<TValue>(string setupExpr, bool isCustomExpression, string? article)

@@ -101,8 +101,8 @@ internal class Context(ISpecificationProvider specificationProvider)
     internal void SetupThrows<TService>(Func<Exception> ex)
         => _repository.SetDefaultException(typeof(TService), ex);
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
-        => _repository.Register(convert);
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
+        => _repository.Register(convert, scope);
 
     private int GetTagIndex<TValue>(Tag<TValue> tag, string tagName)
     {

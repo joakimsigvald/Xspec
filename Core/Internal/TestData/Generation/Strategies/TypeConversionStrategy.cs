@@ -6,7 +6,7 @@ internal class TypeConversionStrategy() : IGenerationStrategy
 
     public bool TryGenerate(GenerationRequest request, ref object? result)
     {
-        if (!_typeRelays.TryGetValue(request.Type, out var source))
+        if (!_typeRelays.TryGetValue(request.Type, out var source) || (source.Scope & request.Scope) == For.None)
             return false;
 
         result = request.Create(source.Type);
@@ -64,8 +64,8 @@ internal class TypeConversionStrategy() : IGenerationStrategy
         }
     }
 
-    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert = null)
-        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!));
+    internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope)
+        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!), scope);
 }
 
-internal record TypeRelay(Type Type, Func<object?, object?>? Convert = null);
+internal record TypeRelay(Type Type, Func<object?, object?>? Convert, For Scope);

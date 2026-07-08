@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Xspec.Continuations;
 
 /// <summary>
@@ -20,4 +22,17 @@ public interface IUsingContinuation<TSUT, TResult, TTarget> : IUsingTestPipeline
     /// <param name="convert">The function used to convert the source type into the target type.</param>
     /// <returns>A continuation to constrain the generated source values with StartingAt or Spaced, or provide further arrangement.</returns>
     IUsingFromContinuation<TSUT, TResult, TSource> From<TSource>(Func<TSource, TTarget> convert);
+
+    /// <summary>
+    /// Registers a generator function describing the value space of the target type.
+    /// Whenever the target type is requested, the generator produces the next source value, which is converted to the target type if necessary.
+    /// The values are used exactly as produced: the user defines the value space, so duplicates are allowed.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the generated values.</typeparam>
+    /// <param name="generate">A function producing the next value of the space, invoked once per generated value.</param>
+    /// <param name="generateExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    IUsingTestPipeline<TSUT, TResult> From<TSource>(
+        Func<TSource> generate,
+        [CallerArgumentExpression(nameof(generate))] string? generateExpr = null);
 }

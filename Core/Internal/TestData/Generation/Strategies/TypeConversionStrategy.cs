@@ -2,11 +2,14 @@
 
 internal class TypeConversionStrategy() : IGenerationStrategy
 {
-    private readonly Dictionary<Type, TypeRelay> _typeRelays = [];
+    private static readonly For[] _scopes = [For.All, For.Input, For.Subject];
+    private readonly Dictionary<Type, TypeRelay> _generalRelays = [];
+    private readonly Dictionary<Type, TypeRelay> _inputRelays = [];
+    private readonly Dictionary<Type, TypeRelay> _subjectRelays = [];
 
     public bool TryGenerate(GenerationRequest request, ref object? result)
     {
-        if (!_typeRelays.TryGetValue(request.Type, out var source) || (source.Scope & request.Scope) == For.None)
+        if (!TryGetRelay(request.Type, request.Scope, out var source))
             return false;
 
         result = source.Sequence.Next is { } next ? next()
@@ -68,10 +71,30 @@ internal class TypeConversionStrategy() : IGenerationStrategy
     }
 
     internal void Register<TTarget, TSource>(Func<TSource, TTarget>? convert, For scope, SequenceHolder sequence)
-        => _typeRelays[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : s => convert((TSource)s!), scope, sequence);
+    {
+        var overlapping = _scopes.FirstOrDefault(
+            existing => (existing & scope) != For.None && GetRelays(existing).ContainsKey(typeof(TTarget)));
+        if (overlapping != For.None)
+            throw new SetupFailed(
+                $"Using<{typeof(TTarget).Name}> for {scope} overlaps the existing registration for {overlapping}. Scopes for the same type must be disjoint");
+        GetRelays(scope)[typeof(TTarget)] = new(typeof(TSource), convert is null ? null : value => convert((TSource)value!), sequence);
+    }
+
+    private bool TryGetRelay(Type type, For scope, out TypeRelay relay)
+        => GetRelays(scope).TryGetValue(type, out relay!)
+        || _generalRelays.TryGetValue(type, out relay!);
+
+    private Dictionary<Type, TypeRelay> GetRelays(For scope)
+        => scope switch
+        {
+            For.Input => _inputRelays,
+            For.Subject => _subjectRelays,
+            For.All => _generalRelays,
+            _ => throw new NotImplementedException($"{scope}")
+        };
 }
 
-internal record TypeRelay(Type Type, Func<object?, object?>? Convert, For Scope, SequenceHolder Sequence);
+internal record TypeRelay(Type Type, Func<object?, object?>? Convert, SequenceHolder Sequence);
 
 /// <summary>
 /// Holds the optional value sequence of a type relay, installed after registration by StartingAt or Spaced.

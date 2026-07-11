@@ -63,7 +63,7 @@ internal abstract class Sequence<TValue> : ISequence
         {
             return Step(_current, _produced.Count);
         }
-        catch (ArgumentOutOfRangeException)
+        catch (Exception ex) when (ex is ArgumentOutOfRangeException or OverflowException)
         {
             throw new ValuesExhausted(typeof(TValue));
         }

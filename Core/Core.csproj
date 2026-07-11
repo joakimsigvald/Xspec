@@ -26,7 +26,7 @@
 		<PackageReleaseNotes>
 			Allow type relays for the same type only if they have disjunct scope
 			Using&lt;TTarget&gt;().From(values): provide an explicit list of values as the value space of a type
-			Using&lt;DateTime&gt;().From&lt;DateTime&gt;() supports StartingAt and Spaced, mirroring numeric sequences
+			DateTime and TimeSpan sources support StartingAt and Spaced, mirroring numeric sequences
 			Breaking: removed the obsolete Using&lt;TTarget, TSource&gt; and And&lt;TTarget, TSource&gt; methods
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>

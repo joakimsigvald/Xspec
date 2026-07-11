@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Xspec.Continuations;
+using Xspec.Internal.TestData.Generation;
 using Xspec.Internal.TestData.Generation.Strategies;
 
 namespace Xspec.Internal.Pipelines;
@@ -39,15 +40,31 @@ internal class UsingContinuation<TSUT, TResult, TTarget> :
     public IUsingTestPipeline<TSUT, TResult> From<TSource>(
         Func<TSource> generate,
         [CallerArgumentExpression(nameof(generate))] string? generateExpr = null)
+        => generate is null
+            ? throw new SetupFailed("Generate cannot be null")
+            : RegisterValueSpace<TSource>(() => generate(), generateExpr!);
+
+    /// <inheritdoc />
+    public IUsingTestPipeline<TSUT, TResult> From<TSource>(
+        TSource[] values,
+        [CallerArgumentExpression(nameof(values))] string? valuesExpr = null)
     {
-        if (generate is null)
-            throw new SetupFailed("Generate cannot be null");
+        if (values is null || values.Length == 0)
+            throw new SetupFailed("Values cannot be null or empty");
+        var index = 0;
+        return RegisterValueSpace<TSource>(
+            () => index < values.Length ? values[index++] : throw new ValuesExhausted(typeof(TSource)),
+            valuesExpr!);
+    }
+
+    private IUsingTestPipeline<TSUT, TResult> RegisterValueSpace<TSource>(Func<object?> next, string expr)
+    {
         VerifyNotConverted();
         var holder = new SequenceHolder();
         Parent.Pipeline.Register<TTarget, TSource>(null, _scope, holder);
-        Parent.Pipeline.SetSequence(holder, () => generate());
+        Parent.Pipeline.SetSequence(holder, next);
         _isConverted = true;
-        Parent.Pipeline.Specification.AddUsingFactory<TTarget>(_scope, generateExpr!);
+        Parent.Pipeline.Specification.AddUsingFactory<TTarget>(_scope, expr);
         return this;
     }
 

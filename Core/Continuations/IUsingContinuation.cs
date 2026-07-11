@@ -35,4 +35,18 @@ public interface IUsingContinuation<TSUT, TResult, TTarget> : IUsingTestPipeline
     IUsingTestPipeline<TSUT, TResult> From<TSource>(
         Func<TSource> generate,
         [CallerArgumentExpression(nameof(generate))] string? generateExpr = null);
+
+    /// <summary>
+    /// Registers an explicit list of values as the value space of the target type.
+    /// Whenever the target type is requested, the next value from the list is used, converted to the target type if necessary.
+    /// The values are used in declaration order, exactly as provided: the user defines the value space, so duplicates are allowed.
+    /// Requesting more values than the list contains throws ValuesExhausted.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the provided values.</typeparam>
+    /// <param name="values">The values of the space, used in declaration order.</param>
+    /// <param name="valuesExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation to provide further infrastructure and test data arrangement.</returns>
+    IUsingTestPipeline<TSUT, TResult> From<TSource>(
+        TSource[] values,
+        [CallerArgumentExpression(nameof(values))] string? valuesExpr = null);
 }

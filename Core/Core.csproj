@@ -25,6 +25,7 @@
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
 			Allow type relays for the same type only if they have discjunct scope
+			Using&lt;TTarget&gt;().From(values): provide an explicit list of values as the value space of a type
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

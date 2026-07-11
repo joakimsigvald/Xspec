@@ -1,6 +1,7 @@
 ﻿using Moq;
 using System.Linq.Expressions;
 using Xspec.Continuations;
+using Xspec.Internal.Specification;
 using Xspec.Internal.TestData;
 using Xspec.Internal.Verification;
 
@@ -20,6 +21,7 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
 
     internal TSubject Then<TSubject>(TSubject subject, string subjectExpr)
     {
+        subjectExpr.AssertNoTrainwreck();
         Specification.SetSubject(subjectExpr);
         _ = TestResult;
         return subject;

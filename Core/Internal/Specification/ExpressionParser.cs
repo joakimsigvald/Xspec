@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 using Xspec.Internal.Specification.ExpressionParsing.Describe;
+using Xspec.Internal.Specification.ExpressionParsing.Expressions;
 using Xspec.Internal.Specification.ExpressionParsing.Parse;
 using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 
@@ -25,6 +26,24 @@ public static partial class ExpressionParser
     public static string ParseActual(this string? expr, string? subject = null)
         => string.IsNullOrWhiteSpace(expr) ? string.Empty
         : new ActualDescriber(subject).Describe(Parser.Parse(expr.ToSingleLine()));
+
+    /// Guard for Then/And subject expressions: a member access is only allowed
+    /// on the result of a method call, so MethodCall().Property passes while
+    /// value.Property and Property1.Property2 are trainwrecks. Only the
+    /// top-level chain is inspected — call arguments (lambdas, constraints)
+    /// never count.
+    public static void AssertNoTrainwreck(this string? expr)
+    {
+        if (!string.IsNullOrWhiteSpace(expr) && IsTrainwreck(Parser.Parse(expr.ToSingleLine())))
+            throw new SetupFailed("No trainwrecks in Then/And! Chain additional properties/method calls outside of the subject expression");
+    }
+
+    private static bool IsTrainwreck(Expr e) => e switch
+    {
+        Member m => m.Target is not Call || IsTrainwreck(m.Target),
+        Call c => IsTrainwreck(c.Target),
+        _ => false,
+    };
 
     [return: NotNullIfNotNull(nameof(str))]
     public static string? ToSingleLine(this string? str)

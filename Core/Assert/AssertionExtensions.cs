@@ -100,6 +100,7 @@ public static class AssertionExtensions
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         where TContinuation : Constraint
     {
+        actualExpr.AssertNoTrainwreck();
         SpecificationContext.Current.AddThen();
         SpecificationContext.Current.SetSubject(actualExpr);
         return actual;

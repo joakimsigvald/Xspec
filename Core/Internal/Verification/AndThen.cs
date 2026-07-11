@@ -32,6 +32,7 @@ internal class AndThen<TSUT, TResult> : IAndThen<TResult>
     public TSubject And<TSubject>(TSubject subject,
         [CallerArgumentExpression(nameof(subject))] string? subjectExpr = null)
     {
+        subjectExpr.AssertNoTrainwreck();
         SpecificationContext.Current.AddThen();
         SpecificationContext.Current.SetSubject(subjectExpr);
         return subject;

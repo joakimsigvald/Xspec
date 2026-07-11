@@ -7,13 +7,14 @@ namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 /// member-access chain to find the wrapping <c>Then(...)</c> / <c>And(...)</c>
 /// call, then returns just the tail after that wrapper, prefixed by the
 /// <paramref name="subject"/> the wrapper registered at runtime — the wrapper's
-/// arguments are never interpreted here. Enforces the "no trainwrecks in And" rule.
+/// arguments are never interpreted here.
 /// </summary>
 internal sealed class ActualDescriber(string? subject = null) : Describer
 {
     private const string _then = "Then";
     private const string _and = "And";
     private const string _that = "That";
+    private const string _andBinder = "and";
 
     public override string Describe(Expr expr)
     {
@@ -26,7 +27,9 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
         {
             if (cur is Member m)
             {
-                tail.Insert(0, (m.Name, m.NullConditional));
+                // The and continuation property is a binding word, not part of the asserted value
+                if (m.Name != _andBinder)
+                    tail.Insert(0, (m.Name, m.NullConditional));
                 cur = m.Target;
                 continue;
             }
@@ -34,11 +37,7 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
                 break;
 
             if (c.MethodName is _then or _and)
-            {
-                if (c.MethodName == _and && c.Args.Any(ContainsMember))
-                    throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
                 return Combine(subject ?? "", tail);
-            }
 
             if (c.Target is not Member memCall)
                 break;
@@ -82,6 +81,4 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
     }
 
     private static bool IsOneWord(string s) => !string.IsNullOrEmpty(s) && s.All(char.IsLetterOrDigit);
-
-    private static bool ContainsMember(Expr e) => e is Member || e.Children.Any(ContainsMember);
 }

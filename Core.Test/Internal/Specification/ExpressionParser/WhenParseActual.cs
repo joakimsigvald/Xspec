@@ -13,6 +13,9 @@ public class WhenParseActual : Spec<string>
     [InlineData("And(Result).Id", "Id")]
     [InlineData("The<int>()", "the int")]
     [InlineData("Then().Result?.Name", "Result?.Name")]
+    [InlineData("Then().and.Result", "Result")]
+    [InlineData("Then<IMyService>(_ => _.Call()).and.Result", "Result")]
+    [InlineData("And<IMyService>(_ => _.Call()).and.Result", "Result")]
     public void ThenReturnDescription(string? returnsExpr, string expected)
         => When(_ => returnsExpr.ParseActual()).Then().Result.Is(expected);
 
@@ -22,8 +25,4 @@ public class WhenParseActual : Spec<string>
     public void GivenSubject_ThenPrefixDescription(string returnsExpr, string subject, string expected)
         => When(_ => returnsExpr.ParseActual(subject)).Then().Result.Is(expected);
 
-    [Theory]
-    [InlineData("And(Result.Id)")]
-    public void GivenInvalidSetup_ThenThrow(string returnsExpr)
-        => Xunit.Assert.Throws<SetupFailed>(() => When(_ => returnsExpr.ParseActual()).Then());
 }

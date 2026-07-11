@@ -368,9 +368,9 @@ The subject under test will be created automatically with mocks and default valu
 Remember from chapter 2 that all mocks are configured after test data has been generated. 
 So regardless of where you provide test data or constraints on test-data, they will be available in the mocking stage of the pipeline execution.
 
-You can supply or modify your own constructor arguments by calling `Given` or `Given().Using`.
-You can even provide the subject under test by using any of those two methods:
-`Given(new MyClass(42, "Thursday"))`
+You can supply your own constructor arguments by calling `Using`, or modify the generated ones by calling `Given` with a setup or transform lambda.
+You can even provide the subject under test itself:
+`Using(new MyClass(42, "Thursday"))`
 
 ### 4.2 Mocking
 

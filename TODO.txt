@@ -1,7 +1,3 @@
-* Given(1), still both default and using
-* Given().Default(1), still only default
-* Given().Using(1), deprecated
-* Using(1), instead of Given().Using(1)
 * auto-convert look for first public static method with one argument of type TSource that returns TTarget
 * Sequence uniqueness check (From().StartingAt/Spaced): provide a hook to replace the default
   collect-all-values check, for users generating large numbers of values

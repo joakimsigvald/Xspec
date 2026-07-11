@@ -12,9 +12,17 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
 
     internal ITestResultWithSUT<TSUT, TResult> Then(string? because)
     {
+        Specification.SetSubject(null);
         if (because is not null)
             Specification.AddBecause(because);
         return TestResult;
+    }
+
+    internal TSubject Then<TSubject>(TSubject subject, string subjectExpr)
+    {
+        Specification.SetSubject(subjectExpr);
+        _ = TestResult;
+        return subject;
     }
 
     internal IAndVerify<TResult> Then<TService>(
@@ -96,7 +104,7 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
         _methodUnderTest = new(act ?? throw new SetupFailed("Act cannot be null"), actExpr);
     }
 
-    private TestResult<TSUT, TResult> TestResult => _result ??= Run();
+    internal TestResult<TSUT, TResult> TestResult => _result ??= Run();
 
     private TestResult<TSUT, TResult> Run()
     {

@@ -18,6 +18,17 @@ internal class SpecificationContext : IAssertSpecificationContext
 
     private readonly SpecificationAssignments _assignments = new();
 
+    private string? _subjectDescription;
+
+    /// <summary>
+    /// Register the subject of the current assertion chain, as declared by the
+    /// Then/And overload that received it. Pass null when the wrapper takes no
+    /// subject, so a previously registered subject cannot leak into it.
+    /// </summary>
+    public void SetSubject(string? subjectExpr) => _subjectDescription = subjectExpr?.ParseValue();
+
+    internal static string? PendingSubject => _currentAssertionContext?._subjectDescription;
+
     public override string ToString() => _builder.ToString();
 
     internal void AddWhen(string actExpr) => _builder.Add(() => _builder.AddWhen(actExpr));

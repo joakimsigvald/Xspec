@@ -1,4 +1,5 @@
-﻿using Xspec.Continuations;
+﻿using System.Runtime.CompilerServices;
+using Xspec.Continuations;
 using Xspec.Internal.Specification;
 
 namespace Xspec.Internal.Verification;
@@ -26,10 +27,13 @@ internal class AndThen<TSUT, TResult> : IAndThen<TResult>
     /// </summary>
     /// <typeparam name="TSubject"></typeparam>
     /// <param name="subject"></param>
+    /// <param name="subjectExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns></returns>
-    public TSubject And<TSubject>(TSubject subject)
+    public TSubject And<TSubject>(TSubject subject,
+        [CallerArgumentExpression(nameof(subject))] string? subjectExpr = null)
     {
         SpecificationContext.Current.AddThen();
+        SpecificationContext.Current.SetSubject(subjectExpr);
         return subject;
     }
 }

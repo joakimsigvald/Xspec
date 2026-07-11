@@ -92,13 +92,16 @@ public static class AssertionExtensions
     /// <typeparam name="TContinuation">The concrete type of the assertion continuation, enabling fluent chaining</typeparam>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actual">The value to assert on</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further assertions of the value</returns>
     public static TActual And<TActual, TContinuation>(
         this ContinueWith<TContinuation> _,
-        TActual actual)
+        TActual actual,
+        [CallerArgumentExpression(nameof(actual))] string? actualExpr = null)
         where TContinuation : Constraint
     {
         SpecificationContext.Current.AddThen();
+        SpecificationContext.Current.SetSubject(actualExpr);
         return actual;
     }
 

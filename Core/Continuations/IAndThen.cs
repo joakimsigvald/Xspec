@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Xspec.Continuations;
 
@@ -20,6 +21,8 @@ public interface IAndThen<TResult>
     /// </summary>
     /// <typeparam name="TSubject">The type of the subject to return</typeparam>
     /// <param name="subject">The subject to return for chained assertions</param>
+    /// <param name="subjectExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>The provided subject</returns>
-    TSubject And<TSubject>(TSubject subject);
+    TSubject And<TSubject>(TSubject subject,
+        [CallerArgumentExpression(nameof(subject))] string? subjectExpr = null);
 }

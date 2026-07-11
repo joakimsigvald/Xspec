@@ -5,15 +5,15 @@ namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 /// <summary>
 /// Actual-mode description (used by <c>ParseActual</c>). Walks the rightmost
 /// member-access chain to find the wrapping <c>Then(...)</c> / <c>And(...)</c>
-/// call, then returns just the tail after that wrapper. Enforces the
-/// "no trainwrecks in And" rule.
+/// call, then returns just the tail after that wrapper, prefixed by the
+/// <paramref name="subject"/> the wrapper registered at runtime — the wrapper's
+/// arguments are never interpreted here. Enforces the "no trainwrecks in And" rule.
 /// </summary>
-internal sealed class ActualDescriber : Describer
+internal sealed class ActualDescriber(string? subject = null) : Describer
 {
     private const string _then = "Then";
     private const string _and = "And";
     private const string _that = "That";
-    private const string _subject = "subject";
 
     public override string Describe(Expr expr)
     {
@@ -37,9 +37,7 @@ internal sealed class ActualDescriber : Describer
             {
                 if (c.MethodName == _and && c.Args.Any(ContainsMember))
                     throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
-                var subject = c.Args.Select(AsSubject).FirstOrDefault(s => s is not null);
-                var prefix = subject is null ? "" : Value.Describe(subject);
-                return Combine(prefix, tail);
+                return Combine(subject ?? "", tail);
             }
 
             if (c.Target is not Member memCall)
@@ -69,16 +67,6 @@ internal sealed class ActualDescriber : Describer
             ? prefix + Sep(tail[0]) + StitchBare(tail)
             : $"{prefix}'s {StitchBare(tail)}";
     }
-
-    /// A Then/And argument provides the subject when positional or explicitly
-    /// named <c>subject:</c>; other named arguments (<c>because:</c>, the
-    /// Ignore placeholder) do not.
-    private static Expr? AsSubject(Expr arg) => arg switch
-    {
-        NamedArg { Name: _subject } named => named.Value,
-        NamedArg => null,
-        _ => arg,
-    };
 
     private static string Sep((string _, bool NullCond) seg) => seg.NullCond ? "?." : ".";
 

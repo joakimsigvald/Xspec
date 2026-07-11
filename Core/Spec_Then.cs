@@ -18,12 +18,11 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TSubject">The type of the subject to return</typeparam>
     /// <param name="subject">The subject to return for chained assertions</param>
+    /// <param name="subjectExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>the given subject</returns>
-    public TSubject Then<TSubject>(TSubject subject)
-    {
-        Pipeline.Then(null);
-        return subject;
-    }
+    public TSubject Then<TSubject>(TSubject subject,
+        [CallerArgumentExpression(nameof(subject))] string? subjectExpr = null)
+        => Pipeline.Then(subject, subjectExpr!);
 
     /// <summary>
     /// Run the test-pipeline and verify that the given mock invocation was made.
@@ -110,5 +109,5 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Contains the returned value after calling method-under-test
     /// </summary>
-    protected TResult Result => Pipeline.Then(null).Result;
+    protected TResult Result => Pipeline.TestResult.Result;
 }

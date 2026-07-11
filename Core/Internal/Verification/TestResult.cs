@@ -216,6 +216,7 @@ Try providing a function with the Spec's declared return type instead as paramet
     {
         try
         {
+            SpecificationContext.Current.SetSubject(null);
             SpecificationContext.Current.AddVerify<TService>(expressionExpr);
             verify(Mocked<TService>());
             return new AndVerify<TSUT, TResult>(this);

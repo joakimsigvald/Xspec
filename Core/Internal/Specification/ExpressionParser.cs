@@ -22,9 +22,9 @@ public static partial class ExpressionParser
         : string.IsNullOrWhiteSpace(expr) ? string.Empty
         : new CallDescriber(skipSubjectRef).Describe(Parser.Parse(expr.ToSingleLine()));
 
-    public static string ParseActual(this string? expr)
+    public static string ParseActual(this string? expr, string? subject = null)
         => string.IsNullOrWhiteSpace(expr) ? string.Empty
-        : new ActualDescriber().Describe(Parser.Parse(expr.ToSingleLine()));
+        : new ActualDescriber(subject).Describe(Parser.Parse(expr.ToSingleLine()));
 
     [return: NotNullIfNotNull(nameof(str))]
     public static string? ToSingleLine(this string? str)

@@ -10,14 +10,6 @@
   CRLF on Linux) get spurious failures. Normalize line endings on both sides of the specification
   comparison (dedicated comparison, not the general string assert). Then renormalize this repo's
   worktree to LF (git rm -r --cached . + git reset --hard) so it matches .gitattributes eol=lf
-* Subject identification by declaration instead of parsing: Then<TSubject>(subject) should capture
-  subjectExpr via CallerArgumentExpression and register it on the SpecificationContext (like because
-  and the verify expressions already do). Then ActualDescriber's Then/And branch stops interpreting
-  arguments (drop AsSubject heuristic): cut the chain at the wrapper, describe the tail, and let the
-  builder prepend the runtime-registered subject. Also covers the latent case of asserting in the
-  same statement as a mock-verify Then<IService>(lambda), where the lambda must not become subject.
-  Needs care around the ThreadStatic context and SpecificationBuilder caching, since prefix
-  composition moves from parse time (Constraint.Create) to spec-assembly time.
 --- before Xspec
 * Only show first five items with ellipsis if not all from collection
 * Provide custom data generator for Enums and bools to get random values

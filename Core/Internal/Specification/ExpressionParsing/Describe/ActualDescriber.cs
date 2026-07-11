@@ -13,23 +13,21 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
 {
     private const string _then = "Then";
     private const string _and = "And";
-    private const string _that = "That";
-    private const string _andBinder = "and";
+    private static readonly string[] _bindingWords = ["and", "that"];
 
     public override string Describe(Expr expr)
     {
-        if (expr is Member top && string.Equals(top.Name, _that, StringComparison.OrdinalIgnoreCase))
-            return string.Empty;
-
         var tail = new List<(string Name, bool NullCond)>();
         Expr cur = expr;
         while (true)
         {
             if (cur is Member m)
             {
-                // The and continuation property is a binding word, not part of the asserted value
-                if (m.Name != _andBinder)
-                    tail.Insert(0, (m.Name, m.NullConditional));
+                // A binding-word continuation property (and, that) starts a
+                // fresh value path: everything to its left is a previous step
+                if (IsBindingWord(m.Name))
+                    return Combine(string.Empty, tail);
+                tail.Insert(0, (m.Name, m.NullConditional));
                 cur = m.Target;
                 continue;
             }
@@ -81,4 +79,7 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
     }
 
     private static bool IsOneWord(string s) => !string.IsNullOrEmpty(s) && s.All(char.IsLetterOrDigit);
+
+    private static bool IsBindingWord(string name)
+        => _bindingWords.Contains(name, StringComparer.OrdinalIgnoreCase);
 }

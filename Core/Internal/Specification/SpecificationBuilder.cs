@@ -76,11 +76,9 @@ internal class SpecificationBuilder
 
     internal void AddAssert(string actual, string verb, string? expected)
     {
+        // actual is already described text, not source code — never re-parse it
         if (_isChainOfAssertions)
-        {
-            actual = actual.Split(".That.").Last().Split(".that.").Last();
-            _textBuilder.AddWord(actual.ParseValue());
-        }
+            _textBuilder.AddWord(actual);
         else
             _textBuilder.AddSentence(actual);
         _textBuilder.AddWord(verb.AsWords());

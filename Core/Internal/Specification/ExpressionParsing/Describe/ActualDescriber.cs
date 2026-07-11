@@ -15,10 +15,16 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
     private const string _and = "And";
     private static readonly string[] _bindingWords = ["and", "that"];
 
+    /// One step in the member/call chain, with the separator that precedes it.
+    private sealed record Segment(string Name, bool NullConditional)
+    {
+        public string Separator => NullConditional ? "?." : ".";
+    }
+
     public override string Describe(Expr expr)
     {
-        var tail = new List<(string Name, bool NullCond)>();
-        Expr cur = expr;
+        var tail = new List<Segment>();
+        var cur = expr;
         while (true)
         {
             if (cur is Member m)
@@ -26,8 +32,8 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
                 // A binding-word continuation property (and, that) starts a
                 // fresh value path: everything to its left is a previous step
                 if (IsBindingWord(m.Name))
-                    return Combine(string.Empty, tail);
-                tail.Insert(0, (m.Name, m.NullConditional));
+                    return Combine(null, Chain());
+                tail.Add(new(m.Name, m.NullConditional));
                 cur = m.Target;
                 continue;
             }
@@ -35,50 +41,49 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
                 break;
 
             if (c.MethodName is _then or _and)
-                return Combine(subject ?? "", tail);
+                return Combine(subject, Chain());
 
             if (c.Target is not Member memCall)
                 break;
 
-            var segment = $"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})";
-            tail.Insert(0, (segment, memCall.NullConditional));
+            tail.Add(new($"{memCall.Name}({string.Join(", ", c.Args.Select(a => a.Raw))})", memCall.NullConditional));
             cur = memCall.Target;
         }
 
-        if (tail.Count == 0) 
+        if (tail.Count == 0)
             return Value.Describe(expr);
 
-        var baseStr = cur is Identifier ii ? ii.Name : cur.Raw;
-        return baseStr + Sep(tail[0]) + StitchBare(tail);
-    }
+        // Chains not anchored in Then/And keep the user's wording: the root
+        // and call segments render the source verbatim, never value-described
+        var root = cur is Identifier id ? id.Name : cur.Raw;
+        var chain = Chain();
+        return root + chain[0].Separator + Stitch(chain);
 
-    private static string Combine(string prefix, List<(string Name, bool NullCond)> tail)
-    {
-        if (tail.Count == 0) 
-            return prefix;
-
-        if (string.IsNullOrEmpty(prefix)) 
-            return StitchBare(tail);
-
-        return IsOneWord(prefix)
-            ? prefix + Sep(tail[0]) + StitchBare(tail)
-            : $"{prefix}'s {StitchBare(tail)}";
-    }
-
-    private static string Sep((string _, bool NullCond) seg) => seg.NullCond ? "?." : ".";
-
-    private static string StitchBare(List<(string Name, bool NullCond)> tail)
-    {
-        var sb = new System.Text.StringBuilder(tail[0].Name);
-        for (int i = 1; i < tail.Count; i++)
+        List<Segment> Chain()
         {
-            sb.Append(Sep(tail[i]));
-            sb.Append(tail[i].Name);
+            tail.Reverse(); // collected rightmost-first
+            return tail;
         }
-        return sb.ToString();
     }
 
-    private static bool IsOneWord(string s) => !string.IsNullOrEmpty(s) && s.All(char.IsLetterOrDigit);
+    /// Connect the subject to the chain: an identifier joins the path with
+    /// dots, while a prose subject (e.g. "the Checkout") reads possessively:
+    /// "the Checkout's IsOpen".
+    private static string Combine(string? subject, List<Segment> tail)
+    {
+        if (tail.Count == 0)
+            return subject ?? string.Empty;
+        if (string.IsNullOrEmpty(subject))
+            return Stitch(tail);
+        return IsIdentifier(subject)
+            ? subject + tail[0].Separator + Stitch(tail)
+            : $"{subject}'s {Stitch(tail)}";
+    }
+
+    private static string Stitch(List<Segment> tail)
+        => tail[0].Name + string.Concat(tail.Skip(1).Select(s => s.Separator + s.Name));
+
+    private static bool IsIdentifier(string s) => s.All(char.IsLetterOrDigit);
 
     private static bool IsBindingWord(string name)
         => _bindingWords.Contains(name, StringComparer.OrdinalIgnoreCase);

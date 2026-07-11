@@ -109,7 +109,8 @@ internal abstract class TestPipeline<TSUT, TResult, TParent>(TParent parent) whe
             [CallerArgumentExpression(nameof(tag))] string? tagExpr = null)
             => Parent.Using(tag, scope, tagExpr!);
 
-    public ITestResultWithSUT<TSUT, TResult> Then() => Parent.Then();
+    public ITestResultWithSUT<TSUT, TResult> Then(Ignore _ = default, string? because = null) => Parent.Then(because: because);
+
     public TSubject Then<TSubject>(TSubject subject) => Parent.Then(subject);
 
     public IAndVerify<TResult> Then<TService>(

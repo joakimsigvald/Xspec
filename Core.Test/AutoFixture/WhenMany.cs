@@ -39,6 +39,18 @@ Then Result has count 3");
 When _.List()
 Then many MyModel is many MyModel");
         }
+
+        [Fact]
+        public void ThenWithSubjectAsString_UseThatSubject()
+        {
+            Then("Hej").Is("Hej");
+            Specification.Is(
+"""
+Given many MyModel
+When _.List()
+Then "Hej" is "Hej"
+""");
+        }
     }
 
     public class GivenReferringManyOfHigherCountSecondTime : WhenMany

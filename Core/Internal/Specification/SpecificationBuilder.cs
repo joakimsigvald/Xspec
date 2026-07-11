@@ -12,6 +12,7 @@ internal class SpecificationBuilder
     private bool _isChainOfAssertions = false;
 
     private string? _cachedSpecification;
+    private string? _because;
 
     public override string ToString()
     {
@@ -21,7 +22,19 @@ internal class SpecificationBuilder
         foreach (var apply in _applications)
             apply();
 
+        if (_because is not null)
+            _textBuilder.AddWord($"because {_because}", ", ");
+
         return _cachedSpecification = _textBuilder.ToString();
+    }
+
+    internal void SetBecause(string reason)
+    {
+        if (_recordingSuppressionCount > 0)
+            return;
+        if (_because is not null)
+            throw new SetupFailed("Because can only be provided once per test method");
+        _because = reason;
     }
 
     internal void Add(Action apply)

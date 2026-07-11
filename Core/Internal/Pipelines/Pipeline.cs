@@ -10,7 +10,12 @@ internal class Pipeline<TSUT, TResult> : Fixture<TSUT>
 {
     private TestResult<TSUT, TResult>? _result;
 
-    internal ITestResultWithSUT<TSUT, TResult> Then() => TestResult;
+    internal ITestResultWithSUT<TSUT, TResult> Then(string? because)
+    {
+        if (because is not null)
+            Specification.AddBecause(because);
+        return TestResult;
+    }
 
     internal IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression, string expressionExpr)

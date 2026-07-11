@@ -1,4 +1,4 @@
-﻿using Xspec.Assert;
+using Xspec.Assert;
 
 namespace Xspec.Test.Assert.EitherOr;
 

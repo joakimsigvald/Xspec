@@ -608,6 +608,30 @@ Values of any type can be verified with any of the two extension methods `Is` an
 - None  
   `list.Has().None(it => it.Age > 3)` - no item in the collection matches the criteria  
 
+### 5.6 Justifying assertions with because
+
+Each test method contains exactly one logical assertion. To document *why* the expected outcome
+is the correct outcome, provide a rationale with the named argument `because` in `Then`:
+
+```csharp
+[Fact] public void ThenCircumferenceIsAroundSixPi()
+    => Then(because: "the world is round").Result.Is().Around(Math.PI * 6, 0.001);
+```
+
+The reason is included in the generated specification, appended after the assertion
+in natural reading order:
+
+```csharp
+When world.Circumference
+Then Result is around 18.8496, because the world is round
+```
+
+Phrase the reason so it reads naturally after the word "because".
+It should justify the expectation rather than restate it — the test name already says *what*
+is expected; `because` explains *why*. The reason can only be provided once per test method,
+in line with one logical assertion per test method, and covers all technical assertions
+chained after it (with `and`, `either`/`or` etc.).
+
 ## 6. Guidelines
 
 ### 6.1 Recommended test structure

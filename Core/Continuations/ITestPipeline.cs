@@ -15,7 +15,7 @@ public interface ITestPipeline<TSUT, TResult>
     /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.<br/>
     /// </summary>
     /// <returns>The test result, containing any return values or exceptions thrown, upon which assertions can be made</returns>
-    ITestResultWithSUT<TSUT, TResult> Then();
+    ITestResultWithSUT<TSUT, TResult> Then(Ignore _ = default, string? because = null);
 
     /// <summary>
     /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.<br/>

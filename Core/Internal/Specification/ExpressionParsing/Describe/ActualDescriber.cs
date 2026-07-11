@@ -13,6 +13,7 @@ internal sealed class ActualDescriber : Describer
     private const string _then = "Then";
     private const string _and = "And";
     private const string _that = "That";
+    private const string _subject = "subject";
 
     public override string Describe(Expr expr)
     {
@@ -36,7 +37,8 @@ internal sealed class ActualDescriber : Describer
             {
                 if (c.MethodName == _and && c.Args.Any(ContainsMember))
                     throw new SetupFailed("No trainwrecks in And! Chain additional properties/method calls outside of the And-expression");
-                var prefix = c.Args.Count >= 1 ? Value.Describe(c.Args[0]) : "";
+                var subject = c.Args.Select(AsSubject).FirstOrDefault(s => s is not null);
+                var prefix = subject is null ? "" : Value.Describe(subject);
                 return Combine(prefix, tail);
             }
 
@@ -67,6 +69,16 @@ internal sealed class ActualDescriber : Describer
             ? prefix + Sep(tail[0]) + StitchBare(tail)
             : $"{prefix}'s {StitchBare(tail)}";
     }
+
+    /// A Then/And argument provides the subject when positional or explicitly
+    /// named <c>subject:</c>; other named arguments (<c>because:</c>, the
+    /// Ignore placeholder) do not.
+    private static Expr? AsSubject(Expr arg) => arg switch
+    {
+        NamedArg { Name: _subject } named => named.Value,
+        NamedArg => null,
+        _ => arg,
+    };
 
     private static string Sep((string _, bool NullCond) seg) => seg.NullCond ? "?." : ".";
 

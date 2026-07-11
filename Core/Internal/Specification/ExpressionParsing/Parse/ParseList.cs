@@ -22,11 +22,28 @@ internal static class ParseList
         {
             while (true)
             {
-                list.Add(LambdaRule.Parse(ts));
+                list.Add(ParseItem(ts));
                 if (!ts.AcceptSym(",")) break;
             }
         }
         items = list;
         return ts.AcceptSym(terminator);
+    }
+
+    /// A list item is either a plain expression or a named argument
+    /// (<c>name: value</c>). The colon can only mean a named argument at the
+    /// start of an item — a ternary's colon is always preceded by <c>?</c>.
+    private static Expr ParseItem(TokenStream ts)
+    {
+        if (ts.Peek().Kind != TokenKind.Word
+            || ts.Peek(1).Kind != TokenKind.Symbol || ts.Peek(1).Text != ":")
+            return LambdaRule.Parse(ts);
+
+        int save = ts.Pos;
+        var name = ts.Peek().Text;
+        ts.Advance();
+        ts.Advance();
+        var value = LambdaRule.Parse(ts);
+        return new NamedArg(ts.RawFrom(save), name, value);
     }
 }

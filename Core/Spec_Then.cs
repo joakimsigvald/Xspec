@@ -11,7 +11,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// Run the test-pipeline and return the result
     /// </summary>
     /// <returns>The test result</returns>
-    public ITestResultWithSUT<TSUT, TResult> Then() => Pipeline.Then();
+    public ITestResultWithSUT<TSUT, TResult> Then(Ignore _ = default, string? because = null) => Pipeline.Then(because);
 
     /// <summary>
     /// Run the test-pipeline and return a given subject to be used in chained assertions.
@@ -21,7 +21,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <returns>the given subject</returns>
     public TSubject Then<TSubject>(TSubject subject)
     {
-        Pipeline.Then();
+        Pipeline.Then(null);
         return subject;
     }
 
@@ -110,5 +110,5 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Contains the returned value after calling method-under-test
     /// </summary>
-    protected TResult Result => Pipeline.Then().Result;
+    protected TResult Result => Pipeline.Then(null).Result;
 }

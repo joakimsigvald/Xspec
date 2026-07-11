@@ -102,17 +102,15 @@ internal class SpecificationContext : IAssertSpecificationContext
             if (innerXspecTEx is not null)
                 message = $"{message}{Environment.NewLine}{innerXspecTEx.Message}";
             var assignmentList = _assignments.ListAssignments();
-            var specMessage = $"""
-
-                    {_builder}
-                    ----
-                    {assignmentList}
-                    """;
+            var specMessage = string.Join(
+                Environment.NewLine, string.Empty, _builder, "----", assignmentList);
             throw new XunitException(message, new XunitException(specMessage));
         }
     }
 
     public void AddThen() => _builder.Add(_builder.AddThen);
+
+    internal void AddBecause(string reason) => _builder.SetBecause(reason);
 
     public void AddVerify<TService>(string expressionExpr)
         => _builder.Add(() => _builder.AddVerify<TService>(expressionExpr));

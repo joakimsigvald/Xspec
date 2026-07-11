@@ -20,14 +20,6 @@ internal class UsingTestPipeline<TSUT, TResult> :
         => Parent.Using<TTarget>(scope);
 
     /// <inheritdoc />
-    public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>()
-        => Parent.Using<TTarget>().From<TSource>();
-
-    /// <inheritdoc />
-    public IUsingTestPipeline<TSUT, TResult> And<TTarget, TSource>(Func<TSource, TTarget> convert)
-        => Parent.Using<TTarget>().From(convert);
-
-    /// <inheritdoc />
     public IUsingTestPipeline<TSUT, TResult> And<TValue>(
         TValue value,
         For scope = For.All,

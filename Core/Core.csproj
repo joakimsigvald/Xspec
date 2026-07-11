@@ -19,13 +19,15 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>1.3.1</PackageVersion>
+		<PackageVersion>2.0.0</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Allow type relays for the same type only if they have discjunct scope
+			Allow type relays for the same type only if they have disjunct scope
 			Using&lt;TTarget&gt;().From(values): provide an explicit list of values as the value space of a type
+			Using&lt;DateTime&gt;().From&lt;DateTime&gt;() supports StartingAt and Spaced, mirroring numeric sequences
+			Breaking: removed the obsolete Using&lt;TTarget, TSource&gt; and And&lt;TTarget, TSource&gt; methods
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

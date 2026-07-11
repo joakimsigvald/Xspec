@@ -102,20 +102,6 @@ public class WhenChainUsingFrom : Spec<int>
     }
 }
 
-#pragma warning disable CS0618 // verify that the obsolete two-type-param forms still work
-public class WhenUsingObsoleteTwoTypeParamForm : Spec<int>
-{
-    public WhenUsingObsoleteTwoTypeParamForm() => Using<int, byte>().And<long, short>();
-
-    [Fact]
-    public void ThenConversionsStillApply()
-    {
-        Three<int>().Is().EqualTo([1, 2, 3]);
-        Three<long>().Is().EqualTo([4, 5, 6]);
-    }
-}
-#pragma warning restore CS0618
-
 public class WhenFromTwice : Spec<MyService, int>
 {
     [Fact]

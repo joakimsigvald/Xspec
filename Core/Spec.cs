@@ -35,10 +35,11 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected Spec() => _lazySpecification = new(Pipeline.Specification.ToString);
 
     /// <summary>
-    /// This property returns the specification of the test, after the test has been run. 
+    /// This property returns the specification of the test, after the test has been run.
     /// The specification will also be included in the message of the exception if the test fails.
+    /// Assertions on the specification are line-ending-agnostic.
     /// </summary>
-    public string Specification => _lazySpecification.Value;
+    public SpecificationText Specification => new(_lazySpecification);
 
     /// <summary>
     /// Runs the teardown of the test pipeline (the steps provided with Until)

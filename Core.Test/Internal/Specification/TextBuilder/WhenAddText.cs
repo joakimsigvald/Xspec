@@ -1,4 +1,5 @@
 ﻿using Xspec.Assert;
+using Xspec.Internal.Specification;
 
 namespace Xspec.Test.Internal.Specification.TextBuilder;
 
@@ -6,7 +7,7 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
 {
     public WhenAddText()
     => Using(new Xspec.Internal.Specification.TextBuilder(10, 1))
-    .When(_ => _.AddText(A<string>()).ToString());
+    .When(_ => _.AddText(A<string>()).ToString().NormalizeLineEndings());
 
     [Theory]
     [InlineData(null, "")]
@@ -70,7 +71,7 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
            1>
         """)]
     public void ThenReturnDescription(string? text, string expected)
-        => Using(text).Then().Result.Is(expected);
+        => Using(text).Then().Result.Is(expected.NormalizeLineEndings());
 
     [Theory]
     [InlineData(null, null, "")]
@@ -81,5 +82,5 @@ public class WhenAddText : Spec<Xspec.Internal.Specification.TextBuilder, string
         """)]
     public void GivenHasTextAndNextWordDoesNotFit_ThenBreakBeforeWord(
         string? existingText, string? newText, string expected)
-        => Having(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected);
+        => Having(_ => _.AddText(existingText)).Using(newText).Then().Result.Is(expected.NormalizeLineEndings());
 }

@@ -108,7 +108,7 @@ public static class AssertionExtensions
 
     internal static void HasMessage(this Xunit.Sdk.XunitException ex, string error, string? spec = null)
     {
-        ex.Message.Is(error);
+        ex.Message.NormalizeLineEndings().Is(error.NormalizeLineEndings());
         if (spec is null)
             return;
 
@@ -116,7 +116,8 @@ public static class AssertionExtensions
     }
 
     private static void HasInnerMessage(this Xunit.Sdk.XunitException ex, string expected)
-        => SplitInnerExceptionMessage(ex)[0].Is($"{Environment.NewLine}{expected}{Environment.NewLine}");
+        => SplitInnerExceptionMessage(ex)[0].NormalizeLineEndings()
+            .Is($"\n{expected.NormalizeLineEndings()}\n");
 
     /// <summary>
     /// Assert that the exception message contains the expected assignments section
@@ -126,7 +127,7 @@ public static class AssertionExtensions
     internal static void HasAssignments(this Xunit.Sdk.XunitException ex, string expected)
     {
         SplitInnerExceptionMessage(ex).Has().TwoItems().that.second
-            .Is($"{Environment.NewLine}{expected}{Environment.NewLine}");
+            .NormalizeLineEndings().Is($"\n{expected.NormalizeLineEndings()}\n");
     }
 
     private static string[] SplitInnerExceptionMessage(Xunit.Sdk.XunitException ex)

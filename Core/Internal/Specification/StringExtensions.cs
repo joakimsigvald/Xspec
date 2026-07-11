@@ -23,6 +23,9 @@ internal static class StringExtensions
         ? [string.Empty]
         : [.. SplitWords(str).Select(word => word.ToLower())];
 
+    internal static string NormalizeLineEndings(this string str)
+        => str.Replace("\r\n", "\n").Replace('\r', '\n');
+
     internal static string Capitalize(this string str)
         => string.IsNullOrWhiteSpace(str)
         ? string.Empty

@@ -19,7 +19,7 @@ public class WhenList : Spec<List<string>>
     {
         var values = new[] { "a", "b" };
         var list1 = values.ToList();
-        var list2 = values.Reverse();
+        var list2 = values.AsEnumerable().Reverse();
         list1.Is().Like(list2);
         Specification.Is("List1 is like list2");
     }
@@ -29,7 +29,7 @@ public class WhenList : Spec<List<string>>
     {
         var values = new[] { "a", "b" };
         var list1 = values.ToList();
-        var list2 = values.Reverse();
+        var list2 = values.AsEnumerable().Reverse();
         list1.Is().EquivalentTo(list2);
         Specification.Is("List1 is equivalent to list2");
     }

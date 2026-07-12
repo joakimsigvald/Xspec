@@ -110,6 +110,19 @@ public class WhenSequenceLoops : Spec<int>
     }
 }
 
+public class WhenSpacingVanishesInFloatingPointPrecision : Spec<double>
+{
+    public WhenSpacingVanishesInFloatingPointPrecision()
+        => Using<double>().From<double>().StartingAt(1e17).Spaced(1d);
+
+    [Fact]
+    public void ThenThrowValuesExhaustedOnStall()
+    {
+        Any<double>().Is(1e17);
+        Xunit.Assert.Throws<ValuesExhausted>(() => Any<double>());
+    }
+}
+
 public class WhenFromSameTypeWithoutSequence : Spec<int>
 {
     public WhenFromSameTypeWithoutSequence() => Using<int>().From<int>();

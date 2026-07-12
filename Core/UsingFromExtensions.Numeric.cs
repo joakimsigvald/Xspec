@@ -41,7 +41,7 @@ public static partial class UsingFromExtensions
     {
         if (TSource.IsZero(spacing))
             throw new SetupFailed("Spacing cannot be zero");
-        Sequence<NumericSequence<TSource>>(pipeline).SetStep((current, _) => current + spacing, spacingExpr!);
+        Sequence<NumericSequence<TSource>>(pipeline).SetInterval(current => current + spacing, spacingExpr!);
         return pipeline;
     }
 

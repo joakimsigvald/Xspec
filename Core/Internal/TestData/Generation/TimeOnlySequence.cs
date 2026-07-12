@@ -10,5 +10,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class TimeOnlySequence : Sequence<TimeOnly>
 {
     protected override TimeOnly DefaultStart => TimeOnly.FromDateTime(PrimitiveStrategy.Epoch);
-    protected override TimeOnly DefaultStep(TimeOnly current, int _) => current.AddHours(1);
+    protected override TimeOnly DefaultStep(TimeOnly current) => current.AddHours(1);
 }

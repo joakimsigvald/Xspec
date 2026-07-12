@@ -9,5 +9,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class DateOnlySequence : Sequence<DateOnly>
 {
     protected override DateOnly DefaultStart => DateOnly.FromDateTime(PrimitiveStrategy.Epoch);
-    protected override DateOnly DefaultStep(DateOnly current, int _) => current.AddDays(1);
+    protected override DateOnly DefaultStep(DateOnly current) => current.AddDays(1);
 }

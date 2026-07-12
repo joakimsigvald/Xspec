@@ -7,5 +7,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class TimeSpanSequence : Sequence<TimeSpan>
 {
     protected override TimeSpan DefaultStart => TimeSpan.FromDays(1);
-    protected override TimeSpan DefaultStep(TimeSpan current, int _) => current + TimeSpan.FromDays(1);
+    protected override TimeSpan DefaultStep(TimeSpan current) => current + TimeSpan.FromDays(1);
 }

@@ -39,7 +39,7 @@ public static partial class UsingFromExtensions
     {
         if (spacing == TimeSpan.Zero)
             throw new SetupFailed("Spacing cannot be zero");
-        Sequence<TimeOnlySequence>(pipeline).SetStep((current, _) => current.Add(spacing), spacingExpr!);
+        Sequence<TimeOnlySequence>(pipeline).SetInterval(current => current.Add(spacing), spacingExpr!);
         return pipeline;
     }
 

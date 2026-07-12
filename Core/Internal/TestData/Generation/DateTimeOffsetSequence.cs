@@ -9,5 +9,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class DateTimeOffsetSequence : Sequence<DateTimeOffset>
 {
     protected override DateTimeOffset DefaultStart => new(PrimitiveStrategy.Epoch);
-    protected override DateTimeOffset DefaultStep(DateTimeOffset current, int _) => current.AddDays(1);
+    protected override DateTimeOffset DefaultStep(DateTimeOffset current) => current.AddDays(1);
 }

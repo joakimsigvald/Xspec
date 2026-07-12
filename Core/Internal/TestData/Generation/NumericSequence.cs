@@ -10,5 +10,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class NumericSequence<TSource> : Sequence<TSource> where TSource : INumber<TSource>
 {
     protected override TSource DefaultStart => TSource.One;
-    protected override TSource DefaultStep(TSource current, int _) => current + TSource.One;
+    protected override TSource DefaultStep(TSource current) => current + TSource.One;
 }

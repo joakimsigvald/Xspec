@@ -9,5 +9,5 @@ namespace Xspec.Internal.TestData.Generation;
 internal class DateTimeSequence : Sequence<DateTime>
 {
     protected override DateTime DefaultStart => PrimitiveStrategy.Epoch;
-    protected override DateTime DefaultStep(DateTime current, int _) => current.AddDays(1);
+    protected override DateTime DefaultStep(DateTime current) => current.AddDays(1);
 }

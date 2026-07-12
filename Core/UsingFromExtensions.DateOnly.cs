@@ -39,7 +39,7 @@ public static partial class UsingFromExtensions
     {
         if (days == 0)
             throw new SetupFailed("Spacing cannot be zero");
-        Sequence<DateOnlySequence>(pipeline).SetStep((current, _) => current.AddDays(days), daysExpr!);
+        Sequence<DateOnlySequence>(pipeline).SetInterval(current => current.AddDays(days), daysExpr!);
         return pipeline;
     }
 

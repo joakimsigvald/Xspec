@@ -13,55 +13,78 @@ internal interface ISequence
 /// Produces the source values of a type relay: from the start,
 /// each subsequent value is computed by the step function.
 /// The concrete sequence type provides the default start and step for its value type.
-/// Values are guaranteed unique; producing a duplicate, or stepping outside the value type's range,
-/// throws ValuesExhausted.
+/// Producing a duplicate, or stepping outside the value type's range, throws ValuesExhausted.
+/// Duplicate detection is delegated to a guard matched to the kind of step when the step is set.
 /// </summary>
 internal abstract class Sequence<TValue> : ISequence
 {
-    private readonly HashSet<TValue> _produced = [];
-    private TValue _start = default!;
-    private Func<TValue, int, TValue>? _step;
-    private string? _startExpr;
-    private string? _stepExpr;
-    private bool _started;
+    private (TValue value, string expr)? _start;
+    private (Func<TValue, int, TValue> apply, string expr)? _step;
+    private IDuplicateGuard _guard = new IntervalGuard();
+    private int _count;
     private TValue _current = default!;
 
-    private TValue Start => _startExpr is null ? DefaultStart : _start;
-    private Func<TValue, int, TValue> Step => _step ?? DefaultStep;
+    private TValue Start => _start is { } start ? start.value : DefaultStart;
+    private Func<TValue, int, TValue> Step => _step is { } step ? step.apply : (current, _) => DefaultStep(current);
 
     protected abstract TValue DefaultStart { get; }
-    protected abstract TValue DefaultStep(TValue current, int position);
+
+    /// <summary>
+    /// The default step of the concrete sequence type, applying a constant interval to the previous value
+    /// (so the sequence can rely on the O(1) duplicate guard).
+    /// </summary>
+    protected abstract TValue DefaultStep(TValue current);
 
     internal void SetStart(TValue start, string startExpr)
     {
-        if (_startExpr is not null)
+        if (_start is not null)
             throw new SetupFailed("StartingAt can only be applied once per From");
-        _start = start;
-        _startExpr = startExpr;
+        _start = (start, startExpr);
     }
 
+    /// <summary>
+    /// Set a step that applies a constant interval to the previous value,
+    /// letting the sequence keep the O(1) duplicate guard.
+    /// </summary>
+    internal void SetInterval(Func<TValue, TValue> next, string stepExpr)
+        => ApplyStep((current, _) => next(current), stepExpr);
+
+    /// <summary>
+    /// Set a custom step function, which can produce any value,
+    /// so the sequence guards against duplicates by collecting all values produced.
+    /// </summary>
     internal void SetStep(Func<TValue, int, TValue> step, string stepExpr)
     {
-        if (_stepExpr is not null)
-            throw new SetupFailed("Spaced can only be applied once per From");
-        _step = step;
-        _stepExpr = stepExpr;
+        ApplyStep(step, stepExpr);
+        _guard = new CollectAllGuard();
     }
 
     public object? Next()
     {
-        _current = _started ? Advance() : Start;
-        _started = true;
-        return _produced.Add(_current)
-            ? _current
-            : throw new ValuesExhausted(typeof(TValue));
+        var next = _count == 0 ? Start : Advance();
+        if (_guard.IsDuplicate(next))
+            throw new ValuesExhausted(typeof(TValue));
+        _count++;
+        _current = next;
+        return next;
+    }
+
+    public string Describe()
+        => (_start is { } start ? $" starting at {start.expr}" : string.Empty)
+        + (_step is { } step ? $" spaced {step.expr}" : string.Empty);
+
+    private void ApplyStep(Func<TValue, int, TValue> step, string stepExpr)
+    {
+        if (_step is not null)
+            throw new SetupFailed("Spaced can only be applied once per From");
+        _step = (step, stepExpr);
     }
 
     private TValue Advance()
     {
         try
         {
-            return Step(_current, _produced.Count);
+            return Step(_current, _count);
         }
         catch (Exception ex) when (ex is ArgumentOutOfRangeException or OverflowException)
         {
@@ -69,7 +92,47 @@ internal abstract class Sequence<TValue> : ISequence
         }
     }
 
-    public string Describe()
-        => (_startExpr is null ? string.Empty : $" starting at {_startExpr}")
-        + (_stepExpr is null ? string.Empty : $" spaced {_stepExpr}");
+    /// <summary>
+    /// Detects duplicates among the values produced by a sequence.
+    /// Checking a value also records it, so detection and bookkeeping cannot get out of step.
+    /// </summary>
+    private interface IDuplicateGuard
+    {
+        bool IsDuplicate(TValue value);
+    }
+
+    /// <summary>
+    /// The O(1) duplicate guard for steps that apply a constant interval: such a step can only
+    /// revisit the first value (on types that wrap around) or repeat the previous value
+    /// (on types that stall at a precision or range limit).
+    /// </summary>
+    private sealed class IntervalGuard : IDuplicateGuard
+    {
+        private static readonly EqualityComparer<TValue> _comparer = EqualityComparer<TValue>.Default;
+        private (TValue first, TValue previous)? _seen;
+
+        public bool IsDuplicate(TValue value)
+        {
+            if (_seen is not { } seen)
+            {
+                _seen = (value, value);
+                return false;
+            }
+            if (_comparer.Equals(value, seen.previous) || _comparer.Equals(value, seen.first))
+                return true;
+            _seen = (seen.first, value);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// The duplicate guard for custom step functions, which can produce any value,
+    /// so every value produced is collected.
+    /// </summary>
+    private sealed class CollectAllGuard : IDuplicateGuard
+    {
+        private readonly HashSet<TValue> _produced = [];
+
+        public bool IsDuplicate(TValue value) => !_produced.Add(value);
+    }
 }

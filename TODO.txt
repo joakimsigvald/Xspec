@@ -1,6 +1,7 @@
 * auto-convert look for first public static method with one argument of type TSource that returns TTarget
-* Sequence uniqueness check (From().StartingAt/Spaced): provide a hook to replace the default
-  collect-all-values check, for users generating large numbers of values
+* Sequence uniqueness check: fixed spacings now use an O(1) check; the collect-all-values check
+  remains only for step-function sequences (Spaced with lambda). If users generate large numbers
+  of values through step functions, provide an opt-out hook
 --- before Xspec
 * Only show first five items with ellipsis if not all from collection
 * Provide custom data generator for Enums and bools to get random values

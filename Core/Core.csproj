@@ -20,17 +20,13 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>2.0.0</PackageVersion>
+		<PackageVersion>2.0.1</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Allow type relays for the same type only if they have disjunct scope
-			Using&lt;TTarget&gt;().From(values): provide an explicit list of values as the value space of a type
-			Temporal sources (DateTime, DateTimeOffset, DateOnly, TimeOnly, TimeSpan) support StartingAt and Spaced, mirroring numeric sequences
-			Sequences with a fixed spacing use constant memory, supporting generation of very large value sets
-			Targets .NET 8, .NET 9 and .NET 10
-			Breaking: removed the obsolete Using&lt;TTarget, TSource&gt; and And&lt;TTarget, TSource&gt; methods
+			Improved XML documentation across the public API: documented the because parameter of Then, added missing parameter and return docs, added examples to key APIs, standardized wording
+			Removed unintentionally public internal types (ExpressionParser, TextBuilder) from the package surface
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

@@ -1,13 +1,11 @@
-﻿using System.ComponentModel;
-using System.Text;
+﻿using System.Text;
 
 namespace Xspec.Internal.Specification;
 
 /// <summary>
-/// Only made public for unit testing
+/// Builds the specification text, handling line-wrapping, indentation and capitalization
 /// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
+internal class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
 {
     private const int _maxIndentation = 3;
     private readonly StringBuilder _sb = new();
@@ -77,9 +75,9 @@ public class TextBuilder(int maxLineLength = 80, int indentationSize = 2)
     }
 
     /// <summary>
-    /// Only made public for unit testing
+    /// Get the built text
     /// </summary>
-    /// <returns>The built text</returns>
+    /// <returns>The built text, trimmed and capitalized</returns>
     public override string ToString() => _sb.ToString().Trim().Capitalize();
 
     private static readonly char[] _lineBreakCues = ['.', '(', '[', '{'];

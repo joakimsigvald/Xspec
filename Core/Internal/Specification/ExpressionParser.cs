@@ -1,5 +1,3 @@
-#pragma warning disable CS1591 // Public surface used internally; no XML docs required.
-
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,7 +8,7 @@ using Xspec.Internal.Specification.ExpressionParsing.Tokenize;
 
 namespace Xspec.Internal.Specification;
 
-public static partial class ExpressionParser
+internal static partial class ExpressionParser
 {
     private static readonly char[] _lineBreakCues = ['.', '(', '['];
 

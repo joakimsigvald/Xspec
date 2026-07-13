@@ -28,8 +28,8 @@ public class WhenPlaceOrder : Spec<ShoppingService>
 }
 ```
 
-The example above highlights how Xspec reduces boilerplate by handling test data, dependency mocking, and interaction verification declaratively.
-In real-world usage, this typically leads to substantially smaller tests compared to xUnit + Moq, while improving readability.
+The example highlights how Xspec reduces boilerplate by handling test data, dependency mocking, and interaction verification declaratively.
+In real-world usage, this typically yields substantially smaller and more readable tests than plain xUnit with Moq.
 
 ## Table of Contents
 
@@ -99,7 +99,7 @@ Xspec also provides mechanisms for preparing and referring to test data in a sta
 ### 1.2 Act
 
 The *act* stage specifies the behavior under test by calling `When` with a lambda expression. 
-The lambda takes the subject under test as an argument and should execute the behavior under test.
+The lambda takes the subject under test as argument and invokes the behavior to verify.
 
 The subject under test is automatically created based on the arrangement, unless it is static or explicitly provided.
 
@@ -114,7 +114,7 @@ Each specification defines exactly one action under test and therefore contains 
 Xspec includes a fluent assertion library, `Xspec.Assert`, conceptually similar to FluentAssertions,
 but with a more compact syntax based on the verbs `Is`, `Has`, and `Does`.
 
-The *assert* stage is specified by calling `Then` or `Result`, followed by one or more assertions.
+The *assert* stage is specified by calling `Then` (or accessing `Result`), followed by one or more assertions.
 It is only when one of these methods is called that the test pipeline is executed and the result evaluated.
 
 If a test fails, this is either due to an invalid test setup or because an assertion was not satisfied.
@@ -144,12 +144,12 @@ Then Result has count 4
 
 In addition to verifying return values, exceptions can also be asserted using `Then().Throws`.
 
-Given some prior familiarity with NuGet, unit tests and mocking, you should now be ready to start writing your own tests using Xspec. 
-For professional use, the remainder of this README serves as a complete, practical guide to structuring specifications, managing test data, and verifying behavior with Xspec.
+With basic familiarity with NuGet, unit testing and mocking, you are now ready to write your own tests using Xspec. 
+The remainder of this README is a complete, practical guide to structuring specifications, managing test data, and verifying behavior with Xspec.
 
 ## 2. The Test Pipeline
 
-A core feature of Xspec is *deferred execution* and *lazy evaluation*: no production code is executed until the first assertion is made.
+At the core of Xspec are *deferred execution* and *lazy evaluation*: no production code is executed until the first assertion is made.
 A test runs through four conceptual stages: preparation, execution, assertion, and teardown.
 
 ### 2.1 Preparation
@@ -175,21 +175,21 @@ Arrangements are categorized into three types, using specific verbs to dictate t
 #### 2.1.3 Preparing the Pipeline
 The preparation steps are recorded and later applied in the following order:
 
-1. Default, constraints, and test data are applied *in reverse order of declaration*.
-1. Mocked behavior *in the order of declaration*.
+1. Defaults, constraints, and test data, *in reverse order of declaration*.
+1. Mocked behavior, *in order of declaration*.
 
 #### 2.1.4 Creating the Subject Under Test
-After preparation, the pipeline will use AutoMock to create a new instance of your subject under test (unless you provided a value of that type explicitly).
+After preparation, the pipeline uses auto-mocking to create a new instance of your subject under test (unless you provided a value of that type explicitly).
 If you haven't mocked a certain interface or method that the subject uses, a default mock will be auto-generated.
 
 ### 2.2 Execution
 
 Execution is triggered by the first assertion (technically when `Result` is referenced or `Then()` is called). 
-The pipeline then executes and captures the outcome of the execution.
+The pipeline then runs and captures the outcome.
 
 #### 2.2.1 Running Setup
-Setup steps can be provided as lambdas that take the subject under test as arguments, with `Having()`.
-Setup will be executed in the reverse order of declaration, right after creating the subject under test.
+Setup steps are provided with `Having()`, as lambdas that take the subject under test as argument.
+Setup is executed in reverse order of declaration, right after the subject under test is created.
 
 Example:
 `When(A).Having(B).Having(C)` will result in the execution order: C -> B -> A.
@@ -208,12 +208,12 @@ Accessing `Result` will implicitly execute the pipeline if it has not already be
 
 Assertions consume the captured outcome or utilize the mocking framework for verifying execution paths. 
 The pipeline executes at most once per test method, regardless of the number of references to `Result` or `Then()`.
-Assertions are covered in depth in Chapters 5 and 6.
+Assertions are covered in depth in Chapter 5, and mock verification in Section 4.6.
 
 ### 2.4 Teardown
 
-Teardown steps can be provided as lambdas that take subject under test as arguments, with `Until()`.
-Teardown will be executed in the order of declaration when the test class and pipeline are disposed, after the test method has been executed.
+Teardown steps are provided with `Until()`, as lambdas that take the subject under test as argument.
+Teardown is executed in order of declaration when the test class and pipeline are disposed, after the test method has run.
 
 Example:
 `When(A).Until(B).Until(C)` will result in the execution order: A -> B -> C.
@@ -225,8 +225,6 @@ Xspec supports testing synchronous and asynchronous code using the same test pip
 When the behavior under test is asynchronous (returns `Task` or `Task<T>`), Xspec waits for completion and captures the outcome in the same way as for synchronous code.
 The only difference is the lambda signature provided to `When`, `Having`, `Until`, and mock setup methods.
 Test methods themselves do not need to be `async`.
-
-As a result, tests for async code read and behave the same way as tests for synchronous code.
 
 ## 3. Using Test Data
 
@@ -272,7 +270,7 @@ A tag is an instance of `Tag<TValue>`.
 Each tag represents exactly one value of the given type.
 
 Example:
-```
+```csharp
 protected static Tag<string> name = new(nameof(name));
 protected static Tag<int> age = new(nameof(age)), shoeSize = new(nameof(shoeSize));
 ```
@@ -284,11 +282,11 @@ Tags can be used to set or reference values during pipeline configuration and ex
 
 Example:
 ```csharp
-protected static Tag<string> surname = new(), lastname = new();
+protected static Tag<string> firstname = new(), lastname = new();
 ...
-=> Given(surname).Is("Ada").And(lastname).Is("Lovelace")
-.When(_ => _.CreateUser(The(surname), The(lastname)))
-.Then().Result.FullName.Is("Ada Lovelace");
+=> Given(firstname).Is("Ada").And(lastname).Is("Lovelace")
+   .When(_ => _.CreateUser(The(firstname), The(lastname)))
+   .Then().Result.FullName.Is("Ada Lovelace");
 ```
 
 #### 3.2.2 Use tagged values as default or for auto-generation
@@ -304,7 +302,7 @@ Using(name, For.Input).And(age, For.Subject);
 
 ### 3.3 Data Generation and Pipeline
 
-Xspec utilizes an internal data-generation pipeline to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (last first):
+Xspec utilizes an internal data-generation pipeline to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (most recently provided first):
 
 **1. Value**
 * **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
@@ -320,26 +318,26 @@ Xspec utilizes an internal data-generation pipeline to supply arbitrary data cle
 * **Map value**: Get a value of a different type from the default-pipeline and map to type.
 * **Relay type**: Get a value of a different type from the default-pipeline and convert to type.
 * **Generate value**: Use the generation strategy of the given type.
-* **Return type default**: Use the types default-value or null.
+* **Return type default**: Use the type's default value or null.
 
 If generation is required, Xspec evaluates types using a fallback strategy chain:
-* **Primitives:** Out-of-the-box generation natively supports standard primitives like `int`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
-* **Semantic Types:** Objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are securely auto-generated using their base values.
-* **Abstracts & Interfaces:** Pure interfaces and abstract classes can be successfully requested and mocked instantly without boilerplate.
+* **Primitives:** Generation natively supports standard primitives like `int`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
+* **Semantic Types:** Objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are auto-generated from their primitive values.
+* **Abstracts & Interfaces:** Interfaces and abstract classes are mocked automatically, without boilerplate.
 
 ### 3.4 Type Registration and Conversion
 
 If a specific custom mapping is required during data creation, you can override default generation by using the fluent type conversion pipeline.
 
 * **Fluent Registration:** Configure the generator pipeline via `Using<TTarget>().From<TSource>()` — use values of the target type from the set described by the source type.
-* **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It securely attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
+* **Smart Casting:** Once mapped, Xspec automatically probes the requested type for compatibility. It attempts to construct the target by finding implicit cast operators, single-parameter constructors, or matching static factory methods (e.g., `Create()`).
 * **Conversion:** For explicit control, inject a conversion delegate directly, such as `Using<int>().From((byte b) => b + 1)` — the source type is inferred from the lambda parameter.
 * **Chaining:** Register several conversions fluently with `And`, e.g. `Using<int>().From<byte>().And<long>().From<short>()`.
 * **Scoping:** Like the value-level overloads, `Using<TTarget>()` accepts an optional `For` scope, e.g. `Using<int>(For.Input).From<byte>()` applies the conversion only when generating ambient test data, leaving subject construction unaffected. The default is `For.All`. Registrations for the same target type must have disjoint scopes: one for `Input` and another for `Subject` can coexist, but overlapping scopes throw `SetupFailed`.
 * **Sequences:** For numeric and temporal source types (`DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`), constrain the generated source values with `StartingAt` and `Spaced`, e.g. `Using<int>().From<int>().StartingAt(10).Spaced(5)`. `Spaced` accepts a fixed spacing (negative for descending) or a step function, e.g. `Spaced(i => i * 2)`. Generated values are guaranteed unique: a sequence that would repeat a value or leave the type's range throws `ValuesExhausted`.
 * **Generator functions:** For arbitrary value spaces — non-numeric types or stateful series — pass a generator to `From`, e.g. `Using<Guid>().From(Guid.NewGuid)` or `Using<int>().From(NextFibonacci)` with a method or closure holding the state. Generated values are converted to the target type if necessary and used exactly as produced: the user defines the value space, so duplicates are allowed (1, 1, 2, 3, 5, ...).
 * **Value lists:** To use exactly the given values, pass an explicit list to `From`, e.g. `Using<int>().From([10, 20, 30])`. The values are used in declaration order, duplicates allowed, and requesting more values than the list contains throws `ValuesExhausted`.
-* **Safe Failures:** If incompatible types are relayed and no logical conversion path exists, generation strictly throws an `InvalidTypeConversion`.
+* **Safe Failures:** If incompatible types are relayed and no conversion path exists, generation throws `InvalidTypeConversion`.
 
 ```csharp
 // Generates an Email instance automatically by creating a primitive source and looking for constructors or static factories

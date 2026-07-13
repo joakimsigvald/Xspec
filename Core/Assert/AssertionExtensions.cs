@@ -16,7 +16,7 @@ public static class AssertionExtensions
     /// <param name="expected">The expected value</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>Continuation for further assertions of the object</returns>
+    /// <returns>A continuation for making further assertions on the object</returns>
     public static ContinueWith<IsNullableStruct<TValue>> Is<TValue>(
         this TValue? actual,
         TValue? expected,
@@ -31,7 +31,7 @@ public static class AssertionExtensions
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsBool Is(
         this bool actual,
         Ignore _ = default,
@@ -44,7 +44,7 @@ public static class AssertionExtensions
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsNullableStruct<TValue> Is<TValue>
         (this TValue? actual,
         Ignore _ = default,
@@ -59,7 +59,7 @@ public static class AssertionExtensions
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsComparable<TValue> Is<TValue>(
         this TValue actual,
         Ignore _ = default,
@@ -75,7 +75,7 @@ public static class AssertionExtensions
     /// <param name="condition">The condition that the value is expected to satisfy</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
     /// <param name="conditionExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static ContinueWithActual<TActual> Has<TActual>(
         this TActual actual, Func<TActual, bool> condition,
         [CallerArgumentExpression(nameof(actual))] string? actualExpr = null,
@@ -93,7 +93,7 @@ public static class AssertionExtensions
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actual">The value to assert on</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static TActual And<TActual, TContinuation>(
         this ContinueWith<TContinuation> _,
         TActual actual,
@@ -120,7 +120,7 @@ public static class AssertionExtensions
             .Is($"\n{expected.NormalizeLineEndings()}\n");
 
     /// <summary>
-    /// Assert that the exception message contains the expected assignments section
+    /// Verify that the exception message contains the expected assignments section
     /// </summary>
     /// <param name="ex">The exception to assert on</param>
     /// <param name="expected">The expected value</param>

@@ -12,7 +12,7 @@ public record IsNullableDateTimeOffset : IsNullableComparableStruct<DateTimeOffs
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsDateTimeOffset> Before(
         DateTimeOffset expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x < 0, expectedExpr!, "occur");
@@ -22,7 +22,7 @@ public record IsNullableDateTimeOffset : IsNullableComparableStruct<DateTimeOffs
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsDateTimeOffset> After(
         DateTimeOffset expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x > 0, expectedExpr!, "occur");

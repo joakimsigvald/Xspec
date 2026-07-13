@@ -85,7 +85,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         => new GivenServiceContinuation<TSUT, TResult, TService>(this);
 
     /// <summary>
-    /// Return continuation for providing any setup as an action
+    /// Provide any setup as an action, through the returned continuation
     /// </summary>
     /// <returns>A continuation for providing test data and other arrangement</returns>
     /// <exception cref="SetupFailed">Thrown when providing arrangement after the test pipeline has been set up</exception>

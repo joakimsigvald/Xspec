@@ -42,7 +42,7 @@ public abstract record Constraint<TActual, TContinuation>
     /// <summary>
     /// Invert the following assertion
     /// </summary>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Special convention of binding words")]
     public TContinuation not
         => new()
@@ -58,7 +58,7 @@ public abstract record Constraint<TActual, TContinuation>
     /// </summary>
     /// <param name="values">The values that the asserted value is expected to be one of</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TContinuation> OneOf(
         TActual[] values,
         [CallerArgumentExpression(nameof(values))] string? expectedExpr = null)

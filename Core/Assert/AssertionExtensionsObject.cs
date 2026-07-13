@@ -15,7 +15,7 @@ public static class AssertionExtensionsObject
     /// <param name="expected">The expected value</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>Continuation for further assertions of the object</returns>
+    /// <returns>A continuation for making further assertions on the object</returns>
     public static ContinueWith<IsObject> Is(
         this object? actual,
         object? expected,
@@ -31,7 +31,7 @@ public static class AssertionExtensionsObject
     /// <param name="expected">The expected value</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>Continuation for further assertions of the struct</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static ContinueWith<IsObject> Is<TValue>(
         this TValue actual,
         TValue expected,
@@ -46,7 +46,7 @@ public static class AssertionExtensionsObject
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsObject Is(
         this object? actual,
         Ignore _ = default,
@@ -59,7 +59,7 @@ public static class AssertionExtensionsObject
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static HasObject Has(
         this object? actual,
         Ignore _ = default,

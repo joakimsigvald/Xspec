@@ -5,6 +5,8 @@ namespace Xspec.Continuations;
 /// <summary>
 /// A continuation to provide further infrastructure and test data arrangement.
 /// </summary>
+/// <typeparam name="TSUT">The type of the subject under test</typeparam>
+/// <typeparam name="TResult">The return type of the method-under-test</typeparam>
 public interface IUsingTestPipeline<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {
     /// <summary>

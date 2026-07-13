@@ -17,7 +17,7 @@ public abstract record IsFractional<TActual, TIsFractional> : IsNumerical<TActua
     /// <param name="expected">Expected value</param>
     /// <param name="tolerance">Allowed difference +/- expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TIsFractional> Around(
         TActual expected, TActual tolerance, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(expected, actual => AssertEqual(expected, actual, tolerance), expectedExpr!).And();

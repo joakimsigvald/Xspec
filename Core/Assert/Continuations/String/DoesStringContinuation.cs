@@ -8,6 +8,6 @@ public record DoesStringContinuation : DoesString
     /// <summary>
     /// Continuation to assert that the string is satisfying some expectation
     /// </summary>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public IsString Is() => Actual.Is(actualExpr: ActualExpr);
 }

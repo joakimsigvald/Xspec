@@ -9,21 +9,21 @@ namespace Xspec.Assert.Continuations.Enumerable;
 public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableContinuation<TItem>>
 {
     /// <summary>
-    /// Assert that the enumerable is empty
+    /// Asserts that the enumerable is empty
     /// </summary>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Empty()
         => Assert(Ignore.Me, NotNullAnd(Xunit.Assert.Empty)).And();
 
     /// <summary>
-    /// Assert that all the elements of the enumerable are different from each other, using identity
+    /// Asserts that all the elements of the enumerable are different from each other, using identity
     /// </summary>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Distinct()
         => Assert(Ignore.Me, NotNullAnd(Xunit.Assert.Distinct)).And();
 
     /// <summary>
-    /// Assert that all the elements of the enumerable are different with respect to the given selector
+    /// Asserts that all the elements of the enumerable are different with respect to the given selector
     /// </summary>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Distinct<TSelector>(
@@ -35,7 +35,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     }
 
     /// <summary>
-    /// Assert that all the elements of the enumerable are different with respect to the given selector
+    /// Asserts that all the elements of the enumerable are different with respect to the given selector
     /// </summary>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Distinct<TSelector>(
@@ -49,14 +49,14 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
     private static string ExpressExpectation(string selectorStr) => $"by {selectorStr}";
 
     /// <summary>
-    /// Assert that the enumerable is null
+    /// Asserts that the enumerable is null
     /// </summary>
     /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> Null()
         => Assert(Ignore.Me, Xunit.Assert.Null).And();
 
     /// <summary>
-    /// Assert that the two enumerables do not refer to the same object
+    /// Asserts that the two enumerables do not refer to the same object
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
@@ -67,7 +67,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
         => not.SameAs(expected, expectedExpr);
 
     /// <summary>
-    /// Assert that both enumerables has the same number of elements and that elements at same position are equal to each other
+    /// Asserts that both enumerables has the same number of elements and that elements at same position are equal to each other
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
@@ -78,7 +78,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
         => Assert(Describe(expected), actual => Xunit.Assert.Equal(expected, actual), expectedExpr!).And();
 
     /// <summary>
-    /// Assert that both enumerables has equal elements in any order
+    /// Asserts that both enumerables has equal elements in any order
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
@@ -89,7 +89,7 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
         => Assert(Describe(expected), actual => Xunit.Assert.Equivalent(expected, actual), expectedExpr!).And();
 
     /// <summary>
-    /// Assert that both enumerables has equal elements in any order
+    /// Asserts that both enumerables has equal elements in any order
     /// </summary>
     /// <param name="expected">The enumerable to validate against</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
@@ -100,11 +100,11 @@ public record IsEnumerable<TItem> : EnumerableConstraint<TItem, IsEnumerableCont
         => Assert(Describe(expected), actual => Xunit.Assert.Equivalent(expected, actual), expectedExpr!).And();
 
     /// <summary>
-    /// Assert that both enumerables are the same instance
+    /// Asserts that both enumerables are the same instance
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsEnumerableContinuation<TItem>> SameAs(
         IEnumerable<TItem>? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)

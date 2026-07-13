@@ -27,27 +27,27 @@ public record OrderContinuation<TItem> : EnumerableConstraint<TItem, HasEnumerab
     }
 
     /// <summary>
-    /// Assert that the enumerable is ordered in descending order
+    /// Asserts that the enumerable is ordered in descending order
     /// </summary>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> Descending()
         => _orderBy is null
         ? OrderBy(Ignore.Me, (a, b) => b.CompareTo(a))
         : OrderBy($"by {_orderByExpr}", (a, b) => _orderBy(b).CompareTo(_orderBy(a)));
 
     /// <summary>
-    /// Assert that the enumerable is ordered in ascending order
+    /// Asserts that the enumerable is ordered in ascending order
     /// </summary>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> Ascending()
         => _orderBy is null
         ? OrderBy(Ignore.Me, (a, b) => a.CompareTo(b))
         : OrderBy($"by {_orderByExpr}", (a, b) => _orderBy(a).CompareTo(_orderBy(b)));
 
     /// <summary>
-    /// Assert that the enumerable is ordered in ascending order
+    /// Asserts that the enumerable is ordered in ascending order
     /// </summary>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     private ContinueWith<HasEnumerableContinuation<TItem>> OrderBy(
         object? expected, Func<TItem, TItem, int> compare, [CallerMemberName] string? methodName = null)
         => Assert(expected, 

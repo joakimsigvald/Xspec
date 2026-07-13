@@ -22,7 +22,7 @@ public sealed class SpecificationText
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>Continuation for further assertions of the specification</returns>
+    /// <returns>A continuation for making further assertions on the specification</returns>
     public ContinueWith<IsStringContinuation> Is(
         string? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
@@ -32,15 +32,18 @@ public sealed class SpecificationText
     /// <summary>
     /// Get available assertions for the specification, normalized to '\n' line endings
     /// </summary>
-    /// <returns>A continuation for further assertions of the specification</returns>
+    /// <returns>A continuation for making further assertions on the specification</returns>
     public IsString Is() => _text.Value.NormalizeLineEndings().Is(actualExpr: _actualExpr);
 
     /// <summary>
     /// Get available assertions for the characteristics of the specification, normalized to '\n' line endings
     /// </summary>
-    /// <returns>A continuation for further assertions of the specification</returns>
+    /// <returns>A continuation for making further assertions on the specification</returns>
     public DoesString Does() => _text.Value.NormalizeLineEndings().Does(actualExpr: _actualExpr);
 
+    /// <summary>
+    /// Get the specification text as a string
+    /// </summary>
     /// <returns>The specification text, with platform-native line endings</returns>
     public override string ToString() => _text.Value;
 

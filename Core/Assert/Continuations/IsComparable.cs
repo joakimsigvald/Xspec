@@ -12,25 +12,31 @@ public abstract record IsComparable<TActual, TContinuation> : Constraint<TActual
     where TActual : IComparable<TActual>
 {
     /// <summary>
-    /// Assert that the value is not same as the given value
+    /// Asserts that the value is not equal to the given value
     /// </summary>
-    /// <param name="expected">The expected value</param>
+    /// <param name="expected">The value that actual is expected not to be</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TContinuation> Not(
         TActual expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(expected, actual => Xunit.Assert.NotEqual(expected, actual), expectedExpr!).And();
 
     /// <summary>
-    /// Assert that the value is greater than expected
+    /// Asserts that the value is greater than expected
     /// </summary>
+    /// <param name="expected">The value that actual is expected to be greater than</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TContinuation> GreaterThan(
         TActual expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x > 0, expectedExpr!);
 
     /// <summary>
-    /// Assert that the value is less than expected
+    /// Asserts that the value is less than expected
     /// </summary>
+    /// <param name="expected">The value that actual is expected to be less than</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TContinuation> LessThan(
         TActual expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x < 0, expectedExpr!);

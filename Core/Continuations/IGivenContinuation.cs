@@ -228,6 +228,12 @@ public interface IGivenContinuation<TSUT, TResult>
     /// </summary>
     /// <typeparam name="TValue">The type of the elements in the collection</typeparam>
     /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
+    /// <example>
+    /// Arrange that any mentioned collection of int (such as Some&lt;int&gt;()) is empty:
+    /// <code>
+    /// Given().Zero&lt;int&gt;()
+    /// </code>
+    /// </example>
     IGivenTestPipeline<TSUT, TResult> Zero<TValue>();
 
     /// <summary>

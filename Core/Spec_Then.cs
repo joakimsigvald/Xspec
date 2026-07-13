@@ -10,6 +10,9 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <summary>
     /// Run the test-pipeline and return the result
     /// </summary>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="because">An optional rationale justifying the expected outcome, included in the generated specification after the assertion.
+    /// Phrase it to read naturally after the word "because". It can only be provided once per test method and covers all assertions chained after it</param>
     /// <returns>The test result</returns>
     public ITestResultWithSUT<TSUT, TResult> Then(Ignore _ = default, string? because = null) => Pipeline.Then(because);
 
@@ -31,6 +34,12 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// <param name="expression">An expression specifying the method invocation to verify</param>
     /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for further verification or assertions of the test result</returns>
+    /// <example>
+    /// Verify that the subject-under-test logged the message:
+    /// <code>
+    /// Then&lt;ILogger&gt;(_ =&gt; _.Log(The&lt;string&gt;()))
+    /// </code>
+    /// </example>
     public IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)
@@ -107,7 +116,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
         => Pipeline.Then(expression, times, expressionExpr!);
 
     /// <summary>
-    /// Contains the returned value after calling method-under-test
+    /// Contains the returned value after calling method-under-test.
+    /// Accessing this property runs the test pipeline if it has not been run yet.
     /// </summary>
     protected TResult Result => Pipeline.TestResult.Result;
 }

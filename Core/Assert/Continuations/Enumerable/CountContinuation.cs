@@ -26,11 +26,11 @@ public record CountContinuation<TItem> : EnumerableConstraint<TItem, HasEnumerab
     }
 
     /// <summary>
-    /// Assert that the enumerable has the given count
+    /// Asserts that the enumerable has the given count
     /// </summary>
     /// <param name="expected">Lowest allowed count</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> At(
         int expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
     {
@@ -40,11 +40,11 @@ public record CountContinuation<TItem> : EnumerableConstraint<TItem, HasEnumerab
     }
 
     /// <summary>
-    /// Assert that the enumerable has at least the given count
+    /// Asserts that the enumerable has at least the given count
     /// </summary>
     /// <param name="expected">Lowest allowed count</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> AtLeast(
         int expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
     {
@@ -54,11 +54,11 @@ public record CountContinuation<TItem> : EnumerableConstraint<TItem, HasEnumerab
     }
 
     /// <summary>
-    /// Assert that the enumerable has at most the given count
+    /// Asserts that the enumerable has at most the given count
     /// </summary>
     /// <param name="expected">Highest allowed count</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> AtMost(
         int expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
     {
@@ -68,13 +68,13 @@ public record CountContinuation<TItem> : EnumerableConstraint<TItem, HasEnumerab
     }
 
     /// <summary>
-    /// Assert that the enumerable has count between (including) from and to
+    /// Asserts that the enumerable has count between (including) from and to
     /// </summary>
     /// <param name="from">Lowest allowed count</param>
     /// <param name="to">Highest allowed count</param>
     /// <param name="fromExpr">Captured automatically by the compiler — do not provide</param>
     /// <param name="toExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<HasEnumerableContinuation<TItem>> InRange(
         int from,
         int to,

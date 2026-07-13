@@ -15,7 +15,7 @@ public interface IGivenThatVoidContinuation<TSUT, TResult, TService>
     /// <summary>
     /// Provide a callback to tap the mocked function call with no input arguments
     /// </summary>
-    /// <param name="callback">A callback invoked with the arguments passed to the mocked method</param>
+    /// <param name="callback">A callback invoked when the mocked method is called</param>
     /// <param name="callbackExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for specifying the outcome of the mocked invocation</returns>
     IGivenThatCommonContinuation<TSUT, TResult, TService, Void> Tap(
@@ -26,7 +26,7 @@ public interface IGivenThatVoidContinuation<TSUT, TResult, TService>
     /// Provide a callback to tap the mocked function call with one input argument
     /// </summary>
     /// <typeparam name="TArg">The type of the argument passed to the mocked method</typeparam>
-    /// <param name="callback">A callback invoked with the arguments passed to the mocked method</param>
+    /// <param name="callback">A callback invoked with the argument passed to the mocked method</param>
     /// <param name="callbackExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation for specifying the outcome of the mocked invocation</returns>
     IGivenThatCommonContinuation<TSUT, TResult, TService, Void> Tap<TArg>(

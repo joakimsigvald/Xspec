@@ -12,7 +12,7 @@ public record IsDateTime : IsComparable<DateTime, IsDateTime>
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsDateTime> Before(
         DateTime expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x < 0, expectedExpr!, "occur");
@@ -22,7 +22,7 @@ public record IsDateTime : IsComparable<DateTime, IsDateTime>
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsDateTime> After(
         DateTime expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => CompareTo(expected, x => x > 0, expectedExpr!, "occur");
@@ -33,7 +33,7 @@ public record IsDateTime : IsComparable<DateTime, IsDateTime>
     /// <param name="expected">The expected value</param>
     /// <param name="tolerance">The maximum allowed difference between actual and expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<IsDateTime> CloseTo(
         DateTime expected, TimeSpan tolerance, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert(expected, actual => Xunit.Assert.Equal(expected, actual, tolerance), expectedExpr!).And();

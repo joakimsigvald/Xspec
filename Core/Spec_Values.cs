@@ -229,7 +229,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue[] AnyNumberOf<TValue>() => Pipeline.MentionMany<TValue>(1, 0);
 
     /// <summary>
-    /// Yields an array with at least one elements of the given type. 
+    /// Yields an array with at least one element of the given type.
     /// If such an array exists it will be returned, otherwise an array with two elements will be returned.
     /// </summary>
     /// <typeparam name="TValue">The type of the elements</typeparam>
@@ -273,7 +273,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     /// The number of elements to generate can be specified but defaults to two
     /// </summary>
     /// <typeparam name="TValue">The type of the elements</typeparam>
-    /// <param name="setup">Provide the setup as a function to mutate the model, typically used with class</param>
+    /// <param name="setup">Provide the setup as an action to mutate the model, given the element and its index, typically used with class</param>
     /// <param name="count">The number of values to generate, default to 2</param>
     /// <returns>The generated array</returns>
     protected internal TValue[] SomeOther<TValue>(Action<TValue, int> setup, int count = 2)

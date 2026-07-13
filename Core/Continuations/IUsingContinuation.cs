@@ -6,6 +6,19 @@ namespace Xspec.Continuations;
 /// A continuation returned by Using&lt;TTarget&gt;(), allowing the source of the target type's values to be specified with From.
 /// If From is not called, the target type is instead registered as a concrete class to instantiate when the subject under test requires an abstraction it implements.
 /// </summary>
+/// <typeparam name="TSUT">The type of the subject under test</typeparam>
+/// <typeparam name="TResult">The return type of the method-under-test</typeparam>
+/// <typeparam name="TTarget">The target type whose value source is being specified</typeparam>
+/// <example>
+/// Generate CustomerId values by generating ints and converting them:
+/// <code>
+/// Using&lt;CustomerId&gt;().From&lt;int&gt;(id =&gt; new CustomerId(id))
+/// </code>
+/// or provide an explicit value space:
+/// <code>
+/// Using&lt;string&gt;().From(["SEK", "USD", "EUR"])
+/// </code>
+/// </example>
 public interface IUsingContinuation<TSUT, TResult, TTarget> : IUsingTestPipeline<TSUT, TResult>
 {
     /// <summary>

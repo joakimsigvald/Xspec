@@ -15,7 +15,7 @@ public interface IGivenTag<TSUT, TResult, TValue>
     /// </summary>
     /// <param name="value">The value to associate with the tag</param>
     /// <param name="valueExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>The pipeline, so that further setup can be provided</returns>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     IGivenTestPipeline<TSUT, TResult> Is(
         TValue value,
         [CallerArgumentExpression(nameof(value))] string? valueExpr = null);
@@ -25,7 +25,7 @@ public interface IGivenTag<TSUT, TResult, TValue>
     /// </summary>
     /// <param name="setup">An action applied to the value associated with the tag</param>
     /// <param name="setupExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>The pipeline, so that further setup can be provided</returns>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     IGivenTestPipeline<TSUT, TResult> Has(
         Action<TValue> setup,
         [CallerArgumentExpression(nameof(setup))] string? setupExpr = null);
@@ -35,7 +35,7 @@ public interface IGivenTag<TSUT, TResult, TValue>
     /// </summary>
     /// <param name="transform">A function transforming the value associated with the tag</param>
     /// <param name="transformExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>The pipeline, so that further setup can be provided</returns>
+    /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     IGivenTestPipeline<TSUT, TResult> Has(
         Func<TValue, TValue> transform,
         [CallerArgumentExpression(nameof(transform))] string? transformExpr = null);

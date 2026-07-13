@@ -10,9 +10,9 @@ public abstract record IsNumerical<TActual, TContinuation> : IsComparable<TActua
     where TActual : struct, IComparable<TActual>
 {
     /// <summary>
-    /// Assert that the value is even (divisible by 2)
+    /// Asserts that the value is even (divisible by 2)
     /// </summary>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<TContinuation> Even()
         => Assert(null, NotNullAnd(actual => Xunit.Assert.Equal(0, Convert.ToInt64(actual) % 2))).And();
 }

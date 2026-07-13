@@ -15,7 +15,7 @@ public abstract class Spec : Spec<object, object>
 /// This base class should typically be used for static methods, but can also be used to specify subject-under-test but no return type
 /// (or when subject-under-test and the return value has the same type)
 /// </summary>
-/// <typeparam name="TSUTorResult">The return type of the method-under-test is also passed as argument to the test method</typeparam>
+/// <typeparam name="TSUTorResult">The type used both as the subject-under-test and as the return type of the method-under-test</typeparam>
 public abstract class Spec<TSUTorResult> : Spec<TSUTorResult, TSUTorResult>;
 
 /// <summary>

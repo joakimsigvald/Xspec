@@ -12,13 +12,16 @@ namespace Xspec.Continuations;
 public interface ITestPipeline<TSUT, TResult>
 {
     /// <summary>
-    /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.<br/>
+    /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.
     /// </summary>
+    /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
+    /// <param name="because">An optional rationale justifying the expected outcome, included in the generated specification after the assertion.
+    /// Phrase it to read naturally after the word "because". It can only be provided once per test method and covers all assertions chained after it</param>
     /// <returns>The test result, containing any return values or exceptions thrown, upon which assertions can be made</returns>
     ITestResultWithSUT<TSUT, TResult> Then(Ignore _ = default, string? because = null);
 
     /// <summary>
-    /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.<br/>
+    /// Runs the test pipeline and generates the result, which can be accessed by the Result property. When the test is run, any provided arrangement will be applied, then the subject-under-test will be created and the method-under-test called.
     /// </summary>
     /// <typeparam name="TSubject">The type of the subject to return</typeparam>
     /// <param name="subject">The subject to return for chained assertions</param>
@@ -34,6 +37,12 @@ public interface ITestPipeline<TSUT, TResult>
     /// <param name="expression">An expression specifying the method invocation to verify</param>
     /// <param name="expressionExpr">Captured automatically by the compiler — do not provide</param>
     /// <returns>A continuation to apply additional assertions on the test result</returns>
+    /// <example>
+    /// Verify that the subject-under-test logged the message:
+    /// <code>
+    /// Then&lt;ILogger&gt;(_ =&gt; _.Log(The&lt;string&gt;()))
+    /// </code>
+    /// </example>
     IAndVerify<TResult> Then<TService>(
         Expression<Action<TService>> expression,
         [CallerArgumentExpression(nameof(expression))] string? expressionExpr = null)

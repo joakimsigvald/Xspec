@@ -6,10 +6,10 @@
 public record HasObject : Constraint<object, HasObject>
 {
     /// <summary>
-    /// Assert that the object is of the given type
+    /// Asserts that the object is of the given type
     /// </summary>
     /// <typeparam name="TObject">The type of the object to assert on</typeparam>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public ContinueWith<HasObject> Type<TObject>()
         => Assert(Ignore.Me, actual => (actual is TObject).Is().True(), typeof(TObject).Name).And();
 }

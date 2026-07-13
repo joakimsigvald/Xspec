@@ -45,14 +45,14 @@ public interface IGivenThatCommonContinuation<TSUT, TResult, TService, TReturns>
     IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> ReturnsDefault();
 
     /// <summary>
-    /// Provide an exception-type to mock
+    /// Setup mock to throw an exception of the given type from the mocked invocation
     /// </summary>
     /// <typeparam name="TException">The type of exception to throw from the mocked invocation</typeparam>
     /// <returns>A continuation for providing further arrangement of the test pipeline</returns>
     IGivenThatReturnsContinuation<TSUT, TResult, TService, TReturns> Throws<TException>() where TException : Exception, new();
 
     /// <summary>
-    /// Provide an exception to mock
+    /// Setup mock to throw the given exception from the mocked invocation
     /// </summary>
     /// <param name="expected">A function providing the exception to throw from the mocked invocation</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>

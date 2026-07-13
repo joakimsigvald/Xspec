@@ -7,7 +7,7 @@ using CallerArgument = System.Runtime.CompilerServices.CallerArgumentExpressionA
 namespace Xspec.Assert;
 
 /// <summary>
-/// Fluent assertions on decimal type numbers
+/// Fluent assertions on fractional type numbers (float, double and decimal)
 /// </summary>
 public static class AssertionExtensionsFractional
 {
@@ -17,7 +17,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsFloat Is(
         this float actual,
         Ignore _ = default,
@@ -30,7 +30,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsDouble Is(
         this double actual,
         Ignore _ = default,
@@ -43,7 +43,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsDecimal Is(
         this decimal actual,
         Ignore _ = default,
@@ -53,6 +53,11 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Verify that actual is expected and return continuation for further assertions of the value
     /// </summary>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static ContinueWith<IsNullableFloat> Is(
         this float? actual,
         float? expected,
@@ -63,6 +68,11 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Verify that actual is expected and return continuation for further assertions of the value
     /// </summary>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static ContinueWith<IsNullableDouble> Is(
         this double? actual,
         double? expected,
@@ -73,6 +83,11 @@ public static class AssertionExtensionsFractional
     /// <summary>
     /// Verify that actual is expected and return continuation for further assertions of the value
     /// </summary>
+    /// <param name="actual">The value to assert on</param>
+    /// <param name="expected">The expected value</param>
+    /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
+    /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static ContinueWith<IsNullableDecimal> Is(
         this decimal? actual,
         decimal? expected,
@@ -86,7 +101,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsNullableFloat Is(
         this float? actual,
         Ignore _ = default,
@@ -99,7 +114,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsNullableDouble Is(
         this double? actual,
         Ignore _ = default,
@@ -112,7 +127,7 @@ public static class AssertionExtensionsFractional
     /// <param name="actual">The value to assert on</param>
     /// <param name="_">Ignore this parameter — it exists only to distinguish overloads</param>
     /// <param name="actualExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public static IsNullableDecimal Is(
         this decimal? actual,
         Ignore _ = default,

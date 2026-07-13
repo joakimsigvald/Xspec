@@ -10,7 +10,7 @@ public record IsStringContinuation : IsString
     /// <summary>
     /// Continuation to assert that the string does satisfy some expectation
     /// </summary>
-    /// <returns>A continuation for further assertions of the value</returns>
+    /// <returns>A continuation for making further assertions on the value</returns>
     public DoesString Does() => Actual.Does(actualExpr: ActualExpr);
 
     /// <summary>
@@ -18,7 +18,7 @@ public record IsStringContinuation : IsString
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>Continuation for further assertions of the string</returns>
+    /// <returns>A continuation for making further assertions on the string</returns>
     public ContinueWith<IsStringContinuation> Is(
         string? expected,
         [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)

@@ -7,14 +7,20 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
 {
 
     /// <summary>
-    /// Yields a value of the given type
+    /// Yields the first value of the given type (a mention).
+    /// Repeated mentions of the same type refer to the same auto-generated (or previously provided) value,
+    /// and generated values are guaranteed to be unique within the test run.
+    /// Using `A` is synonymous to `An`, `The`, `AFirst` and `TheFirst` — pick the alias that reads best.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>
     protected internal TValue A<TValue>() => Pipeline.Mention<TValue>();
 
     /// <summary>
-    /// Yields a value of the given type
+    /// Yields the first value of the given type (a mention).
+    /// Repeated mentions of the same type refer to the same auto-generated (or previously provided) value,
+    /// and generated values are guaranteed to be unique within the test run.
+    /// Using `An` is synonymous to `A`, `The`, `AFirst` and `TheFirst` — pick the alias that reads best.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>
@@ -37,14 +43,19 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue The<TValue>(Tag<TValue> tag) => Pipeline.Mention(tag, tag.Name);
 
     /// <summary>
-    /// Yields a value of the given type
+    /// Yields the first value of the given type (a mention).
+    /// Using `AFirst` is synonymous to `A`, `An`, `The` and `TheFirst`,
+    /// but emphasizes the position when the test also mentions ASecond, AThird etc. of the same type.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>
     protected internal TValue AFirst<TValue>() => Pipeline.Mention<TValue>();
 
     /// <summary>
-    /// Yields a value of the given type
+    /// Yields the first value of the given type (a mention).
+    /// Using `TheFirst` is synonymous to `A`, `An`, `The` and `AFirst`,
+    /// but emphasizes the position when the test also mentions TheSecond, TheThird etc. of the same type,
+    /// and suggests that this value has been provided or referenced earlier in the test pipeline.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>
@@ -141,7 +152,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue ASecond<TValue>(Action<TValue> setup) => Pipeline.Apply<TValue>(setup, 1);
 
     /// <summary>
-    /// Provide transform for a second value of a given type, that can be mentioned in the test pipeline as ASecond or TheSecond.
+    /// Yields a customized second value of the given type
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <param name="transform">A function transforming the value before it is returned</param>
@@ -179,7 +190,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue AThird<TValue>(Action<TValue> setup) => Pipeline.Apply<TValue>(setup, 2);
 
     /// <summary>
-    /// Provide transform for a third value of a given type, that can be mentioned in the test pipeline as AThird or TheThird.
+    /// Yields a customized third value of the given type
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <param name="transform">A function transforming the value before it is returned</param>
@@ -217,7 +228,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue AFourth<TValue>(Action<TValue> setup) => Pipeline.Apply<TValue>(setup, 3);
 
     /// <summary>
-    /// Provide transform for a fourth value of a given type, that can be mentioned in the test pipeline as AFourth or TheFourth.
+    /// Yields a customized fourth value of the given type
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <param name="transform">A function transforming the value before it is returned</param>
@@ -263,7 +274,7 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue AFifth<TValue>(TValue value) => Pipeline.Assign(4, value);
 
     /// <summary>
-    /// Provide transform for a fifth value of a given type, that can be mentioned in the test pipeline as AFifth or TheFifth.
+    /// Yields a customized fifth value of the given type
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <param name="transform">A function transforming the value before it is returned</param>
@@ -271,7 +282,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue AFifth<TValue>(Func<TValue, TValue> transform) => Pipeline.Apply<TValue>(transform, 4);
 
     /// <summary>
-    /// Yields a value of the given type that cannot be retrieved again
+    /// Yields a value of the given type that cannot be retrieved again.
+    /// Using `Any` is synonymous to `Another` — pick the alias that reads best.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>
@@ -286,7 +298,8 @@ public abstract partial class Spec<TSUT, TResult> : ITestPipeline<TSUT, TResult>
     protected internal TValue Any<TValue>(Action<TValue> setup) => Pipeline.Create(setup);
 
     /// <summary>
-    /// Yields a value of the given type that cannot be retrieved again
+    /// Yields a value of the given type that cannot be retrieved again.
+    /// Using `Another` is synonymous to `Any` — pick the alias that reads best.
     /// </summary>
     /// <typeparam name="TValue">The type of the value</typeparam>
     /// <returns>The generated or previously provided value</returns>

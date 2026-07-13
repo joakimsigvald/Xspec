@@ -1,7 +1,7 @@
 ﻿namespace Xspec.Semantic;
 
 /// <summary>
-/// Represents a universally valid, E.164 formatted international phone number.
+/// Represents an E.164-style placeholder international phone number (not guaranteed to be a real, dialable number).
 /// Can be used as a strongly-typed replacement for raw strings in test data generation.
 /// </summary>
 /// <param name="Value">The underlying string representation of the phone number.</param>

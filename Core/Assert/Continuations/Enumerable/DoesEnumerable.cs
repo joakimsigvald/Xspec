@@ -10,11 +10,11 @@ namespace Xspec.Assert.Continuations.Enumerable;
 public record DoesEnumerable<TItem> : EnumerableConstraint<TItem, DoesEnumerableContinuation<TItem>>
 {
     /// <summary>
-    /// Assert that the enumerable contains the given item
+    /// Asserts that the enumerable contains the given item
     /// </summary>
     /// <param name="expected">The expected value</param>
     /// <param name="expectedExpr">Captured automatically by the compiler — do not provide</param>
-    /// <returns>A continuation for making additional asserts on the enumerable</returns>
+    /// <returns>A continuation for making further assertions on the enumerable</returns>
     public ContinueWith<DoesEnumerableContinuation<TItem>> Contain(
         TItem expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpr = null)
         => Assert($"{expected}",

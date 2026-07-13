@@ -1,7 +1,7 @@
 ﻿namespace Xspec.Internal.TestData.Generation;
 
 /// <summary>
-/// Exception thrown when type conversion fail during test data generation
+/// Exception thrown when type conversion fails during test data generation
 /// </summary>
 /// <param name="targetType">The type the generated value is converted to</param>
 /// <param name="sourceType">The type of the generated value</param>

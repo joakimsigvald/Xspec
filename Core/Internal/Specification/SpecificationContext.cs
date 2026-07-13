@@ -63,6 +63,9 @@ internal class SpecificationContext : IAssertSpecificationContext
     internal void AddGivenThat(string customArrangementExpr)
         => _builder.Add(() => _builder.AddGivenThat(customArrangementExpr));
 
+    internal void AddArchWhen(string scope)
+        => _builder.Add(() => _builder.AddArchWhen(scope));
+
     internal void AddMockSetup<TService>(string callExpr)
         => _builder.Add(() => _builder.AddMockSetup<TService>(callExpr));
 

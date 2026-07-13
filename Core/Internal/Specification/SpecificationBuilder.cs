@@ -174,6 +174,10 @@ internal class SpecificationBuilder
     internal void AddGivenThat(string customArrangementExpr)
         => _textBuilder.AddPhraseOrSentence($"{Given} that {customArrangementExpr.ParseValue()}");
 
+    internal void AddArchWhen(string scope)
+        // scope is already described text, not source code — never re-parse it
+        => _textBuilder.AddSentence($"when {scope}");
+
     internal void AddVerify<TService>(string expressionExpr)
         => _textBuilder.AddWord($"{NameOf<TService>()}.{expressionExpr.ParseCall(true)}");
 

@@ -38,8 +38,7 @@ In real-world usage, this typically yields substantially smaller and more readab
 3. [Using Test Data](#3-using-test-data)  
 4. [Mocking & Auto-Mocking](#4-mocking--auto-mocking)  
 5. [Asserting Results](#5-asserting-results)  
-6. [Guidelines](#6-guidelines) 
-7. [Beyond TDD: Specification-Driven Agentic Development](#7-beyond-tdd-specification-driven-agentic-development)
+6. [Guidelines](#6-guidelines)
 
 ## 1. Introduction
 
@@ -159,8 +158,6 @@ Before the first assertion, the pipeline is configured with test data, mocks, an
 #### 2.1.1 Creating the Pipeline
 You typically create the pipeline by subclassing `Spec` with two generic arguments. The first is the type of the *subject under test* and the second is the return type of the *method under test*.
 Other overloads exist for cases without a subject under test or return value.
-
-You can choose to pass a class fixture (a feature of xUnit) to the constructor or start with an empty test pipeline.
 
 #### 2.1.2 Scope of Arrangement
 When preparing the pipeline, values are provided either for the **Subject** or for the **Input**. 
@@ -357,14 +354,13 @@ public class WhenRelayIntToByteWithConverter : Spec<int>
 
 ## 4. Mocking & Auto-Mocking
 
-This part assumes familiarity with Moq or similar mocking frameworks. You should have a clear understanding of when and how mocking is typically used together with xUnit.
-Here we will examine how the mocking experience can be simplified with the help of Xspec.
+This chapter assumes familiarity with Moq or a similar mocking framework, and shows how Xspec simplifies the mocking experience.
 
 ### 4.1 Auto-Mocking subject under test
 
 The subject under test will be created automatically with mocks and default values.
-Remember from chapter 2 that all mocks are configured after test data has been generated. 
-So regardless of where you provide test data or constraints on test-data, they will be available in the mocking stage of the pipeline execution.
+Remember from Chapter 2 that mocks are configured after test data has been generated, 
+so test data and constraints are available in the mocking stage regardless of where in the test they are provided.
 
 You can supply your own constructor arguments by calling `Using`, or modify the generated ones by calling `Given` with a setup or transform lambda.
 You can even provide the subject under test itself:
@@ -373,14 +369,14 @@ You can even provide the subject under test itself:
 ### 4.2 Mocking
 
 To mock the behavior of a dependency, call `Given<[TheService]>().That(_ => _.[TheMethod](...)).Returns/Throws(...)`. 
-`That` accepts any lambda you would normally supply to the constructor when creating a mock using `Moq`. 
+`That` accepts any lambda you would normally supply to `Setup` when creating a mock with Moq. 
 You do not need to create and manage mocks manually, but can supply mocked behavior directly to the pipeline.
 This allows most mocking scenarios to be expressed inline, close to the behavior under test.
 
 ### 4.3 Mocking with arguments
 
-If you want to vary mocked behavior based on arguments, supply a lambda with arguments to Returns. The lambda signature must match the mocked call.
-Up to five arguments are possible to mock in this way.
+To vary mocked behavior based on arguments, supply a lambda with arguments to `Returns`. The lambda signature must match the mocked call.
+Up to five arguments are supported.
 
 Example with two arguments:
 ```csharp
@@ -391,8 +387,8 @@ Example with two arguments:
 
 ### 4.4 Mocking sequence of calls
 
-Sometimes you want to mock a scenario where more than one call is made to a mock in succession, and the mock should potentially behave differently at each successive call.
-You can describe this scenario using the methods `First` and `AndNext`.
+When a mock is called several times in succession, it can be set up to behave differently on each call.
+Describe the sequence using `First` and `AndNext`.
 
 Example mocking three successive calls:
 ```csharp
@@ -404,8 +400,8 @@ Example mocking three successive calls:
 
 ### 4.5 Observing calls with Tap
 
-Tap allows observing arguments passed to a mocked call without affecting its behavior.
-A method with up to five arguments is possible to tap.
+`Tap` observes the arguments passed to a mocked call without affecting its behavior.
+Methods with up to five arguments can be tapped.
 
 Example:
 ```csharp
@@ -421,7 +417,7 @@ int _tappedValue = -1;
 
 To verify a call to a mocked dependency, call `Then<[TheService]>([SomeLambdaExpression])`. 
 
-Both mocking and verification of behavior are based on `Moq` framework.
+Both mocking and verification are based on the Moq framework.
  
 Example:
 ```csharp
@@ -442,16 +438,15 @@ public class WhenPlaceOrder : Spec<MyProject.ShoppingService>
 ```
 
 The built-in mocking capabilities of Xspec cover almost all scenarios that Moq covers. 
-But should you need some feature that is not provided by Xspec, you can create your mock using Moq explicitly and supply it to the pipeline using `Given(myMock.Object)`.
+Should you need a feature that Xspec does not provide, create the mock explicitly with Moq and supply it to the pipeline using `Given(myMock.Object)`.
 
 ## 5. Asserting Results
 
 Xspec comes with its own fluent assertion framework under the `Xspec.Assert` namespace. 
-Even if you don't use any other feature of Xspec, you can use this framework as an alternative to `FluentAssertions` or `AwesomeAssertions`. 
-However, combined with the Xspec pipeline is where it really shines.
+It can be used on its own as an alternative to `FluentAssertions` or `AwesomeAssertions`,
+but it really shines in combination with the Xspec pipeline.
 
-**Reading advice**
-What follows is a compact reference manual on the fluent nature of Xspec.Assert, followed by a complete list of features.
+What follows is a short guide to the fluent structure of assertions, followed by a feature reference.
 
 ### 5.1 Fluent assertions
 
@@ -472,13 +467,13 @@ When you want to combine two assertions, one of which must pass
 ```
 
 #### 5.1.3 Not
-Any assertion can be negated by placing not before (note lowercase not)
+Any assertion can be negated by placing `not` before it (note the lowercase)
 ```csharp
 3.Is().not.GreaterThan(4);
 ```
 
 ### 5.2 Values
-Values of any type can be verified with any of the two extension methods `Is` and `Has`
+Values of any type can be verified with the extension methods `Is` and `Has`
 
 #### 5.2.1 Is
 - Equal:  
@@ -494,10 +489,10 @@ Values of any type can be verified with any of the two extension methods `Is` an
 - Greater than:  
   `3.Is().GreaterThan(2)`  
 - Less than:  
-  `3.Is().LessThan(2)`  
+  `2.Is().LessThan(3)`  
 - Approximately equal with tolerance:  
   `Result.Is().Around(3, 0.1)`  
-- Even: (true if number is divisible by 2)  
+- Even: (the number is divisible by 2)  
   `Result.Is().Even()`  
 - OneOf:  
   `Result.Is().OneOf(Three<int>())`  
@@ -546,7 +541,7 @@ Values of any type can be verified with any of the two extension methods `Is` an
 - Positive  
   `TimeSpan.FromDays(1).Is().Positive()`  
 - Negative  
-  `TimeSpan.FromDays(1).Is().Negative()`  
+  `TimeSpan.FromDays(-1).Is().Negative()`  
 
 ### 5.5 Collections
 
@@ -602,9 +597,9 @@ Values of any type can be verified with any of the two extension methods `Is` an
   `list.Has().All((it, i) => it.Age > i)` // with index of item  
   `list.Has().All(it => it.Age.Is().GreaterThan(3))` // apply assertion to all items  
 - Some  
-  `list.Has().Some(it => it.Age > 3)` - at least one item in the collection matches the criteria  
+  `list.Has().Some(it => it.Age > 3)` // at least one item in the collection matches the criteria  
 - None  
-  `list.Has().None(it => it.Age > 3)` - no item in the collection matches the criteria  
+  `list.Has().None(it => it.Age > 3)` // no item in the collection matches the criteria  
 
 ### 5.6 Justifying assertions with because
 
@@ -634,19 +629,15 @@ chained after it (with `and`, `either`/`or` etc.).
 
 ### 6.1 Recommended test structure
 
-Based on the way xUnit and Xspec work and on experience using it, this is an opinionated recommendation on how to structure your tests using Xspec.
+This is an opinionated recommendation for structuring your tests, based on how xUnit and Xspec work and on experience from real projects.
 The goal of these conventions is to keep specifications readable, navigable, and aligned with production structure as test suites grow.
 
-1. Mimic the folder structure of your production code to be tested
-   - Create one project per production project called *[ProductionFolder].Test* or *[ProductionFolder].Spec*
-   - Create a leaf-folder per subject under test called *[NameOfClass]*
-1. Create one test-class per method under test, called *When[NameOfMethod]*
-1. Let the class for each method under test be abstract and nest concrete classes inside it for each different setup, called *Given[SomePrecondition]*
-1. Place setup in the constructor and assertions in the test methods
-1. Feel free to nest given classes in more than one layer (but avoid more than four levels of nesting)
-1. Write one test-method per logical assertion (i.e. test only one thing per test)
-1. Feel free to use all of Xunit's features - such as Fact, Theory and test-data
-1. Use only the built-in assertion framework from Xspec (it will give you cleaner specifications with clearer test-output)
+1. Mimic the folder structure of your production code, with one test project per production project, called *[ProductionProject].Spec*
+1. Create one folder per class under test, called *[NameOfClass]*
+1. Create one abstract test class per method under test, called *When[NameOfMethod]*
+1. Nest one concrete class per given-case inside it, called *Given[SomePrecondition]* — given-classes can be nested in several levels
+1. Write one test method per logical assertion — it may contain several actual assertions
+1. Prefer arrow syntax and fluent chaining over statement blocks
 
 Example:
 ```csharp
@@ -682,41 +673,14 @@ public abstract class WhenPlaceOrder : Spec<ShoppingService>
 }
 ```
 
-### 6.2 Class fixtures
-
-Xspec supports the xUnit feature of sharing setup between tests in a common class fixture.
-A class fixture is created in the same way as a test class, by inheriting `Spec` and providing setup.
-The only difference between a class fixture implemented with Xspec and a test class implemented with Xspec
-is that class fixtures don't have test methods or assertions.
-
-When using a class fixture and having more than one test method, no setup should be put in the constructor, 
-since the constructor is run once for each test method and provides the setup to the shared class fixture 
-(i.e. would add the same setup multiple times, including after the test pipeline was executed, which Xspec does not allow).
-
-### 6.3 Some final advice
+### 6.2 Some final advice
 
 Unit tests work best when they run *fast*. Write modular production code in line with best practices, 
 so that each unit can be tested in isolation while mocking or ignoring the rest.
-This enables tiny test methods with a single logical assertion and shared setup.
 
-However, remember that the entire test pipeline is built and disposed for each test method (a feature of xUnit).
-If a specification requires non-trivial setup or execution time, it can be reasonable to group
-multiple *closely related* assertions into the same test method to reduce overall suite runtime.
+Remember that the entire test pipeline is built and disposed for each test method (xUnit creates a new test-class instance per test).
+If a specification requires costly setup or execution, it can be reasonable to group *closely related* assertions into the same test method.
 
-Xspec is designed to thrive in clean, well-structured codebases.
-Its emphasis on explicit structure and readable specifications is intended to reinforce those qualities,
-helping teams maintain clarity and confidence as both code and test suites grow.
+Xspec is designed to thrive in clean, well-structured codebases,
+and its emphasis on explicit structure and readable specifications helps keep them that way as both code and test suites grow.
 
-## 7. Beyond TDD: Specification-Driven Agentic Development
-
-While Xspec is a highly effective tool for traditional Test-Driven Development (TDD), it is ultimately designed to facilitate a new paradigm: **Specification-Driven Agentic Development (SDAD)**. 
-
-SDAD evolves TDD by treating the developer as the specifier and the AI agent as the implementer. Because Xspec enforces a strict, readable, and declarative structure, it creates the perfect shared language between human intent and AI generation.
-
-The SDAD cycle works as follows:
-1. **Specify (Human):** The developer writes a clear, executable specification using Xspec to define the exact requirements and expected behavior.
-2. **Red Phase (Automated):** An AI agent takes over, generating the production code necessary to make all specifications (tests) pass.
-3. **Grey Phase (Semi-Automated):** The AI agent switches to refactoring mode, cleaning up the generated code and providing quality metrics.
-4. **Green Phase (Manual):** The human developer reviews the clean code, collaborating with the AI to optimize structure and readability before starting the next cycle.
-
-By removing boilerplate and focusing purely on the *Given-When-Then* logic, Xspec allows developers to focus on the "what" while the AI handles the "how."

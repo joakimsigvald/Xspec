@@ -297,30 +297,24 @@ Example:
 Using(name, For.Input).And(age, For.Subject);
 ```
 
-### 3.3 Data Generation and Pipeline
+### 3.3 Data Generation
 
-Xspec utilizes an internal data-generation pipeline to supply arbitrary data cleanly. When requesting a value, for instance `An<int>()`, the value is pulled through a pipeline in order (most recently provided first):
+Xspec supplies test data through an internal generation pipeline. When a value is requested — for instance with `An<int>()` — it is resolved in three steps:
 
-**1. Value**
-* **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
-* **Factory**: Provide a value from a factory, or continue.
-* **Value**: Provide an explicitly supplied value, or continue.
+1. **Reuse**: if the value has already been mentioned in the test, the same value is returned.
+2. **Resolve**: otherwise the value is resolved from the arrangement — the first matching source wins:
+   * a registered type conversion or value source (see [3.4](#34-type-registration-and-conversion))
+   * an explicitly provided value or factory, e.g. `Using(42)` or `Using(() => new MyModel())`
+   * the built-in generation strategy for the type (see below)
+3. **Customize**: any setup or transform lambdas provided for the type are applied, most recently provided first.
 
-**2. Default**
-* **Mutate/Transform value**: apply a mutation to or transform the value (applied in the opposite order they are supplied).
-* **Factory**: Provide a value from a factory, or continue.
-* **Value**: Provide an explicitly supplied value, or continue.
-
-**3. Generation**
-* **Map value**: Get a value of a different type from the default-pipeline and map to type.
-* **Relay type**: Get a value of a different type from the default-pipeline and convert to type.
-* **Generate value**: Use the generation strategy of the given type.
-* **Return type default**: Use the type's default value or null.
-
-If generation is required, Xspec evaluates types using a fallback strategy chain:
-* **Primitives:** Generation natively supports standard primitives like `int`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
-* **Semantic Types:** Objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are auto-generated from their primitive values.
-* **Abstracts & Interfaces:** Interfaces and abstract classes are mocked automatically, without boilerplate.
+Built-in generation covers most types out of the box:
+* **Primitives**: standard primitives like `int`, `string`, `Guid`, `DateTime`, `Uri`, and `TimeSpan`.
+* **Enums, nullables and collections**: resolved from their underlying or element types.
+* **Semantic types**: objects deriving from `Semantic<TPrimitive>` (such as `Email`, `PhoneNumber`, `Age`) are generated from their primitive values.
+* **Interfaces and abstract classes**: mocked automatically, without boilerplate.
+* **Concrete classes**: constructed with generated constructor arguments.
+* If none of the above applies, the type's default value is used.
 
 ### 3.4 Type Registration and Conversion
 
@@ -476,130 +470,101 @@ Any assertion can be negated by placing `not` before it (note the lowercase)
 Values of any type can be verified with the extension methods `Is` and `Has`
 
 #### 5.2.1 Is
-- Equal:  
-  `Result.Is(3)`  
-  `Result.Is().EqualTo(3)`  
-- Equivalent: (for objects)  
-  `Result.Is().Like(new MyObject {Id = 3})`  
-  `Result.Is().EquivalentTo(new MyObject {Id = 3})`  
-- Not equal:  
-  `Result.Is().Not(3)`  
-- Null:  
-  `Result.Is().Null()`  
-- Greater than:  
-  `3.Is().GreaterThan(2)`  
-- Less than:  
-  `2.Is().LessThan(3)`  
-- Approximately equal with tolerance:  
-  `Result.Is().Around(3, 0.1)`  
-- Even: (the number is divisible by 2)  
-  `Result.Is().Even()`  
-- OneOf:  
-  `Result.Is().OneOf(Three<int>())`  
-- True: (for booleans)  
-  `Result.Is().True()`  
-- False: (for booleans)  
-  `Result.Is().False()`  
+
+| Assertion | Example |
+|---|---|
+| Equal | `Result.Is(3)` |
+| | `Result.Is().EqualTo(3)` |
+| Equivalent — structural equality, for objects | `Result.Is().Like(new MyObject {Id = 3})` |
+| | `Result.Is().EquivalentTo(new MyObject {Id = 3})` |
+| Not equal | `Result.Is().Not(3)` |
+| Null | `Result.Is().Null()` |
+| Greater / less than | `3.Is().GreaterThan(2)` |
+| | `2.Is().LessThan(3)` |
+| Around — approximately equal, with tolerance | `Result.Is().Around(3, 0.1)` |
+| Even — divisible by 2 | `Result.Is().Even()` |
+| OneOf | `Result.Is().OneOf(Three<int>())` |
+| True / False — for booleans | `Result.Is().True()` |
+| | `Result.Is().False()` |
 
 #### 5.2.2 Has
-- Verify that the result has a given condition:  
-  `Result.Has(_ => _.Id == 3)`  
-- Verify that the result has the given type:  
-  `Result.Has().Type<MyModel>()`  
+
+| Assertion | Example |
+|---|---|
+| Condition | `Result.Has(_ => _.Id == 3)` |
+| Type | `Result.Has().Type<MyModel>()` |
 
 ### 5.3 Strings
 
 #### 5.3.1 Is
-- Like  
-  `" ABC ".Is().Like("abc")`  
-- EquivalentTo  
-  `" ABC ".Is().EquivalentTo("abc")`  
-- Empty  
-  `"".Is().Empty()`  
-- NullOrEmpty  
-  `((string)null).Is().NullOrEmpty()`  
-- NullOrWhitespace  
-  `" ".Is().NullOrWhitespace()`  
+
+| Assertion | Example |
+|---|---|
+| Like / EquivalentTo — ignoring casing and surrounding whitespace | `" ABC ".Is().Like("abc")` |
+| | `" ABC ".Is().EquivalentTo("abc")` |
+| Empty | `"".Is().Empty()` |
+| NullOrEmpty | `((string)null).Is().NullOrEmpty()` |
+| NullOrWhitespace | `" ".Is().NullOrWhitespace()` |
 
 #### 5.3.2 Does
-- Contain  
-  `"ABC".Does().Contain("AB")`  
-- StartWith  
-  `"ABC".Does().StartWith("AB")`  
-- EndWith  
-  `"ABC".Does().EndWith("BC")`  
+
+| Assertion | Example |
+|---|---|
+| Contain | `"ABC".Does().Contain("AB")` |
+| StartWith | `"ABC".Does().StartWith("AB")` |
+| EndWith | `"ABC".Does().EndWith("BC")` |
 
 ### 5.4 Time
 
-- Before  
-  `DateTime.Now.Is().Before(DateTime.Now.AddDays(1))`  
-- After  
-  `DateTime.Now.Is().After(DateTime.Now.AddDays(-1))`  
-- CloseTo  
-  `DateTime.Now.Is().CloseTo(DateTime.Now.AddDays(1), TimeSpan.FromDays(2))`  
-  `TimeSpan.FromDays(4).Is().CloseTo(TimeSpan.FromDays(3), TimeSpan.FromDays(2))`  
-- Positive  
-  `TimeSpan.FromDays(1).Is().Positive()`  
-- Negative  
-  `TimeSpan.FromDays(-1).Is().Negative()`  
+| Assertion | Example |
+|---|---|
+| Before / After | `DateTime.Now.Is().Before(DateTime.Now.AddDays(1))` |
+| | `DateTime.Now.Is().After(DateTime.Now.AddDays(-1))` |
+| CloseTo — within a given tolerance | `DateTime.Now.Is().CloseTo(DateTime.Now.AddDays(1), TimeSpan.FromDays(2))` |
+| | `TimeSpan.FromDays(4).Is().CloseTo(TimeSpan.FromDays(3), TimeSpan.FromDays(2))` |
+| Positive / Negative — for TimeSpan | `TimeSpan.FromDays(1).Is().Positive()` |
+| | `TimeSpan.FromDays(-1).Is().Negative()` |
 
 ### 5.5 Collections
 
 #### 5.5.1 Is
-- EqualTo  
-  all elements are equal and in the same order  
-  `list.Is().EqualTo(otherList)`  
-- Like  
-  all elements are equal but order may differ  
-  `list.Is().Like(otherList)`  
-- SameAs  
-  reference equal  
-  `list.Is().SameAs(otherList)`  
-- EquivalentTo  
-  all elements are equal but order may differ  
-  `list.Is().EquivalentTo(otherList)`  
-- Empty  
-  `list.Is().Empty()`  
-- Distinct  
-  `list.Is().Distinct()` // all elements in the collection are different  
-  `list.Is().Distinct(it => it.Id)` // all elements have different values of the given property  
+
+| Assertion | Example |
+|---|---|
+| EqualTo — equal elements in the same order | `list.Is().EqualTo(otherList)` |
+| Like / EquivalentTo — equal elements, order may differ | `list.Is().Like(otherList)` |
+| | `list.Is().EquivalentTo(otherList)` |
+| SameAs — same reference | `list.Is().SameAs(otherList)` |
+| Empty | `list.Is().Empty()` |
+| Distinct — all elements are different, optionally by a given property | `list.Is().Distinct()` |
+| | `list.Is().Distinct(it => it.Id)` |
 
 #### 5.5.2 Does
-- Contain  
-  `list.Does().Contain(3)`  
+
+| Assertion | Example |
+|---|---|
+| Contain | `list.Does().Contain(3)` |
 
 #### 5.5.3 Has
-- Count  
-  `list.Has().Count(3)`  
-  `list.Has().Count(it => it > 3).At(2)` // with condition  
-- Count at least  
-  `list.Has().Count().AtLeast(2)`  
-  `list.Has().Count(it => it > 3).AtLeast(2)` // with condition  
-- Count at most  
-  `list.Has().Count().AtMost(2)`  
-  `list.Has().Count(it => it > 3).AtMost(2)` // with condition  
-- Count in range  
-  `list.Has().Count().InRange(2, 4)`  
-  `list.Has().Count(it => it > 3).InRange(2, 4)` // with condition  
-- Order ascending  
-  `list.Has().Order().Ascending()`  
-  `list.Has().Order(it => it.Age).Ascending()` // with condition  
-- Order descending  
-  `list.Has().Order().Descending()`  
-  `list.Has().Order(it => it.Age).Descending()` // with condition  
-- [One/Two/Three/Four/Five]Items  
-  verify that the collection has the given number of items and return them as a n-tuple  
-  `numbers.Has().OneItem().that.Is(3)` // numbers have one item, and that item is 3  
-  `patients.Has().OneItem().that.Age.Is(3)` // patients have one item, and its age is 3  
-  `patients.Has().OneItem(it => it.Age == 3).that.Gender.Is('F')` // patients have one item aged 3, and its gender is female  
-- All  
-  `list.Has().All(it => it.Age > 3)` // all items in the collection match the criteria  
-  `list.Has().All((it, i) => it.Age > i)` // with index of item  
-  `list.Has().All(it => it.Age.Is().GreaterThan(3))` // apply assertion to all items  
-- Some  
-  `list.Has().Some(it => it.Age > 3)` // at least one item in the collection matches the criteria  
-- None  
-  `list.Has().None(it => it.Age > 3)` // no item in the collection matches the criteria  
+
+| Assertion | Example |
+|---|---|
+| Count | `list.Has().Count(3)` |
+| Count at least / at most / in range | `list.Has().Count().AtLeast(2)` |
+| | `list.Has().Count().AtMost(2)` |
+| | `list.Has().Count().InRange(2, 4)` |
+| Count with condition — counts only matching items | `list.Has().Count(it => it > 3).At(2)` |
+| | `list.Has().Count(it => it > 3).AtLeast(2)` |
+| Order — ascending or descending, optionally by a given property | `list.Has().Order().Ascending()` |
+| | `list.Has().Order(it => it.Age).Descending()` |
+| [One/Two/Three/Four/Five]Items — asserts the count and returns the items as an n-tuple | `numbers.Has().OneItem().that.Is(3)` |
+| | `patients.Has().OneItem().that.Age.Is(3)` |
+| | `patients.Has().OneItem(it => it.Age == 3).that.Gender.Is('F')` |
+| All — every item matches the criteria, optionally with index, or applying an assertion | `list.Has().All(it => it.Age > 3)` |
+| | `list.Has().All((it, i) => it.Age > i)` |
+| | `list.Has().All(it => it.Age.Is().GreaterThan(3))` |
+| Some — at least one item matches | `list.Has().Some(it => it.Age > 3)` |
+| None — no item matches | `list.Has().None(it => it.Age > 3)` |
 
 ### 5.6 Justifying assertions with because
 

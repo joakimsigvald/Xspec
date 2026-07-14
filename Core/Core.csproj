@@ -20,13 +20,12 @@
 		<PackageProjectUrl>https://github.com/joakimsigvald/Xspec</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/joakimsigvald/Xspec.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageVersion>2.0.1</PackageVersion>
+		<PackageVersion>2.0.2</PackageVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReleaseNotes>
-			Improved XML documentation across the public API: documented the because parameter of Then, added missing parameter and return docs, added examples to key APIs, standardized wording
-			Removed unintentionally public internal types (ExpressionParser, TextBuilder) from the package surface
+			Improved README
 		</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>

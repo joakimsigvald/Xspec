@@ -63,37 +63,15 @@ public class CalculatorSpec : Spec<int>
 
 ### 1.1 Arrange
 
-The *arrange* stage defines the setup of the test pipeline.
-In Xspec, this is done by calling methods on `Spec`, either directly or fluently chained together.
+The *arrange* stage defines the setup of the test pipeline, by calling methods on `Spec`, either directly or fluently chained:
 
-The following methods are used to arrange a test:
-
-* `Given`  — defines test setup, mocks, and input data.
+* `Given`  — provides test data and mocked behavior.
 * `Using`  — registers type conversions, defaults, and factories.
 * `Having` — setup that runs *before* the action.
-* `Until`  — teardown or verification that runs *after* the action.
+* `Until`  — teardown that runs *after* the action.
 
-`Having` and `Until` compose fluently in chain form, with the action at the center and each clause extending outward in time.
-
-```csharp
-public class WhenSendReport : Spec<EmailService, SendResult>
-{
-    public WhenSendReport()
-        => When(_ => _.Send(A<Report>()))
-           .Having(_ => _.SignIn(A<Credentials>()))
-           .Having(_ => _.Configure(A<SmtpSettings>()))
-           .Until(_ => _.FlushOutbox())
-           .Until(_ => _.Disconnect());
-
-    [Fact] public void ThenReturnsSent() => Then().Result.Is(SendResult.Sent);
-}
-```
-
-The chain reads as one sentence: *having signed in, having configured SmtpSettings, when sending a Report, until the outbox is flushed, until disconnected.*
-
-Xspec uses a strongly typed API to guide your setup, preventing most invalid test configurations at compile time.
-
-Xspec also provides mechanisms for preparing and referring to test data in a stable way, so the same values can be consistently reused across arrangement, execution, and assertion.
+Xspec's strongly typed API guides the setup, preventing most invalid test configurations at compile time.
+Chapter 2 describes the test pipeline in depth, and Chapter 3 how to prepare and reference test data.
 
 ### 1.2 Act
 
@@ -151,9 +129,29 @@ The remainder of this README is a complete, practical guide to structuring speci
 At the core of Xspec are *deferred execution* and *lazy evaluation*: no production code is executed until the first assertion is made.
 A test runs through four conceptual stages: preparation, execution, assertion, and teardown.
 
+The stages are visible in the shape of a specification: `Having` and `Until` compose fluently in chain form,
+with the action at the center and each clause extending outward in time.
+
+```csharp
+public class WhenSendReport : Spec<EmailService, SendResult>
+{
+    public WhenSendReport()
+        => When(_ => _.Send(A<Report>()))
+           .Having(_ => _.SignIn(A<Credentials>()))
+           .Having(_ => _.Configure(A<SmtpSettings>()))
+           .Until(_ => _.FlushOutbox())
+           .Until(_ => _.Disconnect());
+
+    [Fact] public void ThenReturnsSent() => Then().Result.Is(SendResult.Sent);
+}
+```
+
+The chain reads as one sentence: *having signed in, having configured SmtpSettings, when sending a Report, until the outbox is flushed, until disconnected.*
+
 ### 2.1 Preparation
 
-Before the first assertion, the pipeline is configured with test data, mocks, and lambdas to execute.
+Before the first assertion, the pipeline is configured with test data, mocks, and lambdas to execute,
+using the arrangement methods introduced in Section 1.1.
 
 #### 2.1.1 Creating the Pipeline
 You typically create the pipeline by subclassing `Spec` with two generic arguments. The first is the type of the *subject under test* and the second is the return type of the *method under test*.

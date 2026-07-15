@@ -41,4 +41,15 @@ public class WhenList : Spec<List<string>>
         .Then().Result.Is().not.Null().and.not.Empty()
         .and.Has().All((it, i) => it.Is($"{i + 1}"));
     }
+
+    [Fact]
+    public void DoesNotContainWithPredicate()
+    {
+        When(_ => ["1", "2", "3"])
+        .Then().Result.Does().not.Contain(v => v == "4");
+        Specification.Is("""
+            When ["1", "2", "3"]
+            Then Result does not contain items satisfying v == "4"
+            """);
+    }
 }

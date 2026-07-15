@@ -11,8 +11,7 @@ namespace Xspec.Internal.Specification.ExpressionParsing.Describe;
 /// </summary>
 internal sealed class ActualDescriber(string? subject = null) : Describer
 {
-    private const string _then = "Then";
-    private const string _and = "And";
+    private static readonly string[] _ignoreBeforeResult = ["Then", "And", "Because"];
     private static readonly string[] _bindingWords = ["and", "that"];
 
     /// One step in the member/call chain, with the separator that precedes it.
@@ -40,7 +39,7 @@ internal sealed class ActualDescriber(string? subject = null) : Describer
             if (cur is not Call c)
                 break;
 
-            if (c.MethodName is _then or _and)
+            if (_ignoreBeforeResult.Contains(c.MethodName))
                 return Combine(subject, Chain());
 
             if (c.Target is not Member memCall)

@@ -17,6 +17,18 @@ public class WhenBecause : Spec<MyStateService, int>
     }
 
     [Fact]
+    public void SyntacticSugarForThenBecause()
+    {
+        When(_ => ++_.Counter);
+        Because("incrementing zero yields one").Result.Is(1);
+        Specification.Is(
+            """
+            When ++_.Counter
+            Then Result is 1, because incrementing zero yields one
+            """);
+    }
+
+    [Fact]
     public void GivenChainedAssertions_ThenReasonIsAppendedAfterLastAssertion()
     {
         When(_ => ++_.Counter).Then(because: "it is one")
